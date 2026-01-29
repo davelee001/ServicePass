@@ -1,4 +1,4 @@
-# ServicePass 🎫
+# ServicePass
 
 > A blockchain-based voucher system where tokens represent prepaid credits that can be redeemed for real-world services or goods.
 
@@ -7,46 +7,46 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Backend-Node.js-brightgreen)](https://nodejs.org/)
 
-## 🌟 Overview
+## Overview
 
 **ServicePass** is a revolutionary blockchain-based voucher system built on the **SUI blockchain** using the **Move programming language**. It enables organizations, NGOs, and donors to distribute targeted vouchers that can **only** be redeemed for specific services, ensuring funds are used for their intended purpose while maintaining complete transparency and accountability.
 
 ### Why ServicePass?
 
-✅ **Transparent** - All transactions recorded on blockchain  
-✅ **Targeted** - Vouchers restricted to specific service types  
-✅ **Accountable** - Complete audit trail of all redemptions  
-✅ **Secure** - Burn-on-redemption prevents double-spending  
-✅ **Efficient** - Low transaction costs on SUI blockchain  
-✅ **Flexible** - Support for multiple voucher categories
+- **Transparent** - All transactions recorded on blockchain  
+- **Targeted** - Vouchers restricted to specific service types  
+- **Accountable** - Complete audit trail of all redemptions  
+- **Secure** - Burn-on-redemption prevents double-spending  
+- **Efficient** - Low transaction costs on SUI blockchain  
+- **Flexible** - Support for multiple voucher categories
 
-## 💎 Voucher Types
+## Voucher Types
 
-### 1️⃣ Education Credits (EDU)
+### Education Credits (EDU)
 - School fees vouchers
 - Exam registration credits
 - Training course access
 - **Token meaning**: 1 EDU = $1 worth of education services
 
-### 2️⃣ Healthcare Credits (HEALTH)
+### Healthcare Credits (HEALTH)
 - Clinic visits
 - Lab tests
 - Maternal health services
 - Pharmaceutical purchases
 
-### 3️⃣ Transport/Fuel Credits (TRANSPORT)
+### Transport/Fuel Credits (TRANSPORT)
 - Bus passes
 - Motorbike taxi rides
 - Fuel vouchers
 - High daily usage potential
 
-### 4️⃣ Agriculture Input Credits (AGRI)
+### Agriculture Input Credits (AGRI)
 - Seeds
 - Fertilizer
 - Veterinary services
 - Farm equipment rental
 
-## 🏗️ System Architecture
+## System Architecture
 
 ### On-Chain Components (SUI/Move)
 - **Voucher Smart Contract**: Manages minting, redemption, and burning
@@ -60,7 +60,7 @@
 - **Event Listener**: Monitors blockchain events
 - **QR Code Generation**: For easy redemption
 
-## 🔐 Token Design
+## Token Design
 
 | Feature | Implementation |
 |---------|---------------|
@@ -68,10 +68,10 @@
 | Minting | Admin-only via AdminCap |
 | Transferable | Yes (between users) |
 | Expiry | Configurable per voucher |
-| Burn on Redemption | ✅ Yes |
+| Burn on Redemption | Yes |
 | Refundable | No (prevents misuse) |
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ServicePass/
@@ -89,7 +89,7 @@ ServicePass/
 └── Move.toml                     # SUI Move project config
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - [SUI CLI](https://docs.sui.io/build/install)
@@ -137,7 +137,7 @@ npm run dev
 npm start
 ```
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Vouchers
 - `POST /api/vouchers/mint` - Mint new voucher
@@ -153,7 +153,7 @@ npm start
 - `GET /api/redemptions/merchant/:merchantId` - Merchant redemption history
 - `GET /api/redemptions/user/:walletAddress` - User redemption history
 
-## 🔧 Usage Examples
+## Usage Examples
 
 ### Minting a Voucher
 
@@ -184,14 +184,14 @@ curl -X POST http://localhost:3000/api/merchants/register \
   }'
 ```
 
-## 🎯 Use Cases
+## Use Cases
 
 1. **NGO Educational Programs**: Distribute education vouchers that can only be used for school fees
 2. **Healthcare Initiatives**: Provide healthcare credits for specific medical services
 3. **Agricultural Support**: Enable farmers to access inputs without cash transactions
 4. **Transport Subsidies**: Offer commuter assistance through transport vouchers
 
-## 🛡️ Security Features
+## Security Features
 
 - Admin-only minting prevents unauthorized token creation
 - Voucher expiry prevents indefinite liability
@@ -199,7 +199,7 @@ curl -X POST http://localhost:3000/api/merchants/register \
 - Event emissions create immutable audit trail
 - Type-specific redemption ensures intended use
 
-## 📝 Smart Contract Functions
+## Smart Contract Functions
 
 ### Admin Functions
 - `mint_voucher()` - Create new voucher
@@ -212,7 +212,7 @@ curl -X POST http://localhost:3000/api/merchants/register \
 - `is_valid_voucher_type()` - Validate voucher type
 - `merchant_accepts_voucher_type()` - Check merchant compatibility
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Test Move contracts
@@ -223,11 +223,11 @@ cd backend
 npm test
 ```
 
-## 📄 License
+## License
 
 MIT License - See [LICENSE](LICENSE) file for details
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -237,32 +237,32 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📧 Contact
+## Contact
 
 **Project Maintainer**: [davelee001](https://github.com/davelee001)
 
 For questions, issues, or support:
-- 📫 Email: david.leekaleer@student.utamu.ac.ug
-- 🐛 Issues: [GitHub Issues](https://github.com/davelee001/ServicePass/issues)
+- Email: david.leekaleer@student.utamu.ac.ug
+- Issues: [GitHub Issues](https://github.com/davelee001/ServicePass/issues)
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built on [SUI Blockchain](https://sui.io/)
 - Powered by [Move Language](https://github.com/MystenLabs/sui)
 - Inspired by real-world needs in education, healthcare, and agriculture
 
-## 📊 Project Status
+## Project Status
 
-🚧 **Status**: Active Development  
-📅 **Last Updated**: January 2026  
-🎯 **Version**: 1.0.0
+**Status**: Active Development  
+**Last Updated**: January 2026  
+**Version**: 1.0.0
 
 ---
 
 <div align="center">
 
-**Built with ❤️ using SUI and Move**
+**Built using SUI and Move**
 
-[⭐ Star this repo](https://github.com/davelee001/ServicePass) | [📖 Documentation](docs/) | [🚀 Get Started](#-getting-started)
+[Star this repo](https://github.com/davelee001/ServicePass) | [Documentation](docs/) | [Get Started](#getting-started)
 
 </div>
