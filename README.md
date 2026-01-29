@@ -1,10 +1,24 @@
 # ServicePass 🎫
 
-A blockchain-based voucher system where tokens represent prepaid credits that can be redeemed for real-world services or goods. Built on the **SUI blockchain** using the **Move programming language**.
+> A blockchain-based voucher system where tokens represent prepaid credits that can be redeemed for real-world services or goods.
+
+[![SUI](https://img.shields.io/badge/Blockchain-SUI-blue)](https://sui.io/)
+[![Move](https://img.shields.io/badge/Language-Move-orange)](https://github.com/MystenLabs/sui)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Backend-Node.js-brightgreen)](https://nodejs.org/)
 
 ## 🌟 Overview
 
-ServicePass enables organizations, NGOs, and donors to distribute targeted vouchers that can only be redeemed for specific services. This ensures funds are used for their intended purpose while maintaining transparency and accountability.
+**ServicePass** is a revolutionary blockchain-based voucher system built on the **SUI blockchain** using the **Move programming language**. It enables organizations, NGOs, and donors to distribute targeted vouchers that can **only** be redeemed for specific services, ensuring funds are used for their intended purpose while maintaining complete transparency and accountability.
+
+### Why ServicePass?
+
+✅ **Transparent** - All transactions recorded on blockchain  
+✅ **Targeted** - Vouchers restricted to specific service types  
+✅ **Accountable** - Complete audit trail of all redemptions  
+✅ **Secure** - Burn-on-redemption prevents double-spending  
+✅ **Efficient** - Low transaction costs on SUI blockchain  
+✅ **Flexible** - Support for multiple voucher categories
 
 ## 💎 Voucher Types
 
@@ -211,16 +225,44 @@ npm test
 
 ## 📄 License
 
-MIT License - See LICENSE file for details
+MIT License - See [LICENSE](LICENSE) file for details
 
 ## 🤝 Contributing
 
-Contributions welcome! Please open an issue or submit a pull request.
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## 📧 Contact
 
-For questions or support, please open an issue in this repository.
+**Project Maintainer**: [davelee001](https://github.com/davelee001)
+
+For questions, issues, or support:
+- 📫 Email: david.leekaleer@student.utamu.ac.ug
+- 🐛 Issues: [GitHub Issues](https://github.com/davelee001/ServicePass/issues)
+
+## 🙏 Acknowledgments
+
+- Built on [SUI Blockchain](https://sui.io/)
+- Powered by [Move Language](https://github.com/MystenLabs/sui)
+- Inspired by real-world needs in education, healthcare, and agriculture
+
+## 📊 Project Status
+
+🚧 **Status**: Active Development  
+📅 **Last Updated**: January 2026  
+🎯 **Version**: 1.0.0
 
 ---
 
-Built with ❤️ using SUI and Move
+<div align="center">
+
+**Built with ❤️ using SUI and Move**
+
+[⭐ Star this repo](https://github.com/davelee001/ServicePass) | [📖 Documentation](docs/) | [🚀 Get Started](#-getting-started)
+
+</div>
