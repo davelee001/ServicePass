@@ -84,6 +84,12 @@ ServicePass/
 │       ├── models/               # MongoDB models
 │       ├── routes/               # API routes
 │       └── utils/                # Utility functions
+├── frontend/                      # React web application
+│   └── src/
+│       ├── components/           # React components
+│       ├── pages/                # Page components
+│       ├── services/             # API services
+│       └── utils/                # Helper functions
 ├── docs/                         # Documentation
 ├── scripts/                      # Deployment and utility scripts
 └── Move.toml                     # SUI Move project config
@@ -136,6 +142,38 @@ npm run dev
 # Production mode
 npm start
 ```
+
+### 4. Setup Frontend
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Copy environment template
+cp .env.example .env
+
+# Edit .env and configure API URL
+# VITE_API_URL=http://localhost:5000/api
+
+# Start development server
+npm run dev
+```
+
+The frontend will be available at `http://localhost:3000`
+
+## Frontend Features
+
+### User Portal
+- **Dashboard**: View voucher statistics and recent activity
+- **My Vouchers**: Browse all vouchers with balance and expiry info
+- **Redemption History**: Track all past redemptions with transaction links
+
+### Merchant Portal
+- **Dashboard**: Revenue analytics and redemption statistics
+- **Accept Redemptions**: Process voucher redemptions with date filtering
+- **Reports & Analytics**: Generate visual reports with charts and export functionality
 
 ## API Endpoints
 
