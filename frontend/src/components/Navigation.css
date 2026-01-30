@@ -1,0 +1,119 @@
+.navigation {
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.brand-icon {
+  font-size: 1.8rem;
+}
+
+.nav-toggle {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--bg-primary);
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+
+.nav-toggle button {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.nav-toggle button.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.nav-links a:hover {
+  background: var(--bg-primary);
+  text-decoration: none;
+}
+
+.nav-links a.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.nav-wallet {
+  margin-left: auto;
+}
+
+.wallet-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.connect-btn {
+  background: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.connect-btn:hover {
+  background: #1976D2;
+}
+
+@media (max-width: 968px) {
+  .nav-container {
+    flex-wrap: wrap;
+    padding: 1rem;
+  }
+
+  .nav-links {
+    width: 100%;
+    order: 3;
+    margin-left: 0;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+}
