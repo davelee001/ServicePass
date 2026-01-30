@@ -6,6 +6,8 @@
 [![Move](https://img.shields.io/badge/Language-Move-orange)](https://github.com/MystenLabs/sui)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Backend-Node.js-brightgreen)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Build-Vite-646CFF)](https://vitejs.dev/)
 
 ## Overview
 
@@ -54,11 +56,12 @@
 - **Merchant Registry**: On-chain verification of service providers
 - **Event Emissions**: Transparent audit trail
 
-### Off-Chain Components (Node.js)
+### Off-Chain Components (Node.js + React)
 - **REST API**: Voucher management and merchant operations
 - **MongoDB**: Merchant profiles and redemption history
 - **Event Listener**: Monitors blockchain events
-- **QR Code Generation**: For easy redemption
+- **Web Application**: User and merchant portals
+- **Analytics Dashboard**: Real-time reporting and insights
 
 ## Token Design
 
@@ -166,14 +169,51 @@ The frontend will be available at `http://localhost:3000`
 ## Frontend Features
 
 ### User Portal
-- **Dashboard**: View voucher statistics and recent activity
-- **My Vouchers**: Browse all vouchers with balance and expiry info
-- **Redemption History**: Track all past redemptions with transaction links
+- **Dashboard**: 
+  - Total balance across all vouchers
+  - Active and expired voucher counts
+  - Vouchers grouped by type with visual indicators
+  - Recent redemption activity feed
+  
+- **My Vouchers**: 
+  - Filter by status (All, Active, Expired)
+  - Detailed voucher cards with balance and expiry
+  - Color-coded type indicators
+  - Quick actions for active vouchers
+  
+- **Redemption History**: 
+  - Complete transaction history
+  - Sort by date, amount, or type
+  - Blockchain explorer integration
+  - Export capabilities
 
 ### Merchant Portal
-- **Dashboard**: Revenue analytics and redemption statistics
-- **Accept Redemptions**: Process voucher redemptions with date filtering
-- **Reports & Analytics**: Generate visual reports with charts and export functionality
+- **Dashboard**: 
+  - Total revenue and redemption statistics
+  - Today's performance metrics
+  - Redemptions breakdown by voucher type
+  - Recent activity overview
+  
+- **Accept Redemptions**: 
+  - Date range filtering
+  - Detailed transaction table
+  - User wallet verification
+  - Real-time updates
+  
+- **Reports & Analytics**: 
+  - Interactive revenue trend charts
+  - Pie charts for type distribution
+  - Bar charts for comparative analysis
+  - Export reports as JSON
+  - Custom date range selection
+
+### Technology Stack
+- **React 18** - Modern UI framework
+- **React Router v6** - Client-side routing
+- **TanStack Query** - Data fetching & caching
+- **Recharts** - Data visualization
+- **Vite** - Fast build tool
+- **Axios** - HTTP client
 
 ## API Endpoints
 
@@ -191,6 +231,17 @@ The frontend will be available at `http://localhost:3000`
 - `GET /api/redemptions/merchant/:merchantId` - Merchant redemption history
 - `GET /api/redemptions/user/:walletAddress` - User redemption history
 
+
+## Key Features
+
+✅ **Blockchain-Powered**: Built on SUI for security and transparency  
+✅ **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
+✅ **Complete Web Interface**: User and merchant portals  
+✅ **Real-Time Analytics**: Visual reports and business insights  
+✅ **Secure Redemption**: Burn-on-use prevents double-spending  
+✅ **Expiry Management**: Configurable voucher expiration  
+✅ **Audit Trail**: Complete transaction history on blockchain  
+✅ **Responsive Design**: Works on all devices  
 ## Usage Examples
 
 ### Minting a Voucher
@@ -222,7 +273,42 @@ curl -X POST http://localhost:3000/api/merchants/register \
   }'
 ```
 
-## Use Cases
+
+# Test frontend (build)
+cd frontend
+npm run build
+```
+
+## Documentation
+
+- **[API Reference](docs/API_REFERENCE.md)** - Complete API documentation
+- **[Architecture](docs/ARCHITECTURE.md)** - System design and architecture
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Backend deployment instructions
+- **[Frontend Features](docs/FRONTEND_FEATURES.md)** - Detailed frontend features
+- **[Frontend Deployment](docs/FRONTEND_DEPLOYMENT.md)** - Frontend deployment guide
+
+## Screenshots
+
+### User Dashboard
+Modern, intuitive interface for users to manage their vouchers and track redemptions.
+
+### Merchant Portal
+Comprehensive analytics and reporting tools for service providers.
+
+### Reports & Analytics
+Visual charts and insights for business intelligence.
+
+## Deployment
+
+### Backend
+See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for backend deployment instructions.
+
+### Frontend
+See [FRONTEND_DEPLOYMENT.md](docs/FRONTEND_DEPLOYMENT.md) for frontend deployment options:
+- Vercel
+- Netlify
+- Traditional web servers
+- Docker containersUse Cases
 
 1. **NGO Educational Programs**: Distribute education vouchers that can only be used for school fees
 2. **Healthcare Initiatives**: Provide healthcare credits for specific medical services
