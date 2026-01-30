@@ -1,0 +1,26 @@
+{
+  "name": "servicepass-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "axios": "^1.6.2",
+    "@mysten/sui.js": "^0.47.0",
+    "@mysten/dapp-kit": "^0.11.0",
+    "@tanstack/react-query": "^5.12.2",
+    "recharts": "^2.10.3",
+    "date-fns": "^3.0.0",
+    "react-icons": "^4.12.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.8"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
