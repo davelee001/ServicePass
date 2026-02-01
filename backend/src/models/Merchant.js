@@ -43,6 +43,26 @@ const merchantSchema = new mongoose.Schema({
             type: [Number], // [longitude, latitude]
         },
     },
+    // API Key fields
+    apiKey: {
+        type: String,
+        sparse: true,
+        index: true,
+    },
+    apiKeyExpiry: {
+        type: Date,
+    },
+    apiKeyCreatedAt: {
+        type: Date,
+    },
+    apiKeyRevokedAt: {
+        type: Date,
+    },
+    // Owner reference
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
     registeredAt: {
         type: Date,
         default: Date.now,
