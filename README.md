@@ -134,9 +134,21 @@ cp .env.example .env
 # - ADMIN_CAP_ID (from deployment)
 # - REGISTRY_ID (from deployment)
 # - ADMIN_PRIVATE_KEY (your admin wallet private key)
+# - JWT_SECRET (a secure random string)
+# - MONGODB_URI (your MongoDB connection string)
 ```
 
-### 3. Run Backend Server
+### 3. Create Admin User
+
+```bash
+# Create default admin user
+node scripts/createAdmin.js
+
+# Or create with custom credentials
+node scripts/createAdmin.js admin@example.com SecurePass123 "Admin Name"
+```
+
+### 4. Run Backend Server
 
 ```bash
 # Development mode
@@ -145,6 +157,8 @@ npm run dev
 # Production mode
 npm start
 ```
+
+The backend API will be available at `http://localhost:3000`
 
 ### 4. Setup Frontend
 
@@ -217,38 +231,88 @@ The frontend will be available at `http://localhost:3000`
 
 ## API Endpoints
 
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
+- `POST /api/auth/refresh` - Refresh access token
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/me` - Get current user
+- `PUT /api/auth/password` - Change password
+
 ### Vouchers
-- `POST /api/vouchers/mint` - Mint new voucher
+- `POST /api/vouchers/mint` - Mint new voucher (Admin only)
 - `GET /api/vouchers/owner/:address` - Get vouchers by owner
 
 ### Merchants
-- `POST /api/merchants/register` - Register new merchant
+- `POST /api/merchants/register` - Register new merchant (Admin only)
 - `GET /api/merchants` - List all merchants
-- `GET /api/merchants/:merchantId` - Get merchant details
+- `GET /api/merchants/:merchantId` - Get merchant details (Auth required)
+- `POST /api/merchants/:merchantId/api-key` - Generate API key (Auth required)
+- `GET /api/merchants/:merchantId/api-key` - Get API key info (Auth required)
+- `DELETE /api/merchants/:merchantId/api-key` - Revoke API key (Auth required)
 
 ### Redemptions
-- `POST /api/redemptions` - Record redemption
-- `GET /api/redemptions/merchant/:merchantId` - Merchant redemption history
-- `GET /api/redemptions/user/:walletAddress` - User redemption history
+- `POST /api/redemptions` - Record redemption (API key or Auth required)
+- `GET /api/redemptions/merchant/:merchantId` - Merchant redemption history (Auth required)
+- `GET /api/redemptions/user/:walletAddress` - User redemption history (Auth required)
 
 
 ## Key Features
 
 ✅ **Blockchain-Powered**: Built on SUI for security and transparency  
 ✅ **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
+✅ **JWT Authentication**: Secure role-based access control  
+✅ **API Key Management**: Merchants can generate and manage API keys  
+✅ **Rate Limiting**: Comprehensive protection on all endpoints  
 ✅ **Complete Web Interface**: User and merchant portals  
 ✅ **Real-Time Analytics**: Visual reports and business insights  
 ✅ **Secure Redemption**: Burn-on-use prevents double-spending  
 ✅ **Expiry Management**: Configurable voucher expiration  
 ✅ **Audit Trail**: Complete transaction history on blockchain  
 ✅ **Responsive Design**: Works on all devices  
+
+## Security Features
+
+### Authentication & Authorization
+- **JWT-based authentication** with access and refresh tokens
+- **Role-based access control** (Admin, Merchant, User)
+- **API key management** for merchant integrations
+- **Rate limiting** on all endpoints
+- **Account lockout** after failed login attempts
+- **Password hashing** with bcrypt
+
+See [Authentication Documentation](docs/AUTHENTICATION.md) for detailed information.
+
 ## Usage Examples
 
-### Minting a Voucher
+### Authentication
+
+```bash
+# Register a new user
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "SecurePass123",
+    "name": "John Doe",
+    "role": "user"
+  }'
+
+# Login
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "SecurePass123"
+  }'
+```
+
+### Minting a Voucher (Admin only)
 
 ```bash
 curl -X POST http://localhost:3000/api/vouchers/mint \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <admin_access_token>" \
   -d '{
     "voucherType": 1,
     "amount": 5000,
@@ -259,11 +323,12 @@ curl -X POST http://localhost:3000/api/vouchers/mint \
   }'
 ```
 
-### Registering a Merchant
+### Registering a Merchant (Admin only)
 
 ```bash
 curl -X POST http://localhost:3000/api/merchants/register \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <admin_access_token>" \
   -d '{
     "merchantId": "CLINIC_001",
     "name": "Community Health Clinic",
@@ -271,6 +336,15 @@ curl -X POST http://localhost:3000/api/merchants/register \
     "voucherTypesAccepted": [2],
     "contactEmail": "clinic@example.com"
   }'
+```
+
+### Generate API Key for Merchant
+
+```bash
+curl -X POST http://localhost:3000/api/merchants/CLINIC_001/api-key \
+  -H "Authorization: Bearer <merchant_or_admin_token>" \
+  -H "Content-Type: application/json" \
+  -d '{"expiryDays": 365}'
 ```
 
 
@@ -282,6 +356,7 @@ npm run build
 ## Documentation
 
 - **[API Reference](docs/API_REFERENCE.md)** - Complete API documentation
+- **[Authentication Guide](docs/AUTHENTICATION.md)** - Authentication and authorization details
 - **[Architecture](docs/ARCHITECTURE.md)** - System design and architecture
 - **[Deployment Guide](docs/DEPLOYMENT.md)** - Backend deployment instructions
 - **[Frontend Features](docs/FRONTEND_FEATURES.md)** - Detailed frontend features
