@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { logger } = require('./utils/logger');
+const { generalLimiter } = require('./middleware/rateLimiter');
 
 dotenv.config();
 
@@ -12,7 +13,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Apply general rate limiter to all routes
+app.use(generalLimiter);
+
 // Routes
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/vouchers', require('./routes/vouchers'));
 app.use('/api/merchants', require('./routes/merchants'));
 app.use('/api/redemptions', require('./routes/redemptions'));
