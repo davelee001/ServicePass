@@ -3,9 +3,18 @@ const router = express.Router();
 const Redemption = require('../models/Redemption');
 const Merchant = require('../models/Merchant');
 const { logger } = require('../utils/logger');
+const { verifyToken, verifyApiKey, adminOrMerchant } = require('../middleware/auth');
+const { redemptionLimiter, readLimiter, apiKeyLimiter } = require('../middleware/rateLimiter');
 
-// Record a redemption (webhook from blockchain event listener)
-router.post('/', async (req, res) => {
+// Record a redemption (webhook from blockchain event listener or merchant API)
+router.post('/', redemptionLimiter, async (req, res) => {
+    // Accept either API key or admin token
+    const hasApiKey = req.headers['x-api-key'];
+    const hasToken = req.headers.authorization;
+    
+    if (!hasApiKey && !hasToken) {
+        return res.status(401).json({ error: 'Authentication required' });
+    }
     try {
         const { voucherObjectId, transactionDigest, merchantId, voucherType, amount, redeemedBy, metadata } = req.body;
 
@@ -38,7 +47,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get redemptions for a merchant
-router.get('/merchant/:merchantId', async (req, res) => {
+router.get('/merchant/:merchantId', verifyToken, adminOrMerchant, readLimiter, async (req, res) => {
     try {
         const { merchantId } = req.params;
         const { startDate, endDate } = req.query;
@@ -64,7 +73,7 @@ router.get('/merchant/:merchantId', async (req, res) => {
 });
 
 // Get redemptions by user wallet
-router.get('/user/:walletAddress', async (req, res) => {
+router.get('/user/:walletAddress', verifyToken, readLimiter, async (req, res) => {
     try {
         const { walletAddress } = req.params;
         
