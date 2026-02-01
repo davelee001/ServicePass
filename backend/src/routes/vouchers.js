@@ -3,9 +3,11 @@ const router = express.Router();
 const { TransactionBlock } = require('@mysten/sui.js/transactions');
 const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID, REGISTRY_ID } = require('../config/sui');
 const { logger } = require('../utils/logger');
+const { verifyToken, adminOnly, optionalAuth } = require('../middleware/auth');
+const { writeLimiter, readLimiter } = require('../middleware/rateLimiter');
 
 // Mint a new voucher
-router.post('/mint', async (req, res) => {
+router.post('/mint', verifyToken, adminOnly, writeLimiter, async (req, res) => {
     try {
         const { 
             voucherType, 
@@ -60,7 +62,7 @@ router.post('/mint', async (req, res) => {
 });
 
 // Get vouchers owned by an address
-router.get('/owner/:address', async (req, res) => {
+router.get('/owner/:address', optionalAuth, readLimiter, async (req, res) => {
     try {
         const { address } = req.params;
 
