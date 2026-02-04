@@ -59,7 +59,8 @@
 ### Off-Chain Components (Node.js + React)
 - **REST API**: Voucher management and merchant operations
 - **MongoDB**: Merchant profiles and redemption history
-- **Event Listener**: Monitors blockchain events
+- **Real-time Event Listener**: Monitors blockchain events in real-time using Sui's WebSocket subscription.
+- **Reliable Event Processing**: Uses a BullMQ queue system with Redis to ensure every blockchain event is processed reliably, even in case of failures. Handles blockchain reorgs and failures gracefully.
 - **Web Application**: User and merchant portals
 - **Analytics Dashboard**: Real-time reporting and insights
 
