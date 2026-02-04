@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const { logger } = require('./utils/logger');
 const { generalLimiter } = require('./middleware/rateLimiter');
+const { startListening, stopListening } = require('./services/blockchainListener');
 
 dotenv.config();
 
@@ -33,8 +34,19 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Something went wrong!' });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     logger.info(`ServicePass backend running on port ${PORT}`);
+    startListening();
+});
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+    logger.info('SIGINT signal received: closing HTTP server');
+    stopListening();
+    server.close(() => {
+        logger.info('HTTP server closed');
+        process.exit(0);
+    });
 });
 
 module.exports = app;
