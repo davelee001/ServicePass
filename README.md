@@ -85,9 +85,12 @@ ServicePass/
 │       └── voucher_system.move    # Main voucher contract
 ├── backend/                       # Node.js backend service
 │   └── src/
+│       ├── __tests__/            # Test suites
 │       ├── config/               # Configuration files
 │       ├── models/               # MongoDB models
+│       ├── queues/               # Event processing queues
 │       ├── routes/               # API routes
+│       ├── services/             # Business logic services
 │       └── utils/                # Utility functions
 ├── frontend/                      # React web application
 │   └── src/
@@ -242,8 +245,9 @@ The frontend will be available at `http://localhost:3000`
 - `PUT /api/auth/password` - Change password
 
 ### Vouchers
-- `POST /api/vouchers/mint` - Mint new voucher (Admin only)
+- `POST /api/vouchers/mint` - Mint new voucher with QR code (Admin only)
 - `GET /api/vouchers/owner/:address` - Get vouchers by owner
+- `GET /api/vouchers/:voucherId/qrcode` - Get QR code for voucher (Auth required)
 
 ### Merchants
 - `POST /api/merchants/register` - Register new merchant (Admin only)
@@ -254,6 +258,7 @@ The frontend will be available at `http://localhost:3000`
 - `DELETE /api/merchants/:merchantId/api-key` - Revoke API key (Auth required)
 
 ### Redemptions
+- `POST /api/redemptions/redeem-qr` - Redeem voucher via QR code (Merchant API key required)
 - `POST /api/redemptions` - Record redemption (API key or Auth required)
 - `GET /api/redemptions/merchant/:merchantId` - Merchant redemption history (Auth required)
 - `GET /api/redemptions/user/:walletAddress` - User redemption history (Auth required)
@@ -263,6 +268,8 @@ The frontend will be available at `http://localhost:3000`
 
 ✅ **Blockchain-Powered**: Built on SUI for security and transparency  
 ✅ **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
+✅ **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
+✅ **Real-Time Event Processing**: BullMQ queue system ensures reliable blockchain event handling  
 ✅ **JWT Authentication**: Secure role-based access control  
 ✅ **API Key Management**: Merchants can generate and manage API keys  
 ✅ **Rate Limiting**: Comprehensive protection on all endpoints  
@@ -272,6 +279,7 @@ The frontend will be available at `http://localhost:3000`
 ✅ **Expiry Management**: Configurable voucher expiration  
 ✅ **Audit Trail**: Complete transaction history on blockchain  
 ✅ **Responsive Design**: Works on all devices  
+✅ **Comprehensive Testing**: Full unit and integration test coverage  
 
 ## Security Features
 
@@ -359,6 +367,7 @@ npm run build
 
 - **[API Reference](docs/API_REFERENCE.md)** - Complete API documentation
 - **[Authentication Guide](docs/AUTHENTICATION.md)** - Authentication and authorization details
+- **[QR Code System](docs/QR_CODE_SYSTEM.md)** - QR code generation and redemption
 - **[Architecture](docs/ARCHITECTURE.md)** - System design and architecture
 - **[Deployment Guide](docs/DEPLOYMENT.md)** - Backend deployment instructions
 - **[Frontend Features](docs/FRONTEND_FEATURES.md)** - Detailed frontend features
@@ -415,14 +424,43 @@ See [FRONTEND_DEPLOYMENT.md](docs/FRONTEND_DEPLOYMENT.md) for frontend deploymen
 
 ## Testing
 
+ServicePass includes a comprehensive test suite covering unit tests, integration tests, and end-to-end scenarios.
+
+### Run Tests
+
 ```bash
 # Test Move contracts
 sui move test
 
-# Test backend
+# Test backend with coverage
 cd backend
 npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Run specific test file
+npm test voucher.model.test.js
 ```
+
+### Test Coverage
+
+- **Unit Tests**: Models, utilities, and business logic
+- **Integration Tests**: API routes and database operations
+- **QR Code Security**: Signature verification and anti-fraud tests
+- **Redemption Flow**: Complete voucher lifecycle testing
+- **Authentication**: JWT and API key validation
+
+### Test Suite Includes
+
+✅ Voucher model validation and database operations  
+✅ QR code generation and signature verification  
+✅ Secure redemption with fraud prevention  
+✅ Double-redemption prevention  
+✅ Merchant authorization and API key validation  
+✅ Error handling and edge cases  
+✅ Mock blockchain interactions for isolated testing  
+✅ In-memory database for fast, reliable tests
 
 ## License
 
