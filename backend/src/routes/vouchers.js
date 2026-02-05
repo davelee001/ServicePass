@@ -5,6 +5,11 @@ const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID, REGISTRY_ID } = re
 const { logger } = require('../utils/logger');
 const { verifyToken, adminOnly, optionalAuth } = require('../middleware/auth');
 const { writeLimiter, readLimiter } = require('../middleware/rateLimiter');
+const Voucher = require('../models/Voucher');
+const qrcode = require('qrcode');
+const crypto = require('crypto');
+
+const QR_SIGNING_SECRET = process.env.QR_SIGNING_SECRET || 'default-secret';
 
 // Mint a new voucher
 router.post('/mint', verifyToken, adminOnly, writeLimiter, async (req, res) => {
@@ -44,16 +49,64 @@ router.post('/mint', verifyToken, adminOnly, writeLimiter, async (req, res) => {
         const result = await suiClient.signAndExecuteTransactionBlock({
             signer: adminKeypair,
             transactionBlock: tx,
+            options: {
+                showObjectChanges: true,
+            }
         });
 
         logger.info(`Voucher minted: ${result.digest}`);
 
-        res.json({
-            success: true,
-            transactionDigest: result.digest,
+        // Find the created voucher object
+        const createdObject = result.objectChanges.find(
+            (change) => change.type === 'created' && change.objectType.endsWith('::voucher_system::Voucher')
+        );
+
+        if (!createdObject) {
+            throw new Error('Voucher object not found in transaction result');
+        }
+
+        const voucherId = createdObject.objectId;
+
+        // Create a payload to sign
+        const payload = {
+            voucherId,
             voucherType,
             amount,
             recipient,
+            merchantId,
+            expiryTimestamp,
+        };
+
+        // Sign the payload
+        const signature = crypto.createHmac('sha256', QR_SIGNING_SECRET)
+            .update(JSON.stringify(payload))
+            .digest('hex');
+
+        const qrPayload = { ...payload, signature };
+
+        // Generate QR code
+        const qrCodeData = await qrcode.toDataURL(JSON.stringify(qrPayload));
+
+        // Save to database
+        const newVoucher = new Voucher({
+            voucherId,
+            voucherType,
+            amount,
+            recipient,
+            merchantId,
+            expiryTimestamp,
+            qrCodeData,
+            signature,
+            transactionDigest: result.digest,
+        });
+
+        await newVoucher.save();
+
+        res.json({
+            success: true,
+            transactionDigest: result.digest,
+            voucherId,
+            qrCodeData,
         });
     } catch (error) {
         logger.error(`Error minting voucher: ${error.message}`);
@@ -84,6 +137,31 @@ router.get('/owner/:address', optionalAuth, readLimiter, async (req, res) => {
     } catch (error) {
         logger.error(`Error fetching vouchers: ${error.message}`);
         res.status(500).json({ error: error.message });
+    }
+});
+
+// Get QR code for a voucher
+router.get('/:voucherId/qrcode', verifyToken, readLimiter, async (req, res) => {
+    try {
+        const { voucherId } = req.params;
+        const voucher = await Voucher.findOne({ voucherId });
+
+        if (!voucher) {
+            return res.status(404).json({ error: 'Voucher not found' });
+        }
+
+        // Optional: Check if the requester owns the voucher
+        // This would require getting the user's address from the token
+        // and comparing it to the voucher's recipient field.
+
+        res.json({
+            voucherId,
+            qrCodeData: voucher.qrCodeData,
+        });
+
+    } catch (error) {
+        logger.error(`Error fetching QR code: ${error.message}`);
+        res.status(500).json({ error: 'Failed to fetch QR code' });
     }
 });
 
