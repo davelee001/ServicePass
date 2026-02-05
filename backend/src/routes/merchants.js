@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { body, param, validationResult } = require('express-validator');
 const Merchant = require('../models/Merchant');
 const { TransactionBlock } = require('@mysten/sui.js/transactions');
 const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID } = require('../config/sui');
@@ -7,16 +8,40 @@ const { logger } = require('../utils/logger');
 const { verifyToken, adminOnly, adminOrMerchant } = require('../middleware/auth');
 const { writeLimiter, readLimiter } = require('../middleware/rateLimiter');
 const { createApiKey, revokeApiKey, getApiKeyInfo } = require('../utils/apiKeyManager');
+const { executeTransactionWithRetry } = require('../utils/blockchainRetry');
 
 // Register a new merchant
-router.post('/register', verifyToken, adminOnly, writeLimiter, async (req, res) => {
+router.post('/register', 
+    verifyToken, 
+    adminOnly, 
+    writeLimiter,
+    [
+        body('merchantId').isString().trim().notEmpty().withMessage('Merchant ID is required'),
+        body('name').isString().trim().notEmpty().withMessage('Merchant name is required'),
+        body('walletAddress').isString().trim().matches(/^0x[a-fA-F0-9]{64}$/).withMessage('Invalid wallet address format'),
+        body('voucherTypesAccepted').isArray({ min: 1 }).withMessage('At least one voucher type must be accepted'),
+        body('contactEmail').isEmail().normalizeEmail().withMessage('Valid email is required'),
+        body('contactPhone').optional().isString().trim(),
+    ],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
         const { merchantId, name, walletAddress, voucherTypesAccepted, contactEmail, contactPhone } = req.body;
 
         // Check if merchant already exists
         const existingMerchant = await Merchant.findOne({ merchantId });
         if (existingMerchant) {
-            return res.status(400).json({ error: 'Merchant ID already exists' });
+            return res.status(400).json({ 
+                error: 'Merchant already exists',
+                message: 'A merchant with this ID is already registered'
+            });
         }
 
         // Register on-chain
@@ -33,7 +58,7 @@ router.post('/register', verifyToken, adminOnly, writeLimiter, async (req, res) 
             ],
         });
 
-        const result = await suiClient.signAndExecuteTransactionBlock({
+        const result = await executeTransactionWithRetry(suiClient, {
             signer: adminKeypair,
             transactionBlock: tx,
         });
@@ -51,16 +76,39 @@ router.post('/register', verifyToken, adminOnly, writeLimiter, async (req, res) 
 
         await merchant.save();
 
-        logger.info(`Merchant registered: ${merchantId}`);
+        logger.info(`Merchant registered: ${merchantId}`, { transactionDigest: result.digest });
 
         res.status(201).json({
             success: true,
             merchant,
             transactionDigest: result.digest,
+            message: 'Merchant registered successfully'
         });
     } catch (error) {
-        logger.error(`Error registering merchant: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        logger.error(`Error registering merchant: ${error.message}`, { 
+            stack: error.stack,
+            isBlockchainError: error.isBlockchainError
+        });
+        
+        if (error.isBlockchainError) {
+            return res.status(503).json({ 
+                error: 'Blockchain operation failed',
+                message: 'Unable to register merchant on blockchain. Please try again.',
+                retryable: true
+            });
+        }
+        
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ 
+                error: 'Invalid data',
+                message: error.message
+            });
+        }
+        
+        res.status(500).json({ 
+            error: 'Internal server error',
+            message: 'Failed to register merchant'
+        });
     }
 });
 
@@ -68,30 +116,73 @@ router.post('/register', verifyToken, adminOnly, writeLimiter, async (req, res) 
 router.get('/', readLimiter, async (req, res) => {
     try {
         const merchants = await Merchant.find({ isActive: true });
-        res.json({ merchants });
+        res.json({ 
+            merchants,
+            count: merchants.length
+        });
     } catch (error) {
         logger.error(`Error fetching merchants: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: 'Internal server error',
+            message: 'Failed to fetch merchants'
+        });
     }
 });
 
 // Get merchant by ID
-router.get('/:merchantId', verifyToken, adminOrMerchant, readLimiter, async (req, res) => {
+router.get('/:merchantId', 
+    verifyToken, 
+    adminOrMerchant, 
+    readLimiter,
+    [
+        param('merchantId').isString().trim().notEmpty().withMessage('Merchant ID is required'),
+    ],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
         const merchant = await Merchant.findOne({ merchantId: req.params.merchantId });
         if (!merchant) {
-            return res.status(404).json({ error: 'Merchant not found' });
+            return res.status(404).json({ 
+                error: 'Merchant not found',
+                message: 'No merchant exists with this ID'
+            });
         }
         res.json({ merchant });
     } catch (error) {
-        logger.error(`Error fetching merchant: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        logger.error(`Error fetching merchant: ${error.message}`, { merchantId: req.params.merchantId });
+        res.status(500).json({ 
+            error: 'Internal server error',
+            message: 'Failed to fetch merchant'
+        });
     }
 });
 
 // Generate API key for merchant
-router.post('/:merchantId/api-key', verifyToken, adminOrMerchant, writeLimiter, async (req, res) => {
+router.post('/:merchantId/api-key', 
+    verifyToken, 
+    adminOrMerchant, 
+    writeLimiter,
+    [
+        param('merchantId').isString().trim().notEmpty().withMessage('Merchant ID is required'),
+        body('expiryDays').optional().isInt({ min: 1, max: 365 }).withMessage('Expiry days must be between 1 and 365'),
+    ],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
         const { merchantId } = req.params;
         const { expiryDays } = req.body;
 
