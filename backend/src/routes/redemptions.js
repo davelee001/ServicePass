@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { body, param, query, validationResult } = require('express-validator');
 const Redemption = require('../models/Redemption');
 const Merchant = require('../models/Merchant');
 const { logger } = require('../utils/logger');
@@ -8,16 +9,42 @@ const { redemptionLimiter, readLimiter, apiKeyLimiter } = require('../middleware
 const crypto = require('crypto');
 const { TransactionBlock } = require('@mysten/sui.js/transactions');
 const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID, REGISTRY_ID } = require('../config/sui');
+const { executeTransactionWithRetry } = require('../utils/blockchainRetry');
 
 const QR_SIGNING_SECRET = process.env.QR_SIGNING_SECRET || 'default-secret';
 
 // Redeem voucher via QR code
-router.post('/redeem-qr', verifyApiKey, redemptionLimiter, async (req, res) => {
+router.post('/redeem-qr', 
+    verifyApiKey, 
+    redemptionLimiter,
+    [
+        body('qrPayload').isString().notEmpty().withMessage('QR payload is required'),
+    ],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
         const { qrPayload } = req.body;
         const merchantId = req.merchant.merchantId; // From verifyApiKey middleware
 
-        const { signature, ...payload } = JSON.parse(qrPayload);
+        let payload, signature;
+        try {
+            const parsed = JSON.parse(qrPayload);
+            signature = parsed.signature;
+            payload = { ...parsed };
+            delete payload.signature;
+        } catch (parseError) {
+            return res.status(400).json({ 
+                error: 'Invalid QR payload',
+                message: 'QR code data is malformed or corrupted'
+            });
+        }
 
         // 1. Verify signature
         const expectedSignature = crypto.createHmac('sha256', QR_SIGNING_SECRET)
@@ -25,18 +52,34 @@ router.post('/redeem-qr', verifyApiKey, redemptionLimiter, async (req, res) => {
             .digest('hex');
 
         if (signature !== expectedSignature) {
-            return res.status(400).json({ error: 'Invalid QR code signature.' });
+            logger.warn('Invalid QR signature attempt', { merchantId, voucherId: payload.voucherId });
+            return res.status(400).json({ 
+                error: 'Invalid QR code signature',
+                message: 'QR code signature verification failed. This may indicate tampering.'
+            });
         }
 
         // 2. Check if voucher is valid for this merchant
         if (payload.merchantId !== merchantId) {
-            return res.status(403).json({ error: 'Voucher not valid for this merchant.' });
+            logger.warn('Merchant mismatch for redemption', { 
+                expectedMerchant: payload.merchantId, 
+                actualMerchant: merchantId 
+            });
+            return res.status(403).json({ 
+                error: 'Voucher not valid for this merchant',
+                message: 'This voucher can only be redeemed at the designated merchant.'
+            });
         }
 
         // 3. Check for existing redemption
         const existingRedemption = await Redemption.findOne({ voucherObjectId: payload.voucherId });
         if (existingRedemption) {
-            return res.status(400).json({ error: 'Voucher already redeemed.' });
+            logger.warn('Attempted double redemption', { voucherId: payload.voucherId, merchantId });
+            return res.status(400).json({ 
+                error: 'Voucher already redeemed',
+                message: 'This voucher has already been used.',
+                redemptionDate: existingRedemption.redeemedAt
+            });
         }
 
         // 4. Execute on-chain redemption
@@ -51,7 +94,7 @@ router.post('/redeem-qr', verifyApiKey, redemptionLimiter, async (req, res) => {
             ],
         });
 
-        const result = await suiClient.signAndExecuteTransactionBlock({
+        const result = await executeTransactionWithRetry(suiClient, {
             signer: merchantKeypair,
             transactionBlock: tx,
         });
@@ -73,25 +116,68 @@ router.post('/redeem-qr', verifyApiKey, redemptionLimiter, async (req, res) => {
             { $inc: { totalRedemptions: 1 } }
         );
 
-        logger.info(`Voucher redeemed via QR: ${payload.voucherId}`);
-        res.json({ success: true, transactionDigest: result.digest });
+        logger.info(`Voucher redeemed via QR: ${payload.voucherId}`, { merchantId, transactionDigest: result.digest });
+        res.json({ 
+            success: true, 
+            transactionDigest: result.digest,
+            message: 'Voucher successfully redeemed'
+        });
 
     } catch (error) {
-        logger.error(`QR Redemption Error: ${error.message}`);
-        res.status(500).json({ error: 'Redemption failed' });
+        logger.error(`QR Redemption Error: ${error.message}`, { 
+            stack: error.stack,
+            merchantId: req.merchant?.merchantId,
+            isBlockchainError: error.isBlockchainError
+        });
+        
+        if (error.isBlockchainError) {
+            return res.status(503).json({ 
+                error: 'Blockchain operation failed',
+                message: 'Unable to process redemption on blockchain. Please try again.',
+                retryable: true
+            });
+        }
+        
+        res.status(500).json({ 
+            error: 'Redemption failed',
+            message: 'An error occurred during redemption. Please contact support.'
+        });
     }
 });
 
 // Record a redemption (webhook from blockchain event listener or merchant API)
-router.post('/', redemptionLimiter, async (req, res) => {
+router.post('/', 
+    redemptionLimiter,
+    [
+        body('voucherObjectId').isString().trim().notEmpty().withMessage('Voucher object ID is required'),
+        body('transactionDigest').isString().trim().notEmpty().withMessage('Transaction digest is required'),
+        body('merchantId').isString().trim().notEmpty().withMessage('Merchant ID is required'),
+        body('voucherType').isString().trim().notEmpty().withMessage('Voucher type is required'),
+        body('amount').isInt({ min: 1 }).withMessage('Amount must be a positive integer'),
+        body('redeemedBy').isString().trim().notEmpty().withMessage('Redeemed by address is required'),
+        body('metadata').optional().isString(),
+    ],
+    async (req, res) => {
     // Accept either API key or admin token
     const hasApiKey = req.headers['x-api-key'];
     const hasToken = req.headers.authorization;
     
     if (!hasApiKey && !hasToken) {
-        return res.status(401).json({ error: 'Authentication required' });
+        return res.status(401).json({ 
+            error: 'Authentication required',
+            message: 'Please provide API key or authentication token'
+        });
     }
+    
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
         const { voucherObjectId, transactionDigest, merchantId, voucherType, amount, redeemedBy, metadata } = req.body;
 
         // Create redemption record
@@ -113,18 +199,50 @@ router.post('/', redemptionLimiter, async (req, res) => {
             { $inc: { totalRedemptions: 1 } }
         );
 
-        logger.info(`Redemption recorded: ${transactionDigest}`);
+        logger.info(`Redemption recorded: ${transactionDigest}`, { merchantId, voucherObjectId });
 
-        res.status(201).json({ success: true, redemption });
+        res.status(201).json({ 
+            success: true, 
+            redemption,
+            message: 'Redemption recorded successfully'
+        });
     } catch (error) {
-        logger.error(`Error recording redemption: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        logger.error(`Error recording redemption: ${error.message}`, { stack: error.stack });
+        
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ 
+                error: 'Invalid data',
+                message: error.message
+            });
+        }
+        
+        res.status(500).json({ 
+            error: 'Internal server error',
+            message: 'Failed to record redemption'
+        });
     }
 });
 
 // Get redemptions for a merchant
-router.get('/merchant/:merchantId', verifyToken, adminOrMerchant, readLimiter, async (req, res) => {
+router.get('/merchant/:merchantId', 
+    verifyToken, 
+    adminOrMerchant, 
+    readLimiter,
+    [
+        param('merchantId').isString().trim().notEmpty().withMessage('Merchant ID is required'),
+        query('startDate').optional().isISO8601().withMessage('Invalid start date format'),
+        query('endDate').optional().isISO8601().withMessage('Invalid end date format'),
+    ],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
         const { merchantId } = req.params;
         const { startDate, endDate } = req.query;
 
@@ -140,17 +258,35 @@ router.get('/merchant/:merchantId', verifyToken, adminOrMerchant, readLimiter, a
         res.json({ 
             merchantId, 
             count: redemptions.length,
-            redemptions 
+            redemptions,
+            filters: { startDate, endDate }
         });
     } catch (error) {
-        logger.error(`Error fetching redemptions: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        logger.error(`Error fetching redemptions: ${error.message}`, { merchantId: req.params.merchantId });
+        res.status(500).json({ 
+            error: 'Internal server error',
+            message: 'Failed to fetch redemptions'
+        });
     }
 });
 
 // Get redemptions by user wallet
-router.get('/user/:walletAddress', verifyToken, readLimiter, async (req, res) => {
+router.get('/user/:walletAddress', 
+    verifyToken, 
+    readLimiter,
+    [
+        param('walletAddress').isString().trim().notEmpty().withMessage('Wallet address is required'),
+    ],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
         const { walletAddress } = req.params;
         
         const redemptions = await Redemption.find({ redeemedBy: walletAddress })
@@ -162,8 +298,11 @@ router.get('/user/:walletAddress', verifyToken, readLimiter, async (req, res) =>
             redemptions 
         });
     } catch (error) {
-        logger.error(`Error fetching user redemptions: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        logger.error(`Error fetching user redemptions: ${error.message}`, { walletAddress: req.params.walletAddress });
+        res.status(500).json({ 
+            error: 'Internal server error',
+            message: 'Failed to fetch user redemptions'
+        });
     }
 });
 
