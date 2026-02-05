@@ -57,10 +57,11 @@
 - **Event Emissions**: Transparent audit trail
 
 ### Off-Chain Components (Node.js + React)
-- **REST API**: Voucher management and merchant operations
+- **REST API**: Voucher management and merchant operations with comprehensive input validation
 - **MongoDB**: Merchant profiles and redemption history
 - **Real-time Event Listener**: Monitors blockchain events in real-time using Sui's WebSocket subscription.
 - **Reliable Event Processing**: Uses a BullMQ queue system with Redis to ensure every blockchain event is processed reliably, even in case of failures. Handles blockchain reorgs and failures gracefully.
+- **Blockchain Retry Logic**: Automatic retry with exponential backoff for failed blockchain operations
 - **Secure QR Code System**: Generates signed QR codes for vouchers, enabling secure, offline redemption at merchant points of sale.
 - **Web Application**: User and merchant portals
 - **Analytics Dashboard**: Real-time reporting and insights
@@ -270,6 +271,10 @@ The frontend will be available at `http://localhost:3000`
 ✅ **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
 ✅ **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
 ✅ **Real-Time Event Processing**: BullMQ queue system ensures reliable blockchain event handling  
+✅ **Blockchain Retry Logic**: Automatic retry with exponential backoff for failed transactions  
+✅ **Comprehensive Input Validation**: All endpoints validate inputs using express-validator  
+✅ **Detailed Error Messages**: User-friendly, informative error responses  
+✅ **Transaction Failure Handling**: Graceful handling of blockchain failures with retry capability  
 ✅ **JWT Authentication**: Secure role-based access control  
 ✅ **API Key Management**: Merchants can generate and manage API keys  
 ✅ **Rate Limiting**: Comprehensive protection on all endpoints  
@@ -290,6 +295,20 @@ The frontend will be available at `http://localhost:3000`
 - **Rate limiting** on all endpoints
 - **Account lockout** after failed login attempts
 - **Password hashing** with bcrypt
+
+### Input Validation & Error Handling
+- **Comprehensive input validation** using express-validator on all endpoints
+- **Type checking** for all request parameters and body fields
+- **Format validation** for addresses, emails, and other structured data
+- **Detailed error messages** with field-specific validation feedback
+- **Protection against malformed requests** and injection attacks
+
+### Blockchain Resilience
+- **Automatic retry logic** with exponential backoff for failed blockchain calls
+- **Retry limits** to prevent infinite loops (max 3 retries by default)
+- **Distinguishes retryable vs non-retryable errors** for intelligent retry behavior
+- **Transaction failure handling** with proper error propagation
+- **Graceful degradation** when blockchain is temporarily unavailable
 
 See [Authentication Documentation](docs/AUTHENTICATION.md) for detailed information.
 
