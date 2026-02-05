@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { body, param, validationResult } = require('express-validator');
 const { TransactionBlock } = require('@mysten/sui.js/transactions');
 const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID, REGISTRY_ID } = require('../config/sui');
 const { logger } = require('../utils/logger');
@@ -8,12 +9,34 @@ const { writeLimiter, readLimiter } = require('../middleware/rateLimiter');
 const Voucher = require('../models/Voucher');
 const qrcode = require('qrcode');
 const crypto = require('crypto');
+const { executeTransactionWithRetry, queryObjectsWithRetry, BlockchainError } = require('../utils/blockchainRetry');
 
 const QR_SIGNING_SECRET = process.env.QR_SIGNING_SECRET || 'default-secret';
 
 // Mint a new voucher
-router.post('/mint', verifyToken, adminOnly, writeLimiter, async (req, res) => {
+router.post('/mint', 
+    verifyToken, 
+    adminOnly, 
+    writeLimiter,
+    [
+        body('voucherType').isString().trim().notEmpty().withMessage('Voucher type is required'),
+        body('amount').isInt({ min: 1 }).withMessage('Amount must be a positive integer'),
+        body('recipient').isString().trim().notEmpty().matches(/^0x[a-fA-F0-9]{64}$/).withMessage('Invalid recipient address format'),
+        body('merchantId').isString().trim().notEmpty().withMessage('Merchant ID is required'),
+        body('expiryTimestamp').optional().isInt({ min: Date.now() }).withMessage('Expiry must be a future timestamp'),
+        body('metadata').optional().isString().trim(),
+    ],
+    async (req, res) => {
     try {
+        // Check validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
         const { 
             voucherType, 
             amount, 
@@ -22,11 +45,6 @@ router.post('/mint', verifyToken, adminOnly, writeLimiter, async (req, res) => {
             expiryTimestamp, 
             metadata 
         } = req.body;
-
-        // Validate input
-        if (!voucherType || !amount || !recipient) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
 
         const adminKeypair = getAdminKeypair();
         const tx = new TransactionBlock();
@@ -46,7 +64,7 @@ router.post('/mint', verifyToken, adminOnly, writeLimiter, async (req, res) => {
             ],
         });
 
-        const result = await suiClient.signAndExecuteTransactionBlock({
+        const result = await executeTransactionWithRetry(suiClient, {
             signer: adminKeypair,
             transactionBlock: tx,
             options: {
@@ -62,7 +80,12 @@ router.post('/mint', verifyToken, adminOnly, writeLimiter, async (req, res) => {
         );
 
         if (!createdObject) {
-            throw new Error('Voucher object not found in transaction result');
+            logger.error('Voucher object not found in transaction result', { digest: result.digest });
+            return res.status(500).json({ 
+                error: 'Voucher creation failed', 
+                message: 'Voucher was not created on blockchain',
+                transactionDigest: result.digest
+            });
         }
 
         const voucherId = createdObject.objectId;
@@ -109,17 +132,53 @@ router.post('/mint', verifyToken, adminOnly, writeLimiter, async (req, res) => {
             qrCodeData,
         });
     } catch (error) {
-        logger.error(`Error minting voucher: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        logger.error(`Error minting voucher: ${error.message}`, { 
+            stack: error.stack,
+            isBlockchainError: error.isBlockchainError 
+        });
+        
+        if (error.isBlockchainError) {
+            return res.status(503).json({ 
+                error: 'Blockchain operation failed', 
+                message: 'Unable to mint voucher on blockchain. Please try again later.',
+                retryable: true
+            });
+        }
+        
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ 
+                error: 'Invalid data', 
+                message: error.message 
+            });
+        }
+        
+        res.status(500).json({ 
+            error: 'Internal server error', 
+            message: 'Failed to mint voucher. Please contact support if the issue persists.' 
+        });
     }
 });
 
 // Get vouchers owned by an address
-router.get('/owner/:address', optionalAuth, readLimiter, async (req, res) => {
+router.get('/owner/:address', 
+    optionalAuth, 
+    readLimiter,
+    [
+        param('address').isString().trim().matches(/^0x[a-fA-F0-9]{64}$/).withMessage('Invalid address format'),
+    ],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
         const { address } = req.params;
 
-        const ownedObjects = await suiClient.getOwnedObjects({
+        const ownedObjects = await queryObjectsWithRetry(suiClient, {
             owner: address,
             filter: {
                 StructType: `${PACKAGE_ID}::voucher_system::Voucher`,
@@ -135,19 +194,48 @@ router.get('/owner/:address', optionalAuth, readLimiter, async (req, res) => {
             vouchers: ownedObjects.data,
         });
     } catch (error) {
-        logger.error(`Error fetching vouchers: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        logger.error(`Error fetching vouchers: ${error.message}`, { address: req.params.address });
+        
+        if (error.isBlockchainError) {
+            return res.status(503).json({ 
+                error: 'Blockchain query failed', 
+                message: 'Unable to fetch vouchers from blockchain. Please try again later.',
+                retryable: true
+            });
+        }
+        
+        res.status(500).json({ 
+            error: 'Internal server error', 
+            message: 'Failed to fetch vouchers' 
+        });
     }
 });
 
 // Get QR code for a voucher
-router.get('/:voucherId/qrcode', verifyToken, readLimiter, async (req, res) => {
+router.get('/:voucherId/qrcode', 
+    verifyToken, 
+    readLimiter,
+    [
+        param('voucherId').isString().trim().notEmpty().withMessage('Voucher ID is required'),
+    ],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
         const { voucherId } = req.params;
         const voucher = await Voucher.findOne({ voucherId });
 
         if (!voucher) {
-            return res.status(404).json({ error: 'Voucher not found' });
+            return res.status(404).json({ 
+                error: 'Voucher not found',
+                message: 'No voucher exists with the specified ID'
+            });
         }
 
         // Optional: Check if the requester owns the voucher
@@ -160,8 +248,11 @@ router.get('/:voucherId/qrcode', verifyToken, readLimiter, async (req, res) => {
         });
 
     } catch (error) {
-        logger.error(`Error fetching QR code: ${error.message}`);
-        res.status(500).json({ error: 'Failed to fetch QR code' });
+        logger.error(`Error fetching QR code: ${error.message}`, { voucherId: req.params.voucherId });
+        res.status(500).json({ 
+            error: 'Internal server error',
+            message: 'Failed to fetch QR code'
+        });
     }
 });
 
