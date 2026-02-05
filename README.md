@@ -61,6 +61,7 @@
 - **MongoDB**: Merchant profiles and redemption history
 - **Real-time Event Listener**: Monitors blockchain events in real-time using Sui's WebSocket subscription.
 - **Reliable Event Processing**: Uses a BullMQ queue system with Redis to ensure every blockchain event is processed reliably, even in case of failures. Handles blockchain reorgs and failures gracefully.
+- **Secure QR Code System**: Generates signed QR codes for vouchers, enabling secure, offline redemption at merchant points of sale.
 - **Web Application**: User and merchant portals
 - **Analytics Dashboard**: Real-time reporting and insights
 
