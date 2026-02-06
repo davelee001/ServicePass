@@ -144,6 +144,8 @@ cp .env.example .env
 
 # Database:
 # - MONGODB_URI (your MongoDB connection string)
+# - Optional: MONGODB_MAX_POOL_SIZE, MONGODB_MIN_POOL_SIZE,
+#   MONGODB_SERVER_SELECTION_TIMEOUT_MS, MONGODB_SOCKET_TIMEOUT_MS
 
 # Authentication:
 # - JWT_SECRET (a secure random string)
@@ -157,6 +159,7 @@ cp .env.example .env
 # - REDIS_URL (for event queue)
 # - RATE_LIMIT_WINDOW_MS (rate limit window)
 # - RATE_LIMIT_MAX_REQUESTS (max requests per window)
+# - REDEMPTION_ARCHIVE_AFTER_DAYS, REDEMPTION_ARCHIVE_BATCH_SIZE (archival)
 ```
 
 ### 3. Create Admin User
