@@ -267,24 +267,24 @@ The frontend will be available at `http://localhost:3000`
 
 ## Key Features
 
-✅ **Blockchain-Powered**: Built on SUI for security and transparency  
-✅ **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
-✅ **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
-✅ **Real-Time Event Processing**: BullMQ queue system ensures reliable blockchain event handling  
-✅ **Blockchain Retry Logic**: Automatic retry with exponential backoff for failed transactions  
-✅ **Comprehensive Input Validation**: All endpoints validate inputs using express-validator  
-✅ **Detailed Error Messages**: User-friendly, informative error responses  
-✅ **Transaction Failure Handling**: Graceful handling of blockchain failures with retry capability  
-✅ **JWT Authentication**: Secure role-based access control  
-✅ **API Key Management**: Merchants can generate and manage API keys  
-✅ **Rate Limiting**: Comprehensive protection on all endpoints  
-✅ **Complete Web Interface**: User and merchant portals  
-✅ **Real-Time Analytics**: Visual reports and business insights  
-✅ **Secure Redemption**: Burn-on-use prevents double-spending  
-✅ **Expiry Management**: Configurable voucher expiration  
-✅ **Audit Trail**: Complete transaction history on blockchain  
-✅ **Responsive Design**: Works on all devices  
-✅ **Comprehensive Testing**: Full unit and integration test coverage  
+- **Blockchain-Powered**: Built on SUI for security and transparency  
+- **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
+- **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
+- **Real-Time Event Processing**: BullMQ queue system ensures reliable blockchain event handling  
+- **Blockchain Retry Logic**: Automatic retry with exponential backoff for failed transactions  
+- **Comprehensive Input Validation**: All endpoints validate inputs using express-validator  
+- **Detailed Error Messages**: User-friendly, informative error responses  
+- **Transaction Failure Handling**: Graceful handling of blockchain failures with retry capability  
+- **JWT Authentication**: Secure role-based access control  
+- **API Key Management**: Merchants can generate and manage API keys  
+- **Rate Limiting**: Comprehensive protection on all endpoints  
+- **Complete Web Interface**: User and merchant portals  
+- **Real-Time Analytics**: Visual reports and business insights  
+- **Secure Redemption**: Burn-on-use prevents double-spending  
+- **Expiry Management**: Configurable voucher expiration  
+- **Audit Trail**: Complete transaction history on blockchain  
+- **Responsive Design**: Works on all devices  
+- **Comprehensive Testing**: Full unit and integration test coverage  
 
 ## Security Features
 
@@ -472,14 +472,14 @@ npm test voucher.model.test.js
 
 ### Test Suite Includes
 
-✅ Voucher model validation and database operations  
-✅ QR code generation and signature verification  
-✅ Secure redemption with fraud prevention  
-✅ Double-redemption prevention  
-✅ Merchant authorization and API key validation  
-✅ Error handling and edge cases  
-✅ Mock blockchain interactions for isolated testing  
-✅ In-memory database for fast, reliable tests
+- Voucher model validation and database operations  
+- QR code generation and signature verification  
+- Secure redemption with fraud prevention  
+- Double-redemption prevention  
+- Merchant authorization and API key validation  
+- Error handling and edge cases  
+- Mock blockchain interactions for isolated testing  
+- In-memory database for fast, reliable tests
 
 ## License
 
