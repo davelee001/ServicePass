@@ -42,5 +42,7 @@ const redemptionSchema = new mongoose.Schema({
 
 redemptionSchema.index({ merchantId: 1, redeemedAt: -1 });
 redemptionSchema.index({ redeemedBy: 1, redeemedAt: -1 });
+redemptionSchema.index({ voucherObjectId: 1 }, { unique: true });
+redemptionSchema.index({ redeemedAt: 1 });
 
 module.exports = mongoose.model('Redemption', redemptionSchema);
