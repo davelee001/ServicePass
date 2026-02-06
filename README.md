@@ -135,13 +135,28 @@ npm install
 # Copy environment template
 cp .env.example .env
 
-# Edit .env and add:
+# Edit .env and configure:
+# Blockchain Configuration:
 # - PACKAGE_ID (from deployment)
 # - ADMIN_CAP_ID (from deployment)
 # - REGISTRY_ID (from deployment)
 # - ADMIN_PRIVATE_KEY (your admin wallet private key)
-# - JWT_SECRET (a secure random string)
+
+# Database:
 # - MONGODB_URI (your MongoDB connection string)
+
+# Authentication:
+# - JWT_SECRET (a secure random string)
+
+# Security (Production Required):
+# - ENCRYPTION_KEY (for encrypting sensitive data)
+# - QR_SIGNING_SECRET (for QR code signatures)
+# - ALLOWED_ORIGINS (comma-separated list of allowed origins)
+
+# Optional:
+# - REDIS_URL (for event queue)
+# - RATE_LIMIT_WINDOW_MS (rate limit window)
+# - RATE_LIMIT_MAX_REQUESTS (max requests per window)
 ```
 
 ### 3. Create Admin User
@@ -558,7 +573,7 @@ For questions, issues, or support:
 ## Project Status
 
 **Status**: Active Development  
-**Last Updated**: January 2026  
+**Last Updated**: February 2026  
 **Version**: 1.0.0
 
 ---
