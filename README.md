@@ -292,16 +292,51 @@ The frontend will be available at `http://localhost:3000`
 - **JWT-based authentication** with access and refresh tokens
 - **Role-based access control** (Admin, Merchant, User)
 - **API key management** for merchant integrations
-- **Rate limiting** on all endpoints
+- **Rate limiting** on all endpoints (configurable via environment variables)
 - **Account lockout** after failed login attempts
 - **Password hashing** with bcrypt
 
-### Input Validation & Error Handling
+### Input Validation & Sanitization
 - **Comprehensive input validation** using express-validator on all endpoints
+- **NoSQL injection protection** using express-mongo-sanitize
+- **XSS protection** with xss-clean middleware
+- **HTTP Parameter Pollution (HPP) protection** with whitelist support
 - **Type checking** for all request parameters and body fields
 - **Format validation** for addresses, emails, and other structured data
 - **Detailed error messages** with field-specific validation feedback
-- **Protection against malformed requests** and injection attacks
+- **Custom sanitization** removing null bytes and malicious patterns
+
+### Security Headers & CORS
+- **Helmet.js integration** for comprehensive security headers
+- **Content Security Policy (CSP)** with strict directives
+- **HTTP Strict Transport Security (HSTS)** with 1-year max-age
+- **X-Frame-Options** set to DENY to prevent clickjacking
+- **X-Content-Type-Options** set to nosniff
+- **Configurable CORS** with origin whitelist support
+- **Credentials support** for authenticated cross-origin requests
+
+### Data Protection
+- **Environment variable encryption** using AES-256-GCM
+- **Secure key management** with cryptographically secure random generation
+- **Sensitive data masking** in logs and responses
+- **Timing-safe comparison** for secrets to prevent timing attacks
+- **Password hashing** using PBKDF2 with high iteration count
+- **Private key protection** with proper environment variable handling
+
+### QR Code Security
+- **HMAC-SHA256 signatures** for QR code integrity verification
+- **Signature validation** on redemption to prevent tampering
+- **Double-redemption prevention** with database transaction locks
+- **Expiry validation** before redemption
+- **Merchant verification** before processing redemptions
+
+### Error Handling & Monitoring
+- **Environment-specific error responses** (detailed in dev, sanitized in production)
+- **Comprehensive error logging** with request context
+- **404 handler** with informative messages
+- **Global error handler** with status code detection
+- **Health check endpoint** with uptime monitoring
+- **Safe environment variable logging** with sensitive data redaction
 
 ### Blockchain Resilience
 - **Automatic retry logic** with exponential backoff for failed blockchain calls
@@ -309,6 +344,17 @@ The frontend will be available at `http://localhost:3000`
 - **Distinguishes retryable vs non-retryable errors** for intelligent retry behavior
 - **Transaction failure handling** with proper error propagation
 - **Graceful degradation** when blockchain is temporarily unavailable
+- **Real-time event monitoring** with automatic reconnection
+
+### Production Security Recommendations
+- Set `NODE_ENV=production` in production environments
+- Use strong, unique values for `JWT_SECRET`, `QR_SIGNING_SECRET`, and `ENCRYPTION_KEY`
+- Configure `ALLOWED_ORIGINS` to include only trusted domains
+- Enable HTTPS/TLS for all production deployments
+- Regularly rotate API keys and JWT secrets
+- Monitor rate limit violations and suspicious activities
+- Keep dependencies updated and scan for vulnerabilities
+- Use environment-specific MongoDB instances with authentication enabled
 
 See [Authentication Documentation](docs/AUTHENTICATION.md) for detailed information.
 
