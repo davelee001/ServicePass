@@ -32,6 +32,8 @@ const optionalEnvVars = [
     'MONGODB_SOCKET_TIMEOUT_MS',
     'REDEMPTION_ARCHIVE_AFTER_DAYS',
     'REDEMPTION_ARCHIVE_BATCH_SIZE',
+    'ELASTICSEARCH_URL',
+    'SENTRY_DSN',
 ];
 
 /**
@@ -112,6 +114,8 @@ function getEnvConfig() {
         isProduction: process.env.NODE_ENV === 'production',
         isTest: process.env.NODE_ENV === 'test',
         logLevel: process.env.LOG_LEVEL || 'info',
+        sentryDsn: process.env.SENTRY_DSN,
+        elasticsearchUrl: process.env.ELASTICSEARCH_URL,
     };
 }
 

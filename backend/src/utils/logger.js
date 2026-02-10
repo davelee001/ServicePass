@@ -1,7 +1,11 @@
 const winston = require('winston');
+require('winston-elasticsearch');
+const { getEnvConfig } = require('../config/envValidation');
+
+const envConfig = getEnvConfig();
 
 const logger = winston.createLogger({
-    level: process.env.LOG_LEVEL || 'info',
+    level: envConfig.logLevel || 'info',
     format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.errors({ stack: true }),
@@ -12,6 +16,15 @@ const logger = winston.createLogger({
         new winston.transports.File({ filename: 'logs/combined.log' }),
     ],
 });
+
+// If Elasticsearch URL is provided, add it as a transport
+if (envConfig.elasticsearchUrl) {
+    logger.add(new winston.transports.Elasticsearch({
+        level: 'info',
+        clientOpts: { node: envConfig.elasticsearchUrl }
+    }));
+}
+
 
 // If not in production, log to console as well
 if (process.env.NODE_ENV !== 'production') {
