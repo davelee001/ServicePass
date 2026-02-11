@@ -1,0 +1,25 @@
+name: Smart Contract Compilation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Move CLI
+      run: |
+        sudo apt update
+        sudo apt install -y move-cli
+
+    - name: Compile smart contracts
+      run: move build --path move/sources
