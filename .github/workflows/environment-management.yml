@@ -1,0 +1,43 @@
+name: Environment Management
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to (dev, staging, production)'
+        required: true
+        default: 'dev'
+
+jobs:
+  manage-environment:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Deploy to selected environment
+      env:
+        DEPLOYMENT_KEY: ${{ secrets.DEPLOYMENT_KEY }}
+      run: |
+        if [ "${{ github.event.inputs.environment }}" == "dev" ]; then
+          echo "Deploying to development..."
+          # Add dev-specific deployment commands here
+        elif [ "${{ github.event.inputs.environment }}" == "staging" ]; then
+          echo "Deploying to staging..."
+          # Add staging-specific deployment commands here
+        elif [ "${{ github.event.inputs.environment }}" == "production" ]; then
+          echo "Deploying to production..."
+          # Add production-specific deployment commands here
+        else
+          echo "Unknown environment: ${{ github.event.inputs.environment }}"
+          exit 1
+        fi
