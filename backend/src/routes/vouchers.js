@@ -8,6 +8,7 @@ const { verifyToken, adminOnly, optionalAuth } = require('../middleware/auth');
 const { writeLimiter, readLimiter } = require('../middleware/rateLimiter');
 const Voucher = require('../models/Voucher');
 const qrcode = require('qrcode');
+const notificationManager = require('../utils/notificationManager');
 const crypto = require('crypto');
 const { executeTransactionWithRetry, queryObjectsWithRetry, BlockchainError } = require('../utils/blockchainRetry');
 
@@ -78,6 +79,22 @@ router.post('/mint',
         const createdObject = result.objectChanges.find(
             (change) => change.type === 'created' && change.objectType.endsWith('::voucher_system::Voucher')
         );
+
+        // Send voucher received notification
+        if (createdObject) {
+            try {
+                await notificationManager.sendNotification(recipient, 'voucher_received', {
+                    voucherId: createdObject.objectId,
+                    voucherType: voucherType,
+                    amount: amount,
+                    merchantName: merchantId,
+                    expiryDate: expiryTimestamp ? new Date(expiryTimestamp).toLocaleDateString() : 'No expiry'
+                });
+            } catch (notificationError) {
+                logger.error('Failed to send voucher notification:', notificationError);
+                // Don't fail the transaction for notification errors
+            }
+        }
 
         if (!createdObject) {
             logger.error('Voucher object not found in transaction result', { digest: result.digest });
@@ -301,6 +318,27 @@ router.post('/bulk-mint',
             const createdObjects = result.objectChanges.filter(
                 (change) => change.type === 'created' && change.objectType.endsWith('::voucher_system::Voucher')
             );
+
+            // Send notifications for each created voucher
+            if (createdObjects.length > 0) {
+                for (let i = 0; i < createdObjects.length && i < vouchers.length; i++) {
+                    const voucher = vouchers[i];
+                    const createdObject = createdObjects[i];
+                    
+                    try {
+                        await notificationManager.sendNotification(voucher.recipient, 'voucher_received', {
+                            voucherId: createdObject.objectId,
+                            voucherType: voucher.voucherType,
+                            amount: voucher.amount,
+                            merchantName: voucher.merchantId,
+                            expiryDate: voucher.expiryTimestamp ? new Date(voucher.expiryTimestamp).toLocaleDateString() : 'No expiry'
+                        });
+                    } catch (notificationError) {
+                        logger.error(`Failed to send voucher notification for voucher ${i}:`, notificationError);
+                        // Continue with other notifications
+                    }
+                }
+            }
 
             res.status(200).json({
                 message: 'Bulk vouchers minted successfully',
