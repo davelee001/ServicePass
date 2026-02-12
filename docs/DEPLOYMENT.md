@@ -221,13 +221,46 @@ Set up event listener to track:
 
 ### Database Backups
 
+For production deployments you should automate regular MongoDB backups and
+store them in a secure, off-site location.
+
 ```bash
-# MongoDB backup
+# On-demand MongoDB backup (local example)
 mongodump --uri="mongodb://localhost:27017/servicepass" --out=./backup
 
-# Restore
+# Restore from backup
 mongorestore --uri="mongodb://localhost:27017/servicepass" ./backup/servicepass
 ```
+
+Recommended practices:
+- Use your cloud provider or MongoDB Atlas automated backups where possible.
+- Schedule nightly backups (e.g. via cron) and keep at least 7–30 days of history.
+- Store backups in encrypted object storage (S3, GCS, Azure Blob, etc.).
+- Regularly test restore procedures in a non-production environment.
+
+### Data Archival (Redemptions)
+
+Over time, the redemptions collection can grow very large. To keep the
+primary database lean while preserving history, you can archive old
+redemptions to a separate collection.
+
+This repository includes a helper script:
+
+```bash
+# Archive redemptions older than the default (180 days)
+node scripts/archiveRedemptions.js
+
+# Or specify the cutoff in days explicitly
+node scripts/archiveRedemptions.js 365
+```
+
+Configuration (optional, via backend/.env):
+- `REDEMPTION_ARCHIVE_AFTER_DAYS` – default cutoff in days (e.g. 180).
+- `REDEMPTION_ARCHIVE_BATCH_SIZE` – batch size for each archival pass (default 500).
+
+The script moves matching documents from `Redemption` to `ArchivedRedemption`
+and then deletes them from the primary collection. You can schedule this
+script (e.g. weekly via cron) as part of your maintenance routine.
 
 ## Troubleshooting
 
