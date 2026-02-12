@@ -9,6 +9,7 @@ const { writeLimiter, readLimiter } = require('../middleware/rateLimiter');
 const Voucher = require('../models/Voucher');
 const qrcode = require('qrcode');
 const notificationManager = require('../utils/notificationManager');
+const batchOperationManager = require('../utils/batchOperationManager');
 const crypto = require('crypto');
 const { executeTransactionWithRetry, queryObjectsWithRetry, BlockchainError } = require('../utils/blockchainRetry');
 
@@ -347,6 +348,63 @@ router.post('/bulk-mint',
         } catch (error) {
             logger.error('Error during bulk minting:', error);
             res.status(500).json({ error: 'Bulk minting failed', details: error.message });
+        }
+    }
+);
+
+// Enhanced bulk mint vouchers with progress tracking
+router.post('/bulk-mint-enhanced', 
+    verifyToken, 
+    adminOnly, 
+    writeLimiter,
+    [
+        body('vouchers').isArray().notEmpty().withMessage('Vouchers array is required'),
+        body('vouchers.*.voucherType').isString().notEmpty().withMessage('Voucher type is required for each voucher'),
+        body('vouchers.*.amount').isInt({ min: 1 }).withMessage('Amount must be a positive integer for each voucher'),
+        body('vouchers.*.recipient').isString().matches(/^0x[a-fA-F0-9]{64}$/).withMessage('Valid recipient address required for each voucher'),
+        body('vouchers.*.merchantId').isString().notEmpty().withMessage('Merchant ID is required for each voucher'),
+        body('batchSize').optional().isInt({ min: 1, max: 100 }).withMessage('Batch size must be between 1 and 100'),
+        body('priority').optional().isIn(['low', 'medium', 'high']).withMessage('Priority must be low, medium, or high'),
+        body('parallelProcessing').optional().isBoolean().withMessage('Parallel processing must be a boolean')
+    ],
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ 
+                    error: 'Validation failed', 
+                    details: errors.array() 
+                });
+            }
+
+            const { vouchers, batchSize, priority, parallelProcessing } = req.body;
+            const userId = req.user.userId;
+
+            // Create batch operation for bulk minting
+            const result = await batchOperationManager.createBatchOperation(
+                'bulk_mint_vouchers',
+                vouchers,
+                {
+                    batchSize,
+                    priority,
+                    parallelProcessing,
+                    userId
+                }
+            );
+
+            res.json({
+                message: 'Enhanced bulk minting operation started',
+                batchId: result.batchId,
+                totalVouchers: vouchers.length,
+                status: result.status,
+                estimatedDuration: result.estimatedDuration
+            });
+        } catch (error) {
+            logger.error('Error starting enhanced bulk minting:', error);
+            res.status(500).json({ 
+                error: 'Failed to start enhanced bulk minting', 
+                details: error.message 
+            });
         }
     }
 );
