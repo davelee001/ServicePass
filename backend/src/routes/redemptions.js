@@ -13,6 +13,7 @@ const { executeTransactionWithRetry } = require('../utils/blockchainRetry');
 const { parseCSV } = require('../utils/csvParser');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
+const notificationManager = require('../utils/notificationManager');
 
 const QR_SIGNING_SECRET = process.env.QR_SIGNING_SECRET || 'default-secret';
 
@@ -118,6 +119,21 @@ router.post('/redeem-qr',
             { merchantId },
             { $inc: { totalRedemptions: 1 } }
         );
+
+        // 7. Send redemption confirmation notification
+        try {
+            await notificationManager.sendNotification(payload.recipient, 'redemption_confirmation', {
+                voucherId: payload.voucherId,
+                voucherType: payload.voucherType,
+                amount: payload.amount,
+                merchantName: merchantId,
+                redemptionDate: new Date().toLocaleDateString(),
+                transactionId: result.digest
+            });
+        } catch (notificationError) {
+            logger.error('Failed to send redemption notification:', notificationError);
+            // Don't fail the transaction for notification errors
+        }
 
         logger.info(`Voucher redeemed via QR: ${payload.voucherId}`, { merchantId, transactionDigest: result.digest });
         res.json({ 
