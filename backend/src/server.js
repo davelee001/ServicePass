@@ -16,6 +16,7 @@ const { generalLimiter } = require('./middleware/rateLimiter');
 const { startListening, stopListening } = require('./services/blockchainListener');
 const { httpRequestDurationMicroseconds } = require('./utils/metrics');
 const notificationScheduler = require('./utils/notificationScheduler');
+const batchOperationManager = require('./utils/batchOperationManager');
 
 // Load environment variables
 dotenv.config();
@@ -78,6 +79,7 @@ app.use('/api/vouchers', require('./routes/vouchers'));
 app.use('/api/merchants', require('./routes/merchants'));
 app.use('/api/redemptions', require('./routes/redemptions'));
 app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/batch', require('./routes/batchOperations'));
 app.use('/api/metrics', require('./routes/metrics'));
 
 // Health check
