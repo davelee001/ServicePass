@@ -256,4 +256,61 @@ router.get('/:voucherId/qrcode',
     }
 });
 
+// Bulk mint vouchers
+router.post('/bulk-mint', 
+    verifyToken, 
+    adminOnly, 
+    writeLimiter,
+    async (req, res) => {
+        try {
+            const { vouchers } = req.body; // Expecting an array of voucher details
+
+            if (!Array.isArray(vouchers) || vouchers.length === 0) {
+                return res.status(400).json({ error: 'Vouchers array is required and cannot be empty' });
+            }
+
+            const adminKeypair = getAdminKeypair();
+            const tx = new TransactionBlock();
+
+            vouchers.forEach(({ voucherType, amount, recipient, merchantId, expiryTimestamp, metadata }) => {
+                tx.moveCall({
+                    target: `${PACKAGE_ID}::voucher_system::mint_voucher`,
+                    arguments: [
+                        tx.object(ADMIN_CAP_ID),
+                        tx.object(REGISTRY_ID),
+                        tx.pure(voucherType),
+                        tx.pure(amount),
+                        tx.pure(recipient),
+                        tx.pure(Array.from(Buffer.from(merchantId))),
+                        tx.pure(expiryTimestamp || null),
+                        tx.pure(Array.from(Buffer.from(metadata || ''))),
+                    ],
+                });
+            });
+
+            const result = await executeTransactionWithRetry(suiClient, {
+                signer: adminKeypair,
+                transactionBlock: tx,
+                options: {
+                    showObjectChanges: true,
+                }
+            });
+
+            logger.info(`Bulk vouchers minted: ${result.digest}`);
+
+            const createdObjects = result.objectChanges.filter(
+                (change) => change.type === 'created' && change.objectType.endsWith('::voucher_system::Voucher')
+            );
+
+            res.status(200).json({
+                message: 'Bulk vouchers minted successfully',
+                createdVouchers: createdObjects,
+            });
+        } catch (error) {
+            logger.error('Error during bulk minting:', error);
+            res.status(500).json({ error: 'Bulk minting failed', details: error.message });
+        }
+    }
+);
+
 module.exports = router;
