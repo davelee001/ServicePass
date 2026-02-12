@@ -10,6 +10,9 @@ const crypto = require('crypto');
 const { TransactionBlock } = require('@mysten/sui.js/transactions');
 const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID, REGISTRY_ID } = require('../config/sui');
 const { executeTransactionWithRetry } = require('../utils/blockchainRetry');
+const { parseCSV } = require('../utils/csvParser');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 const QR_SIGNING_SECRET = process.env.QR_SIGNING_SECRET || 'default-secret';
 
@@ -305,5 +308,59 @@ router.get('/user/:walletAddress',
         });
     }
 });
+
+// Import recipients via CSV
+router.post('/import-recipients', 
+    verifyToken, 
+    adminOrMerchant, 
+    upload.single('file'), 
+    async (req, res) => {
+        try {
+            if (!req.file) {
+                return res.status(400).json({ error: 'CSV file is required' });
+            }
+
+            const recipients = await parseCSV(req.file.path);
+
+            // Process recipients (example: create vouchers for each recipient)
+            const adminKeypair = getAdminKeypair();
+            const tx = new TransactionBlock();
+
+            recipients.forEach(({ voucherType, amount, recipient, merchantId, expiryTimestamp, metadata }) => {
+                tx.moveCall({
+                    target: `${PACKAGE_ID}::voucher_system::mint_voucher`,
+                    arguments: [
+                        tx.object(ADMIN_CAP_ID),
+                        tx.object(REGISTRY_ID),
+                        tx.pure(voucherType),
+                        tx.pure(amount),
+                        tx.pure(recipient),
+                        tx.pure(Array.from(Buffer.from(merchantId))),
+                        tx.pure(expiryTimestamp || null),
+                        tx.pure(Array.from(Buffer.from(metadata || ''))),
+                    ],
+                });
+            });
+
+            const result = await executeTransactionWithRetry(suiClient, {
+                signer: adminKeypair,
+                transactionBlock: tx,
+                options: {
+                    showObjectChanges: true,
+                }
+            });
+
+            res.status(200).json({
+                message: 'Recipients imported and vouchers created successfully',
+                createdVouchers: result.objectChanges.filter(
+                    (change) => change.type === 'created' && change.objectType.endsWith('::voucher_system::Voucher')
+                ),
+            });
+        } catch (error) {
+            logger.error('Error during CSV import:', error);
+            res.status(500).json({ error: 'CSV import failed', details: error.message });
+        }
+    }
+);
 
 module.exports = router;
