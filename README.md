@@ -155,6 +155,23 @@ cp .env.example .env
 # - QR_SIGNING_SECRET (for QR code signatures)
 # - ALLOWED_ORIGINS (comma-separated list of allowed origins)
 
+# Notifications (Optional):
+# Email (Nodemailer):
+# - EMAIL_SERVICE (gmail, outlook, custom)
+# - EMAIL_HOST (for custom service)
+# - EMAIL_PORT (for custom service)
+# - SMTP_USER (email service username)
+# - SMTP_PASS (email service password)
+# - SMTP_FROM (sender email address)
+# SMS (Twilio):
+# - TWILIO_ACCOUNT_SID (Twilio Account SID)
+# - TWILIO_AUTH_TOKEN (Twilio Auth Token)
+# - TWILIO_PHONE_NUMBER (Twilio phone number)
+# Push Notifications (Firebase):
+# - FIREBASE_PROJECT_ID (Firebase Project ID)
+# - FIREBASE_PRIVATE_KEY (Firebase private key)
+# - FIREBASE_CLIENT_EMAIL (Firebase client email)
+
 # Optional:
 # - REDIS_URL (for event queue)
 # - RATE_LIMIT_WINDOW_MS (rate limit window)
@@ -225,13 +242,20 @@ The frontend will be available at `http://localhost:3000`
   - Blockchain explorer integration
   - Export capabilities
 
+- **Notification Preferences**:
+  - Toggle email, SMS, and push notifications
+  - Customize notification triggers (voucher received, redemption, expiry)
+  - Set expiry notification timing
+  - Test notification channels
+  - Push notification device registration
+
 ### Merchant Portal
 - **Dashboard**: 
   - Total revenue and redemption statistics
   - Today's performance metrics
   - Redemptions breakdown by voucher type
   - Recent activity overview
-  - Batch operations section with quick access to bulk voucher minting, CSV import, and batch merchant registration
+  - Enhanced batch operations section with progress tracking, pause/resume controls, and real-time monitoring
   
 - **Accept Redemptions**: 
   - Date range filtering
@@ -245,6 +269,7 @@ The frontend will be available at `http://localhost:3000`
   - Bar charts for comparative analysis
   - Export reports as JSON
   - Custom date range selection
+  - Batch operation analytics and performance metrics
 
 ### Technology Stack
 - **React 18** - Modern UI framework
@@ -267,6 +292,7 @@ The frontend will be available at `http://localhost:3000`
 ### Vouchers
 - `POST /api/vouchers/mint` - Mint new voucher with QR code (Admin only)
 - `POST /api/vouchers/bulk-mint` - Mint multiple vouchers in batch (Admin only)
+- `POST /api/vouchers/bulk-mint-enhanced` - Enhanced bulk mint with progress tracking (Admin only)
 - `GET /api/vouchers/owner/:address` - Get vouchers by owner
 - `GET /api/vouchers/:voucherId/qrcode` - Get QR code for voucher (Auth required)
 
@@ -286,13 +312,48 @@ The frontend will be available at `http://localhost:3000`
 - `GET /api/redemptions/merchant/:merchantId` - Merchant redemption history (Auth required)
 - `GET /api/redemptions/user/:walletAddress` - User redemption history (Auth required)
 
+### Notifications
+- `GET /api/notifications/preferences` - Get user notification preferences (Auth required)
+- `PUT /api/notifications/preferences` - Update notification preferences (Auth required)
+- `POST /api/notifications/test-email` - Send test email notification (Auth required)
+- `POST /api/notifications/test-sms` - Send test SMS notification (Auth required)
+- `POST /api/notifications/test-push` - Send test push notification (Auth required)
+- `POST /api/notifications/register-push` - Register device for push notifications (Auth required)
+- `GET /api/notifications/history` - Get notification history (Auth required)
+- `POST /api/notifications/check-expired` - Manually trigger expiry notifications (Admin only)
+- `POST /api/notifications/bulk-send` - Send bulk notifications (Admin only)
+- `GET /api/notifications/bulk-status/:batchId` - Check bulk notification status (Admin only)
+- `POST /api/notifications/schedule` - Schedule notification for future delivery (Auth required)
+- `DELETE /api/notifications/schedule/:scheduleId` - Cancel scheduled notification (Auth required)
+- `GET /api/notifications/analytics` - Get notification analytics (Auth required)
+- `POST /api/notifications/send-custom` - Send notification with custom variables (Auth required)
+- `POST /api/notifications/test-retry` - Test notification retry mechanism (Admin only)
+- `GET /api/notifications/rate-limits/:userId` - Get notification rate limits (Auth required)
+
+### Batch Operations
+- `POST /api/batch/create` - Create new batch operation (Auth required)
+- `GET /api/batch/status/:batchId` - Get batch operation status (Auth required)
+- `GET /api/batch/my-operations` - Get user's batch operations (Auth required)
+- `POST /api/batch/pause/:batchId` - Pause batch operation (Auth required)
+- `POST /api/batch/resume/:batchId` - Resume paused batch operation (Auth required)
+- `DELETE /api/batch/cancel/:batchId` - Cancel batch operation (Auth required)
+- `GET /api/batch/results/:batchId` - Get detailed batch results (Auth required)
+- `GET /api/batch/metrics` - Get system batch metrics (Admin only)
+- `POST /api/batch/retry/:batchId` - Retry failed batch items (Auth required)
+- `GET /api/batch/export/:batchId` - Export batch results (Auth required)
 
 ## Key Features
 
 - **Blockchain-Powered**: Built on SUI for security and transparency  
 - **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
 - **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
-- **Batch Operations**: Bulk voucher minting, CSV import for recipients, and batch merchant registration  
+## Key Features
+
+- **Blockchain-Powered**: Built on SUI for security and transparency  
+- **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
+- **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
+- **Enhanced Batch Operations**: Advanced bulk processing with progress tracking, pause/resume, priority queues, parallel processing, and comprehensive error handling  
+- **Intelligent Notification System**: Multi-channel notifications with retry logic, bulk processing, scheduling, rate limiting, and analytics  
 - **Real-Time Event Processing**: BullMQ queue system ensures reliable blockchain event handling  
 - **Blockchain Retry Logic**: Automatic retry with exponential backoff for failed transactions  
 - **Comprehensive Input Validation**: All endpoints validate inputs using express-validator  
@@ -305,9 +366,43 @@ The frontend will be available at `http://localhost:3000`
 - **Real-Time Analytics**: Visual reports and business insights  
 - **Secure Redemption**: Burn-on-use prevents double-spending  
 - **Expiry Management**: Configurable voucher expiration  
+- **Real-Time Monitoring**: Live progress tracking, detailed operation metrics, and comprehensive system analytics  
 - **Audit Trail**: Complete transaction history on blockchain  
 - **Responsive Design**: Works on all devices  
-- **Comprehensive Testing**: Full unit and integration test coverage  
+- **Comprehensive Testing**: Full unit and integration test coverage including enhanced batch and notification systems  
+
+## Enhanced System Capabilities
+
+### 🚀 Advanced Batch Processing
+- **Progress Tracking**: Real-time progress monitoring with completion percentages and time estimates
+- **Queue Management**: Priority-based processing (high, medium, low) with intelligent scheduling
+- **Pause/Resume**: Full control over batch operations with graceful state management
+- **Parallel Processing**: Configurable parallel vs sequential processing for optimal performance
+- **Error Handling**: Comprehensive error tracking with partial success support and retry mechanisms
+- **Export & Reporting**: Export results in JSON or CSV format with detailed operation logs
+
+### 📧 Intelligent Notification System
+- **Retry Logic**: Exponential backoff retry mechanism for failed notifications (up to 3 attempts)
+- **Bulk Processing**: Send thousands of notifications efficiently with configurable batch sizes
+- **Scheduled Delivery**: Schedule notifications for future delivery with precise timing
+- **Rate Limiting**: Smart rate limiting (10 notifications per minute per type) to prevent abuse
+- **Analytics**: Comprehensive notification analytics including delivery rates and channel performance
+- **Custom Templates**: Extended template system with dynamic variables and priority-based styling
+- **Multi-Channel Support**: Seamless integration of email, SMS, and push notifications
+
+### 📊 Real-Time Monitoring & Analytics
+- **Live Progress Updates**: Real-time status updates for all batch operations
+- **Performance Metrics**: Track processing speeds, success rates, and system performance
+- **User Analytics**: Individual user notification history and preferences tracking
+- **System Metrics**: Comprehensive system-wide analytics for administrators
+- **Error Analysis**: Detailed error tracking and analysis for continuous improvement
+
+### 🔧 Enhanced API Capabilities
+- **Batch Operations API**: Complete CRUD operations for batch management
+- **Enhanced Notification API**: Advanced notification features including scheduling and bulk processing
+- **Progress Monitoring**: Real-time status endpoints for all operations
+- **Export Functionality**: Built-in export capabilities for all data
+- **Comprehensive Error Handling**: Detailed error responses with actionable information
 
 ## Security Features
 
@@ -534,6 +629,199 @@ curl -X POST http://localhost:3000/api/redemptions/import-recipients \
 # 2,3000,0x5678...,CLINIC_001,1735689600,Healthcare voucher
 ```
 
+### Notifications
+
+#### Get Notification Preferences
+
+```bash
+curl -X GET http://localhost:3000/api/notifications/preferences \
+  -H "Authorization: Bearer <access_token>"
+```
+
+#### Update Notification Preferences
+
+```bash
+curl -X PUT http://localhost:3000/api/notifications/preferences \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <access_token>" \
+  -d '{
+    "emailEnabled": true,
+    "smsEnabled": false,
+    "pushEnabled": true,
+    "notifyOnVoucherReceived": true,
+    "notifyOnVoucherRedemption": true,
+    "notifyOnVoucherExpiry": true,
+    "expiryNotificationDays": 7
+  }'
+```
+
+#### Send Test Notifications
+
+```bash
+# Test email notification
+curl -X POST http://localhost:3000/api/notifications/test-email \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <access_token>" \
+  -d '{"subject": "Test Email", "message": "This is a test notification"}'
+
+# Test SMS notification
+curl -X POST http://localhost:3000/api/notifications/test-sms \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <access_token>" \
+  -d '{"phoneNumber": "+1234567890", "message": "Test SMS notification"}'
+
+# Test push notification
+curl -X POST http://localhost:3000/api/notifications/test-push \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <access_token>" \
+  -d '{"title": "Test Push", "body": "This is a test push notification"}'
+```
+
+#### Register for Push Notifications
+
+```bash
+curl -X POST http://localhost:3000/api/notifications/register-push \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <access_token>" \
+  -d '{"token": "device_fcm_token"}'
+```
+
+#### Enhanced Bulk Notifications
+
+```bash
+# Send bulk notifications
+curl -X POST http://localhost:3000/api/notifications/bulk-send \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <admin_access_token>" \
+  -d '{
+    "notifications": [
+      {
+        "userId": "user-123",
+        "type": "system_maintenance",
+        "data": {
+          "maintenanceType": "Database upgrade",
+          "startTime": "2024-02-15 02:00 UTC",
+          "endTime": "2024-02-15 04:00 UTC",
+          "affectedServices": "User dashboard",
+          "description": "Upgrading database for better performance"
+        }
+      }
+    ],
+    "batchSize": 50
+  }'
+
+# Check bulk notification status
+curl -X GET http://localhost:3000/api/notifications/bulk-status/batch_123456 \
+  -H "Authorization: Bearer <admin_access_token>"
+```
+
+#### Scheduled Notifications
+
+```bash
+# Schedule notification
+curl -X POST http://localhost:3000/api/notifications/schedule \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <access_token>" \
+  -d '{
+    "userId": "user-123",
+    "type": "system_maintenance",
+    "data": {
+      "maintenanceType": "Scheduled maintenance",
+      "startTime": "2024-02-15 02:00 UTC",
+      "endTime": "2024-02-15 04:00 UTC"
+    },
+    "scheduleTime": "2024-02-14T20:00:00Z",
+    "priority": "high"
+  }'
+
+# Cancel scheduled notification
+curl -X DELETE http://localhost:3000/api/notifications/schedule/schedule_123456 \
+  -H "Authorization: Bearer <access_token>"
+```
+
+### Enhanced Batch Operations
+
+#### Create Enhanced Batch Operation
+
+```bash
+curl -X POST http://localhost:3000/api/batch/create \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <admin_access_token>" \
+  -d '{
+    "operationType": "bulk_mint_vouchers",
+    "data": [
+      {
+        "voucherType": "1",
+        "amount": 5000,
+        "recipient": "0x...",
+        "merchantId": "SCHOOL_001",
+        "expiryTimestamp": 1735689600,
+        "metadata": "Grade 10 School Fees"
+      }
+    ],
+    "batchSize": 25,
+    "priority": "high",
+    "parallelProcessing": true
+  }'
+```
+
+#### Monitor Batch Operation
+
+```bash
+# Get batch status
+curl -X GET http://localhost:3000/api/batch/status/batch_123456 \
+  -H "Authorization: Bearer <access_token>"
+
+# Get user's batch operations
+curl -X GET http://localhost:3000/api/batch/my-operations?limit=10&status=processing \
+  -H "Authorization: Bearer <access_token>"
+
+# Pause batch operation
+curl -X POST http://localhost:3000/api/batch/pause/batch_123456 \
+  -H "Authorization: Bearer <access_token>"
+
+# Resume batch operation
+curl -X POST http://localhost:3000/api/batch/resume/batch_123456 \
+  -H "Authorization: Bearer <access_token>"
+```
+
+#### Export Batch Results
+
+```bash
+# Export as JSON
+curl -X GET http://localhost:3000/api/batch/export/batch_123456?format=json \
+  -H "Authorization: Bearer <access_token>" \
+  -o batch_results.json
+
+# Export as CSV
+curl -X GET http://localhost:3000/api/batch/export/batch_123456?format=csv \
+  -H "Authorization: Bearer <access_token>" \
+  -o batch_results.csv
+```
+
+#### Enhanced Bulk Voucher Minting
+
+```bash
+curl -X POST http://localhost:3000/api/vouchers/bulk-mint-enhanced \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <admin_access_token>" \
+  -d '{
+    "vouchers": [
+      {
+        "voucherType": "1",
+        "amount": 5000,
+        "recipient": "0x...",
+        "merchantId": "SCHOOL_001",
+        "expiryTimestamp": 1735689600,
+        "metadata": "Grade 10 School Fees"
+      }
+    ],
+    "batchSize": 25,
+    "priority": "high",
+    "parallelProcessing": true
+  }'
+```
+
 
 # Test frontend (build)
 cd frontend
@@ -635,6 +923,9 @@ npm test voucher.model.test.js
 - Secure redemption with fraud prevention  
 - Double-redemption prevention  
 - Merchant authorization and API key validation  
+- Enhanced notification system with retry logic, bulk processing, scheduling, and rate limiting
+- Advanced batch operations with queue management, progress tracking, and error handling
+- Analytics and reporting functionality
 - Error handling and edge cases  
 - Mock blockchain interactions for isolated testing  
 - In-memory database for fast, reliable tests
