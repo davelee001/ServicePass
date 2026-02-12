@@ -231,6 +231,7 @@ The frontend will be available at `http://localhost:3000`
   - Today's performance metrics
   - Redemptions breakdown by voucher type
   - Recent activity overview
+  - Batch operations section with quick access to bulk voucher minting, CSV import, and batch merchant registration
   
 - **Accept Redemptions**: 
   - Date range filtering
@@ -265,11 +266,13 @@ The frontend will be available at `http://localhost:3000`
 
 ### Vouchers
 - `POST /api/vouchers/mint` - Mint new voucher with QR code (Admin only)
+- `POST /api/vouchers/bulk-mint` - Mint multiple vouchers in batch (Admin only)
 - `GET /api/vouchers/owner/:address` - Get vouchers by owner
 - `GET /api/vouchers/:voucherId/qrcode` - Get QR code for voucher (Auth required)
 
 ### Merchants
 - `POST /api/merchants/register` - Register new merchant (Admin only)
+- `POST /api/merchants/batch-register` - Register multiple merchants in batch (Admin only)
 - `GET /api/merchants` - List all merchants
 - `GET /api/merchants/:merchantId` - Get merchant details (Auth required)
 - `POST /api/merchants/:merchantId/api-key` - Generate API key (Auth required)
@@ -279,6 +282,7 @@ The frontend will be available at `http://localhost:3000`
 ### Redemptions
 - `POST /api/redemptions/redeem-qr` - Redeem voucher via QR code (Merchant API key required)
 - `POST /api/redemptions` - Record redemption (API key or Auth required)
+- `POST /api/redemptions/import-recipients` - Import recipients via CSV for batch voucher creation (Auth required)
 - `GET /api/redemptions/merchant/:merchantId` - Merchant redemption history (Auth required)
 - `GET /api/redemptions/user/:walletAddress` - User redemption history (Auth required)
 
@@ -288,6 +292,7 @@ The frontend will be available at `http://localhost:3000`
 - **Blockchain-Powered**: Built on SUI for security and transparency  
 - **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
 - **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
+- **Batch Operations**: Bulk voucher minting, CSV import for recipients, and batch merchant registration  
 - **Real-Time Event Processing**: BullMQ queue system ensures reliable blockchain event handling  
 - **Blockchain Retry Logic**: Automatic retry with exponential backoff for failed transactions  
 - **Comprehensive Input Validation**: All endpoints validate inputs using express-validator  
@@ -355,6 +360,10 @@ The frontend will be available at `http://localhost:3000`
 - **Global error handler** with status code detection
 - **Health check endpoint** with uptime monitoring
 - **Safe environment variable logging** with sensitive data redaction
+- **Application Performance Monitoring (APM)**: Real-time monitoring of application performance via `express-status-monitor` at the `/status` endpoint.
+- **Error Tracking**: Integration with Sentry for real-time error tracking and reporting. Requires `SENTRY_DSN` environment variable.
+- **Log Aggregation**: Support for log aggregation to an ELK stack (Elasticsearch, Logstash, Kibana) via Winston. Requires `ELASTICSEARCH_URL` environment variable.
+- **Metrics Dashboard**: Exposes a `/metrics` endpoint with Prometheus-compatible metrics for use with Grafana.
 
 ### Blockchain Resilience
 - **Automatic retry logic** with exponential backoff for failed blockchain calls
@@ -375,6 +384,21 @@ The frontend will be available at `http://localhost:3000`
 - Use environment-specific MongoDB instances with authentication enabled
 
 See [Authentication Documentation](docs/AUTHENTICATION.md) for detailed information.
+
+## Database & Performance
+
+- **MongoDB connection pooling**: The backend uses Mongoose with configurable pool sizes and timeouts to handle concurrent traffic efficiently. You can tune these via environment variables:
+  - `MONGODB_MAX_POOL_SIZE` / `MONGODB_MIN_POOL_SIZE` – upper and lower bounds for active connections.
+  - `MONGODB_SERVER_SELECTION_TIMEOUT_MS` – how long the driver waits to discover a healthy node.
+  - `MONGODB_SOCKET_TIMEOUT_MS` – how long idle sockets stay open.
+- **Optimized indexes**: Voucher and redemption collections are indexed on the fields used most often in queries (owner, merchant, voucher type, redemption timestamps, and voucher object IDs) to keep dashboards and history views fast, even with large datasets.
+- **Redemption archival**: Old redemption records can be moved from the hot `redemptions` collection into an `archived_redemptions` collection using the archival script:
+  - Script: `node scripts/archiveRedemptions.js [days]` (optional `days` argument overrides the default cutoff).
+  - Environment variables:
+    - `REDEMPTION_ARCHIVE_AFTER_DAYS` – default age threshold for archival when no `days` argument is provided.
+    - `REDEMPTION_ARCHIVE_BATCH_SIZE` – how many records to move per batch.
+  - This keeps the primary redemption collection small and fast while preserving a complete historical record.
+- **Backups**: Regular MongoDB backups (for example, using `mongodump`/`mongorestore`) are strongly recommended for production. See the deployment guide for operational recommendations.
 
 ## Usage Examples
 
@@ -438,6 +462,76 @@ curl -X POST http://localhost:3000/api/merchants/CLINIC_001/api-key \
   -H "Authorization: Bearer <merchant_or_admin_token>" \
   -H "Content-Type: application/json" \
   -d '{"expiryDays": 365}'
+```
+
+### Batch Operations
+
+#### Bulk Voucher Minting (Admin only)
+
+```bash
+curl -X POST http://localhost:3000/api/vouchers/bulk-mint \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <admin_access_token>" \
+  -d '{
+    "vouchers": [
+      {
+        "voucherType": 1,
+        "amount": 5000,
+        "recipient": "0x...",
+        "merchantId": "SCHOOL_001",
+        "expiryTimestamp": 1735689600,
+        "metadata": "Grade 10 School Fees"
+      },
+      {
+        "voucherType": 2,
+        "amount": 3000,
+        "recipient": "0x...",
+        "merchantId": "CLINIC_001",
+        "expiryTimestamp": 1735689600,
+        "metadata": "Healthcare voucher"
+      }
+    ]
+  }'
+```
+
+#### Batch Merchant Registration (Admin only)
+
+```bash
+curl -X POST http://localhost:3000/api/merchants/batch-register \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <admin_access_token>" \
+  -d '{
+    "merchants": [
+      {
+        "merchantId": "CLINIC_002",
+        "name": "Rural Health Center",
+        "walletAddress": "0x...",
+        "voucherTypesAccepted": [2],
+        "contactEmail": "rural@health.com"
+      },
+      {
+        "merchantId": "SCHOOL_002",
+        "name": "Community Primary School",
+        "walletAddress": "0x...",
+        "voucherTypesAccepted": [1],
+        "contactEmail": "admin@cps.edu"
+      }
+    ]
+  }'
+```
+
+#### CSV Import for Recipients
+
+```bash
+# Import recipients from CSV file and create vouchers for each
+curl -X POST http://localhost:3000/api/redemptions/import-recipients \
+  -H "Authorization: Bearer <admin_or_merchant_token>" \
+  -F "file=@recipients.csv"
+
+# CSV format example:
+# voucherType,amount,recipient,merchantId,expiryTimestamp,metadata
+# 1,5000,0x1234...,SCHOOL_001,1735689600,Grade 10 School Fees
+# 2,3000,0x5678...,CLINIC_001,1735689600,Healthcare voucher
 ```
 
 
@@ -588,3 +682,16 @@ For questions, issues, or support:
 [Star this repo](https://github.com/davelee001/ServicePass) | [Documentation](docs/) | [Get Started](#getting-started)
 
 </div>
+
+## CI/CD Workflows
+
+ServicePass uses GitHub Actions to automate the development and deployment process. The following workflows are implemented:
+
+1. **Automated Testing**: Ensures code quality by running tests on every push and pull request.
+2. **Code Linting**: Enforces coding standards by running a linter on the codebase.
+3. **Smart Contract Compilation**: Compiles Move smart contracts to ensure they are error-free.
+4. **Automated Deployment**: Deploys the backend and frontend to production environments.
+5. **Environment Management**: Handles deployments to development, staging, and production environments.
+6. **Nice-to-Have Enhancements**: Includes Slack notifications, dependency caching, and security audits.
+
+These workflows ensure a robust and efficient development lifecycle, reducing manual effort and improving reliability.
