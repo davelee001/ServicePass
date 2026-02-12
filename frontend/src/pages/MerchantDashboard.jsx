@@ -193,6 +193,15 @@ function MerchantDashboard({ merchantId }) {
           <p className="no-data">No redemptions yet.</p>
         )}
       </div>
+
+      <div className="batch-operations">
+        <h2>Batch Operations</h2>
+        <div className="batch-buttons">
+          <button className="batch-button" onClick={() => alert('Bulk Voucher Minting')}>Bulk Voucher Minting</button>
+          <button className="batch-button" onClick={() => alert('CSV Import for Recipients')}>CSV Import for Recipients</button>
+          <button className="batch-button" onClick={() => alert('Batch Merchant Registration')}>Batch Merchant Registration</button>
+        </div>
+      </div>
     </div>
   );
 }
