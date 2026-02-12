@@ -266,4 +266,69 @@ router.delete('/:merchantId/api-key', verifyToken, adminOrMerchant, async (req, 
     }
 });
 
+// Batch register merchants
+router.post('/batch-register', 
+    verifyToken, 
+    adminOnly, 
+    writeLimiter,
+    async (req, res) => {
+        try {
+            const { merchants } = req.body; // Expecting an array of merchant details
+
+            if (!Array.isArray(merchants) || merchants.length === 0) {
+                return res.status(400).json({ error: 'Merchants array is required and cannot be empty' });
+            }
+
+            const adminKeypair = getAdminKeypair();
+            const tx = new TransactionBlock();
+
+            for (const { merchantId, name, walletAddress, voucherTypesAccepted, contactEmail, contactPhone } of merchants) {
+                // Check if merchant already exists
+                const existingMerchant = await Merchant.findOne({ merchantId });
+                if (existingMerchant) {
+                    return res.status(400).json({ 
+                        error: `Merchant with ID ${merchantId} already exists`,
+                        message: 'A merchant with this ID is already registered'
+                    });
+                }
+
+                tx.moveCall({
+                    target: `${PACKAGE_ID}::voucher_system::register_merchant`,
+                    arguments: [
+                        tx.object(ADMIN_CAP_ID),
+                        tx.pure(Array.from(Buffer.from(merchantId))),
+                        tx.pure(Array.from(Buffer.from(name))),
+                        tx.pure(voucherTypesAccepted),
+                    ],
+                });
+
+                // Save to database
+                const merchant = new Merchant({
+                    merchantId,
+                    name,
+                    walletAddress,
+                    voucherTypesAccepted,
+                    contactEmail,
+                    contactPhone,
+                });
+
+                await merchant.save();
+            }
+
+            const result = await executeTransactionWithRetry(suiClient, {
+                signer: adminKeypair,
+                transactionBlock: tx,
+            });
+
+            res.status(200).json({
+                message: 'Batch merchants registered successfully',
+                transactionDigest: result.digest,
+            });
+        } catch (error) {
+            logger.error('Error during batch merchant registration:', error);
+            res.status(500).json({ error: 'Batch registration failed', details: error.message });
+        }
+    }
+);
+
 module.exports = router;
