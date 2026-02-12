@@ -194,4 +194,36 @@ describe('Vouchers Routes - QR Code Functionality', () => {
             expect(response.body.vouchers).toHaveLength(2);
         });
     });
+
+    describe('POST /bulk-mint', () => {
+        it('should mint vouchers in bulk with valid input', async () => {
+            const response = await request(app)
+                .post('/bulk-mint')
+                .send({
+                    vouchers: [
+                        {
+                            voucherType: 'discount',
+                            amount: 10,
+                            recipient: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+                            merchantId: 'merchant-1',
+                            expiryTimestamp: Date.now() + 100000,
+                            metadata: 'Test metadata',
+                        },
+                    ],
+                });
+
+            expect(response.status).toBe(200);
+            expect(response.body.message).toBe('Bulk vouchers minted successfully');
+            expect(response.body.createdVouchers).toBeDefined();
+        });
+
+        it('should return 400 for invalid input', async () => {
+            const response = await request(app)
+                .post('/bulk-mint')
+                .send({ vouchers: [] });
+
+            expect(response.status).toBe(400);
+            expect(response.body.error).toBe('Vouchers array is required and cannot be empty');
+        });
+    });
 });
