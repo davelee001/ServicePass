@@ -58,4 +58,32 @@ export const redemptionAPI = {
   },
 };
 
+// Notification APIs
+export const notificationAPI = {
+  getPreferences: async () => {
+    const response = await api.get('/notifications/preferences');
+    return response.data;
+  },
+  
+  updatePreferences: async (preferences) => {
+    const response = await api.put('/notifications/preferences', preferences);
+    return response.data;
+  },
+  
+  registerPushToken: async (tokenData) => {
+    const response = await api.post('/notifications/push-token', tokenData);
+    return response.data;
+  },
+  
+  getNotificationHistory: async (params = {}) => {
+    const response = await api.get('/notifications/history', { params });
+    return response.data;
+  },
+  
+  sendTestNotification: async (testData) => {
+    const response = await api.post('/notifications/test', testData);
+    return response.data;
+  }
+};
+
 export default api;
