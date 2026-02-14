@@ -63,6 +63,21 @@ class NotificationScheduler {
             scheduled: false
         });
 
+        // Process scheduled notifications every 5 minutes
+        this.jobs.processScheduled = cron.schedule('*/5 * * * *', async () => {
+            try {
+                logger.info('Processing scheduled notifications...');
+                const processed = await notificationManager.processScheduledNotifications();
+                if (processed > 0) {
+                    logger.info(`Processed ${processed} scheduled notifications`);
+                }
+            } catch (error) {
+                logger.error('Error processing scheduled notifications:', error);
+            }
+        }, {
+            scheduled: false
+        });
+
         // Daily notification summary (optional) - sends a summary email to admins
         this.jobs.dailySummary = cron.schedule('0 18 * * *', async () => {
             try {
@@ -138,6 +153,19 @@ class NotificationScheduler {
             return count;
         } catch (error) {
             logger.error('Error in manual expiry check:', error);
+            throw error;
+        }
+    }
+
+    // Manual trigger for processing scheduled notifications
+    async runScheduledNotificationProcessor() {
+        try {
+            logger.info('Running manual scheduled notification processor...');
+            const processed = await notificationManager.processScheduledNotifications();
+            logger.info(`Manual scheduled notification processing completed. Processed ${processed} notifications.`);
+            return processed;
+        } catch (error) {
+            logger.error('Error in manual scheduled notification processing:', error);
             throw error;
         }
     }
