@@ -8,6 +8,7 @@ import VoucherList from './pages/VoucherList';
 import RedemptionHistory from './pages/RedemptionHistory';
 import MerchantRedemptions from './pages/MerchantRedemptions';
 import MerchantReports from './pages/MerchantReports';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -66,6 +67,16 @@ function App() {
               <Route 
                 path="/merchant/reports" 
                 element={<MerchantReports merchantId={merchantId} />} 
+              />
+              
+              {/* Analytics Dashboard */}
+              <Route 
+                path="/analytics" 
+                element={<AnalyticsDashboard />} 
+              />
+              <Route 
+                path="/merchant/analytics" 
+                element={<AnalyticsDashboard merchantId={merchantId} />} 
               />
             </Routes>
           </main>
