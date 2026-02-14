@@ -80,6 +80,7 @@ app.use('/api/merchants', require('./routes/merchants'));
 app.use('/api/redemptions', require('./routes/redemptions'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/batch', require('./routes/batchOperations'));
+app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/metrics', require('./routes/metrics'));
 
 // Health check
