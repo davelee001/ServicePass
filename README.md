@@ -319,6 +319,7 @@ The frontend will be available at `http://localhost:3000`
 
 ### Redemptions
 - `POST /api/redemptions/redeem-qr` - Redeem voucher via QR code (Merchant API key required)
+- `POST /api/redemptions/redeem-partial` - Redeem partial voucher amount (Merchant API key required)
 - `POST /api/redemptions` - Record redemption (API key or Auth required)
 - `POST /api/redemptions/import-recipients` - Import recipients via CSV for batch voucher creation (Auth required)
 - `GET /api/redemptions/merchant/:merchantId` - Merchant redemption history (Auth required)
@@ -367,6 +368,49 @@ The frontend will be available at `http://localhost:3000`
 - `GET /api/analytics/export` - Export analytics data in JSON/CSV format (Auth required)
 - `POST /api/analytics/cache/clear` - Clear analytics cache (Admin only)
 
+### Voucher Templates
+- `POST /api/templates` - Create voucher template (Admin only)
+- `GET /api/templates` - List all templates with search/filter (Auth required)
+- `GET /api/templates/:templateId` - Get template details (Auth required)
+- `PUT /api/templates/:templateId` - Update template (Admin only)
+- `POST /api/templates/:templateId/deactivate` - Deactivate template (Admin only)
+- `POST /api/templates/:templateId/activate` - Activate template (Admin only)
+- `DELETE /api/templates/:templateId` - Delete template (Admin only)
+- `POST /api/templates/:templateId/duplicate` - Duplicate template (Admin only)
+- `GET /api/templates/:templateId/stats` - Get usage statistics (Auth required)
+- `GET /api/templates/analytics/popular` - Get popular templates (Admin only)
+- `GET /api/templates/analytics/recent` - Get recently used templates (Admin only)
+
+### Scheduled Vouchers
+- `POST /api/scheduled-vouchers` - Create scheduled voucher (Admin only)
+- `GET /api/scheduled-vouchers` - List scheduled vouchers with filters (Auth required)
+- `GET /api/scheduled-vouchers/:scheduleId` - Get schedule details (Auth required)
+- `POST /api/scheduled-vouchers/:scheduleId/cancel` - Cancel schedule (Auth required)
+- `POST /api/scheduled-vouchers/process/trigger` - Manually trigger processing (Admin only)
+- `GET /api/scheduled-vouchers/analytics/stats` - Schedule statistics (Admin only)
+
+### Multi-Signature Operations
+- `POST /api/multisig` - Create multi-sig operation (Admin only)
+- `GET /api/multisig/pending` - Get pending operations (Admin only)
+- `GET /api/multisig` - List all operations with filters (Admin only)
+- `GET /api/multisig/:operationId` - Get operation details (Admin only)
+- `POST /api/multisig/:operationId/sign` - Sign/approve operation (Admin only)
+- `POST /api/multisig/:operationId/reject` - Reject operation (Admin only)
+- `POST /api/multisig/:operationId/execute` - Manually execute operation (Admin only)
+- `POST /api/multisig/maintenance/expire` - Expire old operations (Admin only)
+- `GET /api/multisig/analytics/stats` - Multi-sig statistics (Admin only)
+- `GET /api/multisig/user/:userId/history` - User signature history (Admin only)
+
+### Voucher Transfers
+- `POST /api/transfers` - Create transfer request (Auth required)
+- `GET /api/transfers` - List transfers with filters (Auth required)
+- `GET /api/transfers/:transferId` - Get transfer details (Auth required)
+- `POST /api/transfers/:transferId/approve` - Approve transfer (Admin/Merchant only)
+- `POST /api/transfers/:transferId/reject` - Reject transfer (Admin/Merchant only)
+- `GET /api/transfers/voucher/:voucherId/history` - Get transfer history (Auth required)
+- `GET /api/transfers/pending/approvals` - Get pending approvals (Admin/Merchant only)
+- `GET /api/transfers/analytics/stats` - Transfer statistics (Admin only)
+
 ## Key Features
 
 - **Blockchain-Powered**: Built on SUI for security and transparency  
@@ -377,6 +421,11 @@ The frontend will be available at `http://localhost:3000`
 - **Blockchain-Powered**: Built on SUI for security and transparency  
 - **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
 - **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
+- **Partial Voucher Redemption**: Redeem vouchers incrementally with automatic balance tracking
+- **Transfer Restrictions**: Control voucher transfers with limits, approvals, and recipient whitelists
+- **Multi-Signature Operations**: Require multiple admin approvals for critical system operations
+- **Scheduled Voucher Issuance**: Automate future voucher creation with recurring schedule support
+- **Voucher Templates**: Create reusable templates for consistent voucher issuance
 - **Analytics Dashboard**: Comprehensive business intelligence with real-time metrics, trend analysis, and executive reporting  
 - **Enhanced Batch Operations**: Advanced bulk processing with progress tracking, pause/resume, priority queues, parallel processing, and comprehensive error handling  
 - **Intelligent Notification System**: Multi-channel notifications with retry logic, bulk processing, scheduling, rate limiting, and analytics  
@@ -443,6 +492,167 @@ The frontend will be available at `http://localhost:3000`
 - **Progress Monitoring**: Real-time status endpoints for all operations
 - **Export Functionality**: Built-in export capabilities for all data
 - **Comprehensive Error Handling**: Detailed error responses with actionable information
+
+## Advanced Features
+
+### 💰 Partial Voucher Redemption
+- **Flexible Redemption**: Redeem vouchers partially instead of all-at-once
+- **Remaining Balance Tracking**: Automatic tracking of original amount and remaining balance
+- **Redemption History**: Complete audit trail of all partial redemptions with timestamps
+- **Status Management**: Automatic status updates (active → partially_redeemed → redeemed)
+- **Merchant Validation**: Ensures only designated merchants can redeem vouchers
+- **Template Support**: Configure partial redemption settings at template level
+- **Amount Validation**: Prevents redemption of more than remaining balance
+- **Real-time Updates**: Immediate balance updates after each redemption
+
+**API Endpoints:**
+- `POST /api/redemptions/redeem-partial` - Redeem partial voucher amount (Merchant API Key required)
+
+**Use Cases:**
+- Transportation vouchers used across multiple rides
+- Healthcare vouchers for multiple clinic visits
+- Education credits for incremental course fees
+- Meal vouchers for multiple purchases
+
+### 🔄 Voucher Transfer Restrictions
+- **Transfer Limits**: Configure maximum number of transfers per voucher
+- **Transfer Tracking**: Complete history of all voucher transfers
+- **Approval Workflow**: Require admin/merchant approval for transfers
+- **Allowed Recipients**: Whitelist specific recipients for transfers
+- **Transfer Types**: Support for full and partial voucher transfers
+- **Status Management**: Track transfer status (pending, approved, rejected, completed)
+- **Merchant Control**: Merchants can approve/reject transfers for their vouchers
+- **Security Validation**: Prevents unauthorized transfers and maintains integrity
+
+**API Endpoints:**
+- `POST /api/transfers` - Create new transfer request (Auth required)
+- `GET /api/transfers` - List transfers with filters (Auth required)
+- `GET /api/transfers/:transferId` - Get transfer details (Auth required)
+- `POST /api/transfers/:transferId/approve` - Approve transfer (Admin/Merchant only)
+- `POST /api/transfers/:transferId/reject` - Reject transfer (Admin/Merchant only)
+- `GET /api/transfers/voucher/:voucherId/history` - Get transfer history (Auth required)
+- `GET /api/transfers/pending/approvals` - Get pending approvals (Admin/Merchant only)
+- `GET /api/transfers/analytics/stats` - Transfer statistics (Admin only)
+
+**Transfer Restrictions:**
+```javascript
+{
+  maxTransfers: 3,              // Maximum number of times voucher can be transferred
+  transferCount: 0,             // Current transfer count
+  requireApproval: true,        // Requires admin/merchant approval
+  allowedRecipients: [...]      // Whitelist of allowed recipient addresses
+}
+```
+
+### 🔐 Multi-Signature Admin Operations
+- **Critical Operation Protection**: Require multiple admin approvals for sensitive operations
+- **Operation Types**: 8 different operation types requiring multi-sig approval
+  - `CREATE_VOUCHER_BATCH` - Bulk voucher creation
+  - `MODIFY_CRITICAL_SETTINGS` - System configuration changes
+  - `DELETE_MULTIPLE_VOUCHERS` - Bulk voucher deletion
+  - `CHANGE_MERCHANT_STATUS` - Merchant account status changes
+  - `BULK_TRANSFER` - Large-scale voucher transfers
+  - `EMERGENCY_FREEZE` - System freeze/unfreeze
+  - `SYSTEM_MAINTENANCE` - Maintenance mode operations
+  - `SECURITY_UPDATE` - Security-related updates
+- **Configurable Signatures**: Require 2-3 signatures based on operation type
+- **Signature Tracking**: Complete audit trail of who signed and when
+- **Expiry Management**: Operations expire after 24 hours if not approved
+- **Comment Support**: Admins can leave comments when signing/rejecting
+- **Automatic Execution**: Operations execute automatically when required signatures reached
+- **Rejection Workflow**: Any admin can reject and cancel operation
+
+**API Endpoints:**
+- `POST /api/multisig` - Create multi-sig operation (Admin only)
+- `GET /api/multisig/pending` - Get pending operations (Admin only)
+- `GET /api/multisig` - List all operations with filters (Admin only)
+- `GET /api/multisig/:operationId` - Get operation details (Admin only)
+- `POST /api/multisig/:operationId/sign` - Sign/approve operation (Admin only)
+- `POST /api/multisig/:operationId/reject` - Reject operation (Admin only)
+- `POST /api/multisig/:operationId/execute` - Manually execute operation (Admin only)
+- `POST /api/multisig/maintenance/expire` - Expire old operations (Admin only)
+- `GET /api/multisig/analytics/stats` - Multi-sig statistics (Admin only)
+- `GET /api/multisig/user/:userId/history` - User signature history (Admin only)
+
+### ⏰ Scheduled Voucher Issuance
+- **Time-Based Issuance**: Schedule vouchers for future creation
+- **Recurring Schedules**: Support for daily, weekly, monthly, and yearly schedules
+- **Template Integration**: Use templates for consistent scheduled vouchers
+- **Automatic Processing**: Background processor handles scheduled issuance
+- **Status Tracking**: Monitor status (pending, processing, completed, failed, cancelled)
+- **Retry Logic**: Automatic retry on failures with exponential backoff
+- **Next Schedule Calculation**: Automatic calculation of next issuance for recurring vouchers
+- **Cancellation Support**: Cancel scheduled vouchers before processing
+- **Notification Integration**: Optional notifications to recipients upon creation
+
+**API Endpoints:**
+- `POST /api/scheduled-vouchers` - Create scheduled voucher (Admin only)
+- `GET /api/scheduled-vouchers` - List scheduled vouchers with filters (Auth required)
+- `GET /api/scheduled-vouchers/:scheduleId` - Get schedule details (Auth required)
+- `POST /api/scheduled-vouchers/:scheduleId/cancel` - Cancel schedule (Auth required)
+- `POST /api/scheduled-vouchers/process/trigger` - Manually trigger processing (Admin only)
+- `GET /api/scheduled-vouchers/analytics/stats` - Schedule statistics (Admin only)
+
+**Recurring Schedule Example:**
+```javascript
+{
+  scheduledFor: "2026-03-01T08:00:00Z",
+  voucherType: 1,               // Education
+  amount: 100,
+  recipient: "0x...",
+  merchantId: "school_123",
+  recurringSchedule: {
+    enabled: true,
+    frequency: "monthly",        // daily, weekly, monthly, yearly
+    endDate: "2026-12-31T23:59:59Z"
+  }
+}
+```
+
+### 📋 Voucher Templates
+- **Reusable Templates**: Create templates for commonly issued vouchers
+- **Default Values**: Set default amounts, expiry days, and metadata
+- **Transfer Restrictions**: Configure transfer rules at template level
+- **Partial Redemption**: Enable/disable partial redemption per template
+- **Template Categories**: Organize templates by category (education, healthcare, etc.)
+- **Usage Tracking**: Track how many vouchers created from each template
+- **Active/Inactive Status**: Deactivate templates without deletion
+- **Template Duplication**: Clone existing templates for quick setup
+- **Template Analytics**: View usage statistics and popular templates
+
+**API Endpoints:**
+- `POST /api/templates` - Create template (Admin only)
+- `GET /api/templates` - List templates with search/filter (Auth required)
+- `GET /api/templates/:templateId` - Get template details (Auth required)
+- `PUT /api/templates/:templateId` - Update template (Admin only)
+- `POST /api/templates/:templateId/deactivate` - Deactivate template (Admin only)
+- `POST /api/templates/:templateId/activate` - Activate template (Admin only)
+- `DELETE /api/templates/:templateId` - Delete template (Admin only)
+- `POST /api/templates/:templateId/duplicate` - Duplicate template (Admin only)
+- `GET /api/templates/:templateId/stats` - Get usage statistics (Auth required)
+- `GET /api/templates/analytics/popular` - Get popular templates (Admin only)
+- `GET /api/templates/analytics/recent` - Get recently used templates (Admin only)
+
+**Template Structure:**
+```javascript
+{
+  name: "Monthly Student Stipend",
+  description: "Standard monthly education voucher",
+  category: "education",
+  voucherType: 1,
+  defaultValue: 500,
+  defaultExpiryDays: 30,
+  allowPartialRedemption: true,
+  transferRestrictions: {
+    maxTransfers: 2,
+    requireApproval: false
+  },
+  metadata: {
+    program: "Student Support Program",
+    semester: "Spring 2026"
+  }
+}
+```
 
 ## Security Features
 
