@@ -17,6 +17,7 @@ const { startListening, stopListening } = require('./services/blockchainListener
 const { httpRequestDurationMicroseconds } = require('./utils/metrics');
 const notificationScheduler = require('./utils/notificationScheduler');
 const batchOperationManager = require('./utils/batchOperationManager');
+const scheduledVoucherProcessor = require('./utils/scheduledVoucherProcessor');
 
 // Load environment variables
 dotenv.config();
@@ -82,6 +83,10 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/batch', require('./routes/batchOperations'));
 app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/metrics', require('./routes/metrics'));
+app.use('/api/templates', require('./routes/templates'));
+app.use('/api/scheduled-vouchers', require('./routes/scheduledVouchers'));
+app.use('/api/multisig', require('./routes/multiSigOperations'));
+app.use('/api/transfers', require('./routes/transfers'));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -116,6 +121,9 @@ const gracefulShutdown = async () => {
     // Stop notification scheduler
     notificationScheduler.stopJobs();
     
+    // Stop scheduled voucher processor
+    scheduledVoucherProcessor.stop();
+    
     // Stop blockchain listener
     await stopListening();
     
@@ -144,11 +152,15 @@ const startServer = async () => {
         // Start notification scheduler
         notificationScheduler.startJobs();
         
+        // Start scheduled voucher processor
+        scheduledVoucherProcessor.start();
+        
         // Start express server
         server = app.listen(PORT, () => {
             logger.info(`Server running on port ${PORT}`);
             logger.info(`Environment: ${envConfig.nodeEnv}`);
             logger.info('Notification scheduler started');
+            logger.info('Scheduled voucher processor started');
         });
     } catch (error) {
         logger.error('Failed to start server:', error);
