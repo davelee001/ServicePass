@@ -271,6 +271,18 @@ The frontend will be available at `http://localhost:3000`
   - Custom date range selection
   - Batch operation analytics and performance metrics
 
+- **Analytics Dashboard**:
+  - Comprehensive business intelligence and reporting
+  - Real-time summary cards with growth indicators
+  - Voucher type distribution visualization
+  - Top merchant performance rankings
+  - Financial summaries with utilization tracking
+  - Expiry alert system with color-coded warnings
+  - Advanced filtering (date range, merchant, voucher type)
+  - Data export capabilities (JSON/CSV)
+  - Interactive charts and trend analysis
+  - Mobile-responsive design
+
 ### Technology Stack
 - **React 18** - Modern UI framework
 - **React Router v6** - Client-side routing
@@ -342,6 +354,19 @@ The frontend will be available at `http://localhost:3000`
 - `POST /api/batch/retry/:batchId` - Retry failed batch items (Auth required)
 - `GET /api/batch/export/:batchId` - Export batch results (Auth required)
 
+### Analytics Dashboard
+- `GET /api/analytics/dashboard` - Comprehensive dashboard overview with filters (Auth required)
+- `GET /api/analytics/vouchers` - Voucher statistics by type and status (Auth required)
+- `GET /api/analytics/redemptions` - Redemption analytics with time series data (Auth required)
+- `GET /api/analytics/merchants` - Merchant performance metrics and rankings (Auth required)
+- `GET /api/analytics/distribution` - Voucher type distribution analysis (Auth required)
+- `GET /api/analytics/expiry` - Expiry tracking with alert thresholds (Auth required)
+- `GET /api/analytics/financial` - Financial reports and utilization rates (Auth required)
+- `GET /api/analytics/trends` - Time-based trend data for visualization (Auth required)
+- `GET /api/analytics/realtime` - Real-time metrics for last 24 hours (Admin only)
+- `GET /api/analytics/export` - Export analytics data in JSON/CSV format (Auth required)
+- `POST /api/analytics/cache/clear` - Clear analytics cache (Admin only)
+
 ## Key Features
 
 - **Blockchain-Powered**: Built on SUI for security and transparency  
@@ -352,6 +377,7 @@ The frontend will be available at `http://localhost:3000`
 - **Blockchain-Powered**: Built on SUI for security and transparency  
 - **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
 - **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
+- **Analytics Dashboard**: Comprehensive business intelligence with real-time metrics, trend analysis, and executive reporting  
 - **Enhanced Batch Operations**: Advanced bulk processing with progress tracking, pause/resume, priority queues, parallel processing, and comprehensive error handling  
 - **Intelligent Notification System**: Multi-channel notifications with retry logic, bulk processing, scheduling, rate limiting, and analytics  
 - **Real-Time Event Processing**: BullMQ queue system ensures reliable blockchain event handling  
@@ -395,6 +421,20 @@ The frontend will be available at `http://localhost:3000`
 - **Performance Metrics**: Track processing speeds, success rates, and system performance
 - **User Analytics**: Individual user notification history and preferences tracking
 - **System Metrics**: Comprehensive system-wide analytics for administrators
+
+### 📈 Analytics Dashboard
+- **Comprehensive Metrics**: Track total vouchers minted, redeemed, active, and expired across all types
+- **Merchant Performance**: Real-time merchant rankings, success rates, and performance by voucher type
+- **Voucher Distribution**: Visual breakdown of voucher types (Education/Healthcare/Transport/Agriculture)
+- **Expiry Tracking**: Proactive alerts for vouchers expiring in 7/30 days with value tracking
+- **Financial Reports**: Total value analysis, utilization rates, remaining balances, and ROI metrics
+- **Trend Analysis**: Time-based trends (hourly/daily/weekly/monthly) for strategic planning
+- **Advanced Filtering**: Filter by date range, merchant, and voucher type for granular insights
+- **Real-Time Updates**: Live metrics for last 24 hours with active user tracking
+- **Data Export**: Export all analytics in JSON or CSV format for external analysis
+- **Interactive Visualizations**: Charts, graphs, and color-coded indicators for easy interpretation
+- **Performance Optimization**: Intelligent caching system for fast dashboard load times
+- **Role-Based Access**: Admin dashboard for system-wide view, merchant dashboard for specific data
 - **Error Analysis**: Detailed error tracking and analysis for continuous improvement
 
 ### 🔧 Enhanced API Capabilities
@@ -820,6 +860,79 @@ curl -X POST http://localhost:3000/api/vouchers/bulk-mint-enhanced \
     "priority": "high",
     "parallelProcessing": true
   }'
+```
+
+### Analytics Dashboard
+
+#### Get Dashboard Overview
+
+```bash
+# Get comprehensive dashboard with filters
+curl -X GET "http://localhost:3000/api/analytics/dashboard?startDate=2024-01-01&endDate=2024-12-31&voucherType=1" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+#### Get Voucher Statistics
+
+```bash
+# Get voucher stats by type
+curl -X GET "http://localhost:3000/api/analytics/vouchers?voucherType=2&merchantId=CLINIC_001" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+#### Get Merchant Performance
+
+```bash
+# Get merchant analytics
+curl -X GET "http://localhost:3000/api/analytics/merchants?startDate=2024-01-01" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+#### Get Financial Reports
+
+```bash
+# Get financial summary
+curl -X GET "http://localhost:3000/api/analytics/financial?startDate=2024-01-01&endDate=2024-12-31" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+#### Get Trend Data
+
+```bash
+# Get daily trends
+curl -X GET "http://localhost:3000/api/analytics/trends?period=daily&voucherType=1" \
+  -H "Authorization: Bearer <access_token>"
+
+# Get weekly trends
+curl -X GET "http://localhost:3000/api/analytics/trends?period=weekly" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+#### Export Analytics Data
+
+```bash
+# Export dashboard data as JSON
+curl -X GET "http://localhost:3000/api/analytics/export?type=dashboard&format=json" \
+  -H "Authorization: Bearer <access_token>" \
+  -o analytics_export.json
+
+# Export voucher stats as CSV
+curl -X GET "http://localhost:3000/api/analytics/export?type=vouchers&format=csv" \
+  -H "Authorization: Bearer <access_token>" \
+  -o vouchers_stats.csv
+
+# Export financial report
+curl -X GET "http://localhost:3000/api/analytics/export?type=financial&format=json&startDate=2024-01-01" \
+  -H "Authorization: Bearer <access_token>" \
+  -o financial_report.json
+```
+
+#### Real-Time Metrics (Admin)
+
+```bash
+# Get real-time metrics for last 24 hours
+curl -X GET http://localhost:3000/api/analytics/realtime \
+  -H "Authorization: Bearer <admin_access_token>"
 ```
 
 
