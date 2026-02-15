@@ -164,6 +164,132 @@ router.post('/redeem-qr',
     }
 });
 
+// Partial redemption of voucher
+router.post('/redeem-partial', 
+    verifyApiKey, 
+    redemptionLimiter,
+    [
+        body('voucherId').isString().notEmpty().withMessage('Voucher ID is required'),
+        body('amount').isFloat({ min: 0.01 }).withMessage('Amount must be positive'),
+    ],
+    async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                error: 'Validation failed', 
+                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
+            });
+        }
+
+        const { voucherId, amount } = req.body;
+        const merchantId = req.merchant.merchantId;
+
+        const Voucher = require('../models/Voucher');
+        const voucher = await Voucher.findOne({ voucherId });
+
+        if (!voucher) {
+            return res.status(404).json({ 
+                error: 'Voucher not found',
+                message: 'The specified voucher does not exist.'
+            });
+        }
+
+        // Check if voucher allows partial redemption
+        if (!voucher.allowPartialRedemption) {
+            return res.status(400).json({ 
+                error: 'Partial redemption not allowed',
+                message: 'This voucher must be redeemed in full.'
+            });
+        }
+
+        // Check if voucher is fully redeemed
+        if (voucher.status === 'redeemed') {
+            return res.status(400).json({ 
+                error: 'Voucher fully redeemed',
+                message: 'This voucher has been completely used.',
+                remainingAmount: 0
+            });
+        }
+
+        // Check if merchant matches
+        if (voucher.merchantId !== merchantId) {
+            return res.status(403).json({ 
+                error: 'Voucher not valid for this merchant',
+                message: 'This voucher can only be redeemed at the designated merchant.'
+            });
+        }
+
+        // Validate redemption amount
+        if (amount > voucher.remainingAmount) {
+            return res.status(400).json({ 
+                error: 'Insufficient voucher balance',
+                message: `Only ${voucher.remainingAmount} remaining on this voucher.`,
+                remainingAmount: voucher.remainingAmount
+            });
+        }
+
+        // Process partial redemption
+        await voucher.redeemPartially(amount, merchantId);
+
+        // Create partial redemption record
+        const redemption = new Redemption({
+            voucherObjectId: voucherId,
+            transactionDigest: `partial-${Date.now()}`, // Placeholder
+            merchantId,
+            voucherType: voucher.voucherType,
+            amount: amount,
+            redeemedBy: voucher.recipient,
+            metadata: JSON.stringify({ partial: true, remainingAmount: voucher.remainingAmount })
+        });
+        await redemption.save();
+
+        // Update merchant stats
+        await Merchant.findOneAndUpdate(
+            { merchantId },
+            { $inc: { totalRedemptions: 1 } }
+        );
+
+        // Send notification
+        try {
+            await notificationManager.sendNotification(voucher.recipient, 'partial_redemption', {
+                voucherId: voucherId,
+                redeemedAmount: amount,
+                remainingAmount: voucher.remainingAmount,
+                merchantName: merchantId,
+                redemptionDate: new Date().toLocaleDateString()
+            });
+        } catch (notificationError) {
+            logger.error('Failed to send partial redemption notification:', notificationError);
+        }
+
+        logger.info(`Partial redemption: ${voucherId}`, { 
+            merchantId, 
+            amount, 
+            remainingAmount: voucher.remainingAmount 
+        });
+
+        res.json({ 
+            success: true, 
+            message: 'Partial redemption successful',
+            redeemedAmount: amount,
+            remainingAmount: voucher.remainingAmount,
+            fullyRedeemed: voucher.status === 'redeemed'
+        });
+
+    } catch (error) {
+        logger.error(`Partial redemption error: ${error.message}`, { 
+            stack: error.stack,
+            merchantId: req.merchant?.merchantId
+        });
+        
+        res.status(500).json({ 
+            error: 'Partial redemption failed',
+            message: error.message || 'An error occurred during partial redemption.'
+        });
+    }
+});
+
 // Record a redemption (webhook from blockchain event listener or merchant API)
 router.post('/', 
     redemptionLimiter,
