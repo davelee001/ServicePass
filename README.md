@@ -413,38 +413,46 @@ The frontend will be available at `http://localhost:3000`
 
 ## Key Features
 
+### Core Capabilities
 - **Blockchain-Powered**: Built on SUI for security and transparency  
 - **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
 - **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
-## Key Features
-
-- **Blockchain-Powered**: Built on SUI for security and transparency  
-- **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
-- **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
-- **Partial Voucher Redemption**: Redeem vouchers incrementally with automatic balance tracking
-- **Transfer Restrictions**: Control voucher transfers with limits, approvals, and recipient whitelists
-- **Multi-Signature Operations**: Require multiple admin approvals for critical system operations
-- **Scheduled Voucher Issuance**: Automate future voucher creation with recurring schedule support
-- **Voucher Templates**: Create reusable templates for consistent voucher issuance
-- **Analytics Dashboard**: Comprehensive business intelligence with real-time metrics, trend analysis, and executive reporting  
-- **Enhanced Batch Operations**: Advanced bulk processing with progress tracking, pause/resume, priority queues, parallel processing, and comprehensive error handling  
-- **Intelligent Notification System**: Multi-channel notifications with retry logic, bulk processing, scheduling, rate limiting, and analytics  
+- **Secure Authentication**: JWT-based authentication with role-based access control
+- **API Key Management**: Merchants can generate and manage API keys securely
 - **Real-Time Event Processing**: BullMQ queue system ensures reliable blockchain event handling  
 - **Blockchain Retry Logic**: Automatic retry with exponential backoff for failed transactions  
 - **Comprehensive Input Validation**: All endpoints validate inputs using express-validator  
-- **Detailed Error Messages**: User-friendly, informative error responses  
-- **Transaction Failure Handling**: Graceful handling of blockchain failures with retry capability  
-- **JWT Authentication**: Secure role-based access control  
-- **API Key Management**: Merchants can generate and manage API keys  
 - **Rate Limiting**: Comprehensive protection on all endpoints  
-- **Complete Web Interface**: User and merchant portals  
-- **Real-Time Analytics**: Visual reports and business insights  
-- **Secure Redemption**: Burn-on-use prevents double-spending  
-- **Expiry Management**: Configurable voucher expiration  
-- **Real-Time Monitoring**: Live progress tracking, detailed operation metrics, and comprehensive system analytics  
 - **Audit Trail**: Complete transaction history on blockchain  
-- **Responsive Design**: Works on all devices  
-- **Comprehensive Testing**: Full unit and integration test coverage including enhanced batch and notification systems  
+
+### Advanced Features
+- **Partial Voucher Redemption**: Redeem vouchers incrementally with automatic balance tracking
+- **Transfer Restrictions**: Control voucher transfers with limits, approvals, and recipient whitelists
+- **Multi-Signature Operations**: Require multiple admin approvals for critical system operations (8 operation types)
+- **Scheduled Voucher Issuance**: Automate future voucher creation with recurring schedule support (daily/weekly/monthly/yearly)
+- **Voucher Templates**: Create reusable templates for consistent voucher issuance with usage tracking
+
+### Enterprise Capabilities
+- **Analytics Dashboard**: Comprehensive business intelligence with real-time metrics, trend analysis, and executive reporting  
+- **Enhanced Batch Operations**: Advanced bulk processing with progress tracking, pause/resume, priority queues, parallel processing, and comprehensive error handling  
+- **Intelligent Notification System**: Multi-channel notifications (Email/SMS/Push) with retry logic, bulk processing, scheduling, rate limiting, and analytics  
+- **Real-Time Monitoring**: Live progress tracking, detailed operation metrics, and comprehensive system analytics  
+- **Data Export**: Export analytics and reports in JSON/CSV formats
+- **Performance Optimization**: Intelligent caching and query optimization for fast response times
+
+### User Experience
+- **Complete Web Interface**: User and merchant portals with responsive design
+- **Real-Time Analytics**: Visual reports and business insights with interactive charts
+- **Detailed Error Messages**: User-friendly, informative error responses  
+- **Mobile Responsive**: Works seamlessly on all devices  
+- **Transaction Failure Handling**: Graceful handling of blockchain failures with retry capability  
+
+### Quality & Reliability
+- **Comprehensive Testing**: 1,500+ lines of test code with full unit and integration coverage
+- **Secure Redemption**: Burn-on-use prevents double-spending  
+- **Expiry Management**: Configurable voucher expiration with automated tracking
+- **Error Recovery**: Robust error handling and automatic recovery mechanisms
+- **Continuous Integration**: Automated testing and deployment workflows
 
 ## Enhanced System Capabilities
 
@@ -1212,7 +1220,7 @@ See [FRONTEND_DEPLOYMENT.md](docs/FRONTEND_DEPLOYMENT.md) for frontend deploymen
 
 ## Testing
 
-ServicePass includes a comprehensive test suite covering unit tests, integration tests, and end-to-end scenarios.
+ServicePass includes a comprehensive test suite with **1,500+ lines of test code** covering unit tests, integration tests, and end-to-end scenarios across all core and advanced features.
 
 ### Run Tests
 
@@ -1229,29 +1237,135 @@ npm test -- --watch
 
 # Run specific test file
 npm test voucher.model.test.js
+
+# Run all advanced feature tests
+npm test -- --testPathPattern="(voucherTemplate|scheduledVoucher|multiSig|voucherTransfer|templates).*.test.js"
 ```
 
-### Test Coverage
+### Test Coverage Overview
 
-- **Unit Tests**: Models, utilities, and business logic
-- **Integration Tests**: API routes and database operations
-- **QR Code Security**: Signature verification and anti-fraud tests
-- **Redemption Flow**: Complete voucher lifecycle testing
-- **Authentication**: JWT and API key validation
+ServicePass maintains comprehensive test coverage across:
+- ✅ **Model Layer**: Database schemas, validation logic, and query methods
+- ✅ **API Routes**: All REST endpoints with authentication and authorization
+- ✅ **Business Logic**: Core voucher operations and advanced features
+- ✅ **Security**: QR code signatures, anti-fraud measures, JWT validation
+- ✅ **Redemption Flow**: Complete voucher lifecycle from creation to redemption
+- ✅ **Error Handling**: Edge cases, validation failures, and recovery scenarios
 
-### Test Suite Includes
+### Test Suite Details
 
-- Voucher model validation and database operations  
-- QR code generation and signature verification  
-- Secure redemption with fraud prevention  
-- Double-redemption prevention  
-- Merchant authorization and API key validation  
-- Enhanced notification system with retry logic, bulk processing, scheduling, and rate limiting
-- Advanced batch operations with queue management, progress tracking, and error handling
-- Analytics and reporting functionality
-- Error handling and edge cases  
-- Mock blockchain interactions for isolated testing  
-- In-memory database for fast, reliable tests
+#### Core Functionality Tests
+**Voucher Model** (`voucher.model.test.js`)
+- Model validation and database operations
+- Voucher type constraints (1-4 for EDU/HEALTH/TRANSPORT/AGRI)
+- Expiry date handling and timezone management
+- Balance tracking for partial redemptions
+
+**Redemption Routes** (`redemptions.routes.test.js`)
+- QR code generation with cryptographic signatures
+- Secure redemption with signature verification
+- Double-redemption prevention with database locking
+- Anti-fraud detection mechanisms
+
+**Voucher Routes** (`vouchers.routes.test.js`)
+- Voucher creation and management endpoints
+- Search and filtering capabilities
+- Merchant authorization via API keys
+- Role-based access control (Admin/Merchant/User)
+
+#### Advanced Features Tests (1,485+ lines)
+
+**Voucher Templates** (`voucherTemplate.model.test.js` - 232 lines, 8 test suites)
+- Template creation with comprehensive validation (name, category, voucher type 1-4)
+- Default values for amount, expiry days, and redemption settings
+- Usage tracking with increment counters
+- Query helpers: `findActive()`, `findByCategory()`
+- Transfer restriction configurations
+- Metadata storage for custom fields
+- Template duplication and deactivation workflows
+
+**Scheduled Vouchers** (`scheduledVoucher.model.test.js` - 254 lines, 7 test suites)
+- Scheduled voucher creation with future execution dates
+- Recurring schedules: daily, weekly, monthly, yearly patterns
+- Status management: pending → processing → completed/failed
+- Schedule cancellation with state validation
+- Query methods: `findReady()`, `findPending()` with timestamp filtering
+- Template integration for automated voucher creation
+- Complete lifecycle tracking from schedule to execution
+
+**Multi-Signature Operations** (`multiSigOperation.model.test.js` - 334 lines, 8 test suites)
+- All 8 critical operation types: voucher issuance, template changes, merchant management, system configuration, transfer approvals, batch operations, analytics access, emergency actions
+- Signature collection with duplicate prevention logic
+- Auto-approval when required signatures (2-3) are reached
+- Status transitions: pending → approved → executed/rejected/expired
+- Query helpers: `findPending()`, `findExpired()` for admin workflows
+- Complete operation lifecycle with approval tracking
+- Expiry handling for time-sensitive operations
+
+**Voucher Transfers** (`voucherTransfer.model.test.js` - 319 lines, 8 test suites)
+- Transfer request creation (full and partial types)
+- Approval workflow: pending → approved → completed
+- Rejection handling with reason tracking
+- Partial transfer amount validation against voucher balance
+- Transfer history queries via `getVoucherHistory()`
+- Metadata storage for transfer notes and context
+- Complete lifecycle: creation → approval → execution → completion/failure
+
+**Template API Routes** (`templates.routes.test.js` - 340+ lines, 9 test suites)
+- All 11 template endpoints with full coverage
+- Authentication: JWT token validation for all requests
+- Authorization: Admin-only endpoints vs user-accessible endpoints
+- Template CRUD operations with validation
+- Search and filtering: by name, category, active status
+- Analytics endpoints: popular templates, usage statistics
+- Template duplication with unique ID generation
+- Edge cases: non-existent templates, invalid data, permission denials
+
+#### Enhanced Systems Tests
+**Notification System**
+- Multi-channel delivery (Email/SMS/Push)
+- Retry logic with exponential backoff (up to 3 attempts)
+- Bulk notification processing with batch sizes
+- Scheduled delivery with precise timing
+- Rate limiting (10 notifications/minute per type)
+- Analytics tracking for delivery success rates
+
+**Batch Operations**
+- Progress tracking with completion percentages
+- Queue management with priority levels
+- Pause/resume functionality with state persistence
+- Parallel vs sequential processing modes
+- Error handling with partial success support
+- Export results in JSON/CSV formats
+
+**Analytics & Reporting**
+- Real-time metrics aggregation
+- Trend analysis (hourly/daily/weekly/monthly)
+- Performance metrics and success rates
+- Data export functionality
+
+### Test Infrastructure
+
+**Testing Tools**
+- **Jest**: Primary testing framework
+- **Supertest**: HTTP endpoint testing
+- **MongoDB Memory Server**: In-memory database for fast, isolated tests
+- **JWT**: Token generation for authentication testing
+- **Mock Blockchain**: Simulated SUI blockchain interactions
+
+**Test Patterns**
+- `beforeAll()`: Database connection and test user creation
+- `beforeEach()`: Test isolation with collection cleanup
+- `describe()`: Logical grouping of related tests
+- Comprehensive edge case coverage
+- Integration tests for complete workflows
+- Unit tests for individual functions
+
+**Continuous Integration**
+- Automated test execution on every push
+- Pull request validation with test results
+- Code coverage reporting
+- Test failure notifications
 
 ## License
 
