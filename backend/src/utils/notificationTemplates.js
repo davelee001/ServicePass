@@ -168,9 +168,10 @@ class NotificationTemplates {
                 }
             };
         }
+    }
         
-        static bulkOperationComplete(operationData) {
-            const { operationType, totalRecords, successCount, failureCount, duration, batchId } = operationData;
+    static bulkOperationComplete(operationData) {
+        const { operationType, totalRecords, successCount, failureCount, duration, batchId } = operationData;
             
             return {
                 email: {
@@ -278,7 +279,6 @@ class NotificationTemplates {
                 }
             };
         }
-    }
 }
 
 module.exports = NotificationTemplates;

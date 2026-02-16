@@ -531,7 +531,233 @@ class NotificationManager {
     }
     
     // Schedule notifications for future delivery
-    async scheduleNotification(userId, type, data, scheduleTime, options = {}) {\n        const scheduleId = `schedule_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;\n        \n        this.scheduledNotifications.set(scheduleId, {\n            userId,\n            type,\n            data,\n            options,\n            scheduleTime: new Date(scheduleTime).getTime(),\n            scheduleId,\n            status: 'scheduled'\n        });\n        \n        logger.info(`Notification scheduled for ${new Date(scheduleTime)} with ID ${scheduleId}`);\n        \n        return {\n            scheduleId,\n            scheduleTime: new Date(scheduleTime),\n            status: 'scheduled'\n        };\n    }\n    \n    // Process scheduled notifications\n    startScheduledProcessor() {\n        setInterval(async () => {\n            const now = Date.now();\n            const toSend = [];\n            \n            for (const [scheduleId, data] of this.scheduledNotifications.entries()) {\n                if (data.status === 'scheduled' && data.scheduleTime <= now) {\n                    toSend.push(data);\n                    this.scheduledNotifications.delete(scheduleId);\n                }\n            }\n            \n            for (const data of toSend) {\n                try {\n                    await this.sendNotification(data.userId, data.type, data.data, data.options);\n                    logger.info(`Scheduled notification ${data.scheduleId} sent successfully`);\n                } catch (error) {\n                    logger.error(`Failed to send scheduled notification ${data.scheduleId}:`, error);\n                }\n            }\n        }, 10000); // Check every 10 seconds\n    }\n    \n    // Get batch status\n    getBatchStatus(batchId) {\n        return this.batchQueue.get(batchId) || { error: 'Batch not found' };\n    }\n    \n    // Cancel scheduled notification\n    cancelScheduledNotification(scheduleId) {\n        const notification = this.scheduledNotifications.get(scheduleId);\n        if (notification) {\n            this.scheduledNotifications.delete(scheduleId);\n            return { success: true, message: 'Notification cancelled' };\n        }\n        return { success: false, message: 'Notification not found' };\n    }\n    \n    // Get notification analytics\n    getAnalytics() {\n        const totalNotifications = this.analytics.totalSent + this.analytics.totalFailed;\n        \n        return {\n            ...this.analytics,\n            successRate: totalNotifications > 0 ? (this.analytics.totalSent / totalNotifications) * 100 : 0,\n            totalNotifications,\n            retryQueueSize: this.retryQueue.size,\n            batchQueueSize: this.batchQueue.size,\n            scheduledCount: this.scheduledNotifications.size\n        };\n    }\n    \n    // Get notification analytics\n    getAnalytics() {\n        const totalNotifications = this.analytics.totalSent + this.analytics.totalFailed;\n        \n        return {\n            ...this.analytics,\n            successRate: totalNotifications > 0 ? (this.analytics.totalSent / totalNotifications) * 100 : 0,\n            totalNotifications,\n            retryQueueSize: this.retryQueue.size,\n            batchQueueSize: this.batchQueue.size,\n            scheduledCount: this.scheduledNotifications.size\n        };\n    }\n    \n    // Get user-specific analytics\n    async getUserAnalytics(userId) {\n        try {\n            const thirtyDaysAgo = new Date();\n            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);\n            \n            const userHistory = await NotificationHistory.find({\n                userId,\n                createdAt: { $gte: thirtyDaysAgo }\n            });\n            \n            const channelStats = { email: 0, sms: 0, push: 0 };\n            const statusStats = { sent: 0, failed: 0 };\n            const typeStats = {};\n            \n            userHistory.forEach(record => {\n                channelStats[record.channel] = (channelStats[record.channel] || 0) + 1;\n                statusStats[record.status] = (statusStats[record.status] || 0) + 1;\n                typeStats[record.type] = (typeStats[record.type] || 0) + 1;\n            });\n            \n            return {\n                totalNotifications: userHistory.length,\n                channelStats,\n                statusStats,\n                typeStats,\n                successRate: userHistory.length > 0 ? (statusStats.sent / userHistory.length) * 100 : 0,\n                lastNotification: userHistory.length > 0 ? userHistory[userHistory.length - 1].createdAt : null\n            };\n        } catch (error) {\n            logger.error(`Error fetching user analytics for ${userId}:`, error);\n            throw error;\n        }\n    }\n    \n    // Get rate limit status for user\n    async getRateLimitStatus(userId) {\n        if (!this.rateLimits) {\n            return { status: 'No rate limits applied' };\n        }\n        \n        const now = Date.now();\n        const windowMs = 60 * 1000; // 1 minute window\n        const maxRequests = 10;\n        \n        const rateLimitData = {};\n        \n        for (const [key, requests] of this.rateLimits.entries()) {\n            if (key.startsWith(userId)) {\n                const type = key.split('_')[1];\n                const validRequests = requests.filter(time => now - time < windowMs);\n                rateLimitData[type] = {\n                    requests: validRequests.length,\n                    maxRequests,\n                    remainingRequests: maxRequests - validRequests.length,\n                    resetTime: validRequests.length > 0 ? new Date(Math.min(...validRequests) + windowMs) : null\n                };\n            }\n        }\n        \n        return rateLimitData;\n    }\n    \n    // Process scheduled notifications manually\n    async processScheduledNotifications() {\n        const now = Date.now();\n        const toSend = [];\n        \n        for (const [scheduleId, data] of this.scheduledNotifications.entries()) {\n            if (data.status === 'scheduled' && data.scheduleTime <= now) {\n                toSend.push(data);\n            }\n        }\n        \n        const results = [];\n        \n        for (const data of toSend) {\n            try {\n                await this.sendNotification(data.userId, data.type, data.data, data.options);\n                this.scheduledNotifications.delete(data.scheduleId);\n                results.push({ scheduleId: data.scheduleId, status: 'sent' });\n            } catch (error) {\n                logger.error(`Failed to send scheduled notification ${data.scheduleId}:`, error);\n                results.push({ scheduleId: data.scheduleId, status: 'failed', error: error.message });\n            }\n        }\n        \n        return results;\n    }\n    \n    // Rate limiting for notifications\n    async checkRateLimit(userId, type) {\n        const rateLimitKey = `${userId}_${type}`;\n        const now = Date.now();\n        const windowMs = 60 * 1000; // 1 minute window\n        const maxRequests = 10; // max 10 notifications per minute per type\n        \n        if (!this.rateLimits) {\n            this.rateLimits = new Map();\n        }\n        \n        const userLimits = this.rateLimits.get(rateLimitKey) || [];\n        \n        // Remove expired entries\n        const validRequests = userLimits.filter(time => now - time < windowMs);\n        \n        if (validRequests.length >= maxRequests) {\n            return false;\n        }\n        \n        validRequests.push(now);\n        this.rateLimits.set(rateLimitKey, validRequests);\n        \n        return true;\n    }\n    \n    // Enhanced template system with dynamic variables\n    getTemplate(type, data, priority = 'medium', customVariables = {}) {\n        const templateData = { ...data, ...customVariables };\n        \n        // Add system variables\n        templateData.currentDate = new Date().toLocaleDateString();\n        templateData.systemName = 'ServicePass';\n        templateData.supportEmail = process.env.SUPPORT_EMAIL || 'support@servicepass.com';\n        templateData.frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';\n        \n        // Priority-based styling\n        const priorityStyles = {\n            high: { color: '#F44336', urgency: 'URGENT' },\n            medium: { color: '#FF9800', urgency: 'Important' },\n            low: { color: '#4CAF50', urgency: 'Information' }\n        };\n        \n        templateData.priorityStyle = priorityStyles[priority] || priorityStyles.medium;\n        \n        switch (type) {\n            case 'voucher_received':\n                return NotificationTemplates.voucherReceived(templateData);\n            case 'voucher_expiring':\n                return NotificationTemplates.voucherExpiringSoon(templateData);\n            case 'redemption_confirmation':\n                return NotificationTemplates.redemptionConfirmation(templateData);\n            case 'bulk_operation_complete':\n                return NotificationTemplates.bulkOperationComplete(templateData);\n            case 'system_maintenance':\n                return NotificationTemplates.systemMaintenance(templateData);\n            case 'security_alert':\n                return NotificationTemplates.securityAlert(templateData);\n            default:\n                return null;\n        }\n    }
+    async scheduleNotification(userId, type, data, scheduleTime, options = {}) {
+        const scheduleId = `schedule_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        this.scheduledNotifications.set(scheduleId, {
+            userId,
+            type,
+            data,
+            options,
+            scheduleTime: new Date(scheduleTime).getTime(),
+            scheduleId,
+            status: 'scheduled'
+        });
+        
+        logger.info(`Notification scheduled for ${new Date(scheduleTime)} with ID ${scheduleId}`);
+        
+        return {
+            scheduleId,
+            scheduleTime: new Date(scheduleTime),
+            status: 'scheduled'
+        };
+    }
+    
+    // Process scheduled notifications
+    startScheduledProcessor() {
+        setInterval(async () => {
+            const now = Date.now();
+            const toSend = [];
+            
+            for (const [scheduleId, data] of this.scheduledNotifications.entries()) {
+                if (data.status === 'scheduled' && data.scheduleTime <= now) {
+                    toSend.push(data);
+                    this.scheduledNotifications.delete(scheduleId);
+                }
+            }
+            
+            for (const data of toSend) {
+                try {
+                    await this.sendNotification(data.userId, data.type, data.data, data.options);
+                    logger.info(`Scheduled notification ${data.scheduleId} sent successfully`);
+                } catch (error) {
+                    logger.error(`Failed to send scheduled notification ${data.scheduleId}:`, error);
+                }
+            }
+        }, 10000); // Check every 10 seconds
+    }
+    
+    // Get batch status
+    getBatchStatus(batchId) {
+        return this.batchQueue.get(batchId) || { error: 'Batch not found' };
+    }
+    
+    // Cancel scheduled notification
+    cancelScheduledNotification(scheduleId) {
+        const notification = this.scheduledNotifications.get(scheduleId);
+        if (notification) {
+            this.scheduledNotifications.delete(scheduleId);
+            return { success: true, message: 'Notification cancelled' };
+        }
+        return { success: false, message: 'Notification not found' };
+    }
+    
+    // Get notification analytics
+    getAnalytics() {
+        const totalNotifications = this.analytics.totalSent + this.analytics.totalFailed;
+        
+        return {
+            ...this.analytics,
+            successRate: totalNotifications > 0 ? (this.analytics.totalSent / totalNotifications) * 100 : 0,
+            totalNotifications,
+            retryQueueSize: this.retryQueue.size,
+            batchQueueSize: this.batchQueue.size,
+            scheduledCount: this.scheduledNotifications.size
+        };
+    }
+    
+    // Get user-specific analytics
+    async getUserAnalytics(userId) {
+        try {
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            const userHistory = await NotificationHistory.find({
+                userId,
+                createdAt: { $gte: thirtyDaysAgo }
+            });
+            
+            const channelStats = { email: 0, sms: 0, push: 0 };
+            const statusStats = { sent: 0, failed: 0 };
+            const typeStats = {};
+            
+            userHistory.forEach(record => {
+                channelStats[record.channel] = (channelStats[record.channel] || 0) + 1;
+                statusStats[record.status] = (statusStats[record.status] || 0) + 1;
+                typeStats[record.type] = (typeStats[record.type] || 0) + 1;
+            });
+            
+            return {
+                totalNotifications: userHistory.length,
+                channelStats,
+                statusStats,
+                typeStats,
+                successRate: userHistory.length > 0 ? (statusStats.sent / userHistory.length) * 100 : 0,
+                lastNotification: userHistory.length > 0 ? userHistory[userHistory.length - 1].createdAt : null
+            };
+        } catch (error) {
+            logger.error(`Error fetching user analytics for ${userId}:`, error);
+            throw error;
+        }
+    }
+    
+    // Get rate limit status for user
+    async getRateLimitStatus(userId) {
+        if (!this.rateLimits) {
+            return { status: 'No rate limits applied' };
+        }
+        
+        const now = Date.now();
+        const windowMs = 60 * 1000; // 1 minute window
+        const maxRequests = 10;
+        
+        const rateLimitData = {};
+        
+        for (const [key, requests] of this.rateLimits.entries()) {
+            if (key.startsWith(userId)) {
+                const type = key.split('_')[1];
+                const validRequests = requests.filter(time => now - time < windowMs);
+                rateLimitData[type] = {
+                    requests: validRequests.length,
+                    maxRequests,
+                    remainingRequests: maxRequests - validRequests.length,
+                    resetTime: validRequests.length > 0 ? new Date(Math.min(...validRequests) + windowMs) : null
+                };
+            }
+        }
+        
+        return rateLimitData;
+    }
+    
+    // Process scheduled notifications manually
+    async processScheduledNotifications() {
+        const now = Date.now();
+        const toSend = [];
+        
+        for (const [scheduleId, data] of this.scheduledNotifications.entries()) {
+            if (data.status === 'scheduled' && data.scheduleTime <= now) {
+                toSend.push(data);
+            }
+        }
+        
+        const results = [];
+        
+        for (const data of toSend) {
+            try {
+                await this.sendNotification(data.userId, data.type, data.data, data.options);
+                this.scheduledNotifications.delete(data.scheduleId);
+                results.push({ scheduleId: data.scheduleId, status: 'sent' });
+            } catch (error) {
+                logger.error(`Failed to send scheduled notification ${data.scheduleId}:`, error);
+                results.push({ scheduleId: data.scheduleId, status: 'failed', error: error.message });
+            }
+        }
+        
+        return results;
+    }
+    
+    // Rate limiting for notifications
+    async checkRateLimit(userId, type) {
+        const rateLimitKey = `${userId}_${type}`;
+        const now = Date.now();
+        const windowMs = 60 * 1000; // 1 minute window
+        const maxRequests = 10; // max 10 notifications per minute per type
+        
+        if (!this.rateLimits) {
+            this.rateLimits = new Map();
+        }
+        
+        const userLimits = this.rateLimits.get(rateLimitKey) || [];
+        
+        // Remove expired entries
+        const validRequests = userLimits.filter(time => now - time < windowMs);
+        
+        if (validRequests.length >= maxRequests) {
+            return false;
+        }
+        
+        validRequests.push(now);
+        this.rateLimits.set(rateLimitKey, validRequests);
+        
+        return true;
+    }
+    
+    // Enhanced template system with dynamic variables
+    getTemplate(type, data, priority = 'medium', customVariables = {}) {
+        const templateData = { ...data, ...customVariables };
+        
+        // Add system variables
+        templateData.currentDate = new Date().toLocaleDateString();
+        templateData.systemName = 'ServicePass';
+        templateData.supportEmail = process.env.SUPPORT_EMAIL || 'support@servicepass.com';
+        templateData.frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        
+        // Priority-based styling
+        const priorityStyles = {
+            high: { color: '#F44336', urgency: 'URGENT' },
+            medium: { color: '#FF9800', urgency: 'Important' },
+            low: { color: '#4CAF50', urgency: 'Information' }
+        };
+        
+        templateData.priorityStyle = priorityStyles[priority] || priorityStyles.medium;
+        
+        switch (type) {
+            case 'voucher_received':
+                return NotificationTemplates.voucherReceived(templateData);
+            case 'voucher_expiring':
+                return NotificationTemplates.voucherExpiringSoon(templateData);
+            case 'redemption_confirmation':
+                return NotificationTemplates.redemptionConfirmation(templateData);
+            case 'bulk_operation_complete':
+                return NotificationTemplates.bulkOperationComplete(templateData);
+            case 'system_maintenance':
+                return NotificationTemplates.systemMaintenance(templateData);
+            case 'security_alert':
+                return NotificationTemplates.securityAlert(templateData);
+            default:
+                return null;
+        }
+    }
 
     // Check for expiring vouchers and send notifications
     async checkExpiringVouchers() {
