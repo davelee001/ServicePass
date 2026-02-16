@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { voucherAPI } from '../services/api';
+import PartialRedemptionModal from '../components/PartialRedemptionModal';
 import { 
   getVoucherTypeName, 
   getVoucherTypeColor,
@@ -14,6 +15,8 @@ import './VoucherList.css';
 
 function VoucherList({ walletAddress }) {
   const [filter, setFilter] = useState('all'); // all, active, expired
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const [showRedemptionModal, setShowRedemptionModal] = useState(false);
 
   const { data: vouchersData, isLoading } = useQuery({
     queryKey: ['vouchers', walletAddress],
@@ -84,14 +87,18 @@ function VoucherList({ walletAddress }) {
           const fields = voucher.data?.content?.fields || {};
           const voucherType = fields.voucher_type;
           const balance = fields.balance || 0;
+          const originalAmount = fields.original_amount || balance;
           const expiry = fields.expiry_timestamp;
           const expired = expiry && isVoucherExpired(expiry);
           const objectId = voucher.data?.objectId;
+          const allowPartialRedemption = fields.allow_partial_redemption !== false;
+          const partiallyRedeemed = balance < originalAmount;
+          const redemptionPercentage = ((originalAmount - balance) / originalAmount) * 100;
 
           return (
             <div 
               key={objectId} 
-              className={`voucher-card ${expired ? 'expired' : ''}`}
+              className={`voucher-card ${expired ? 'expired' : ''} ${partiallyRedeemed ? 'partially-redeemed' : ''}`}
               style={{ borderTopColor: getVoucherTypeColor(voucherType) }}
             >
               <div className="voucher-header">
@@ -101,12 +108,37 @@ function VoucherList({ walletAddress }) {
                   <p className="voucher-id">ID: {shortenAddress(objectId)}</p>
                 </div>
                 {expired && <span className="expired-badge">Expired</span>}
+                {partiallyRedeemed && !expired && (
+                  <span className="partial-badge">Partially Used</span>
+                )}
               </div>
 
               <div className="voucher-balance">
                 <span className="label">Available Balance</span>
                 <span className="amount">{formatCurrency(balance)}</span>
               </div>
+
+              {allowPartialRedemption && partiallyRedeemed && (
+                <div className="redemption-progress">
+                  <div className="progress-label">
+                    <span>Used: {redemptionPercentage.toFixed(0)}%</span>
+                    <span>Remaining: {formatCurrency(balance)}</span>
+                  </div>
+                  <div className="progress-bar-container">
+                    <div 
+                      className="progress-bar-fill" 
+                      style={{ width: `${redemptionPercentage}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+
+              {allowPartialRedemption && originalAmount > balance && (
+                <div className="original-amount">
+                  <span className="label">Original Amount:</span>
+                  <span>{formatCurrency(originalAmount)}</span>
+                </div>
+              )}
 
               <div className="voucher-details">
                 <div className="detail-row">
@@ -121,11 +153,25 @@ function VoucherList({ walletAddress }) {
                     <span>{String.fromCharCode(...fields.merchant_id)}</span>
                   </div>
                 )}
+                {allowPartialRedemption && (
+                  <div className="detail-row">
+                    <span className="label">Redemption Type:</span>
+                    <span className="badge-partial">Partial Allowed</span>
+                  </div>
+                )}
               </div>
 
-              {!expired && (
+              {!expired && balance > 0 && (
                 <div className="voucher-actions">
-                  <button className="btn-primary">Use Voucher</button>
+                  <button 
+                    className="btn-primary"
+                    onClick={() => {
+                      setSelectedVoucher(voucher);
+                      setShowRedemptionModal(true);
+                    }}
+                  >
+                    {allowPartialRedemption ? 'Redeem Amount' : 'Use Voucher'}
+                  </button>
                   <button className="btn-secondary">View Details</button>
                 </div>
               )}
@@ -138,6 +184,17 @@ function VoucherList({ walletAddress }) {
         <div className="no-vouchers">
           <p>No {filter !== 'all' ? filter : ''} vouchers found.</p>
         </div>
+      )}
+
+      {showRedemptionModal && (
+        <PartialRedemptionModal
+          voucher={selectedVoucher}
+          walletAddress={walletAddress}
+          onClose={() => {
+            setShowRedemptionModal(false);
+            setSelectedVoucher(null);
+          }}
+        />
       )}
     </div>
   );
