@@ -9,6 +9,11 @@ import RedemptionHistory from './pages/RedemptionHistory';
 import MerchantRedemptions from './pages/MerchantRedemptions';
 import MerchantReports from './pages/MerchantReports';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import TemplateGallery from './pages/TemplateGallery';
+import NotificationPreferences from './components/NotificationPreferences';
+import ScheduledVouchers from './pages/ScheduledVouchers';
+import TransferManagement from './pages/TransferManagement';
+import MultiSigOperations from './pages/MultiSigOperations';
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -54,8 +59,28 @@ function App() {
                 path="/user/history" 
                 element={<RedemptionHistory walletAddress={walletAddress} />} 
               />
+              <Route 
+                path="/user/notifications" 
+                element={<NotificationPreferences userId={walletAddress} />} 
+              />
+              <Route 
+                path="/user/templates" 
+                element={<TemplateGallery userRole="user" />} 
+              />
+              <Route 
+                path="/user/scheduled" 
+                element={<ScheduledVouchers walletAddress={walletAddress} />} 
+              />
+              <Route 
+                path="/user/transfers" 
+                element={<TransferManagement walletAddress={walletAddress} />} 
+              />
+              <Route 
+                path="/user/multisig" 
+                element={<MultiSigOperations walletAddress={walletAddress} />} 
+              />
 
-              {/* Merchant Routes */}
+              {/* Merchant Routes */
               <Route 
                 path="/merchant/dashboard" 
                 element={<MerchantDashboard merchantId={merchantId} />} 
@@ -67,6 +92,22 @@ function App() {
               <Route 
                 path="/merchant/reports" 
                 element={<MerchantReports merchantId={merchantId} />} 
+              />
+              <Route 
+                path="/merchant/templates" 
+                element={<TemplateGallery userRole="admin" />} 
+              />
+              <Route 
+                path="/merchant/scheduled" 
+                element={<ScheduledVouchers walletAddress={merchantId} />} 
+              />
+              <Route 
+                path="/merchant/transfers" 
+                element={<TransferManagement walletAddress={merchantId} />} 
+              />
+              <Route 
+                path="/merchant/multisig" 
+                element={<MultiSigOperations walletAddress={merchantId} />} 
               />
               
               {/* Analytics Dashboard */}

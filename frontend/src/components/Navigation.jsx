@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaWallet, FaStore, FaTicketAlt, FaHistory, FaChartBar, FaChartPie } from 'react-icons/fa';
+import { FaWallet, FaStore, FaTicketAlt, FaHistory, FaChartBar, FaChartPie, FaClock, FaExchangeAlt, FaUsers, FaBell, FaLayerGroup } from 'react-icons/fa';
 import { shortenAddress } from '../utils/helpers';
 import './Navigation.css';
 
@@ -53,8 +53,23 @@ function Navigation({ userType, setUserType, walletAddress, setWalletAddress, me
               <Link to="/user/vouchers" className={isActive('/user/vouchers') ? 'active' : ''}>
                 <FaTicketAlt /> My Vouchers
               </Link>
+              <Link to="/user/templates" className={isActive('/user/templates') ? 'active' : ''}>
+                <FaLayerGroup /> Templates
+              </Link>
+              <Link to="/user/scheduled" className={isActive('/user/scheduled') ? 'active' : ''}>
+                <FaClock /> Scheduled
+              </Link>
+              <Link to="/user/transfers" className={isActive('/user/transfers') ? 'active' : ''}>
+                <FaExchangeAlt /> Transfers
+              </Link>
+              <Link to="/user/multisig" className={isActive('/user/multisig') ? 'active' : ''}>
+                <FaUsers /> Multi-Sig
+              </Link>
               <Link to="/user/history" className={isActive('/user/history') ? 'active' : ''}>
-                <FaHistory /> Redemption History
+                <FaHistory /> History
+              </Link>
+              <Link to="/user/notifications" className={isActive('/user/notifications') ? 'active' : ''}>
+                <FaBell /> Notifications
               </Link>
               <Link to="/analytics" className={isActive('/analytics') ? 'active' : ''}>
                 <FaChartPie /> Analytics
@@ -67,6 +82,18 @@ function Navigation({ userType, setUserType, walletAddress, setWalletAddress, me
               </Link>
               <Link to="/merchant/redemptions" className={isActive('/merchant/redemptions') ? 'active' : ''}>
                 <FaTicketAlt /> Redemptions
+              </Link>
+              <Link to="/merchant/templates" className={isActive('/merchant/templates') ? 'active' : ''}>
+                <FaLayerGroup /> Templates
+              </Link>
+              <Link to="/merchant/scheduled" className={isActive('/merchant/scheduled') ? 'active' : ''}>
+                <FaClock /> Scheduled
+              </Link>
+              <Link to="/merchant/transfers" className={isActive('/merchant/transfers') ? 'active' : ''}>
+                <FaExchangeAlt /> Transfers
+              </Link>
+              <Link to="/merchant/multisig" className={isActive('/merchant/multisig') ? 'active' : ''}>
+                <FaUsers /> Multi-Sig
               </Link>
               <Link to="/merchant/reports" className={isActive('/merchant/reports') ? 'active' : ''}>
                 <FaHistory /> Reports
