@@ -36,7 +36,8 @@ ServicePass is a **production-ready** voucher system with:
 ✅ **Enterprise-Grade Security**: JWT authentication, API keys, QR signatures, and audit trails  
 ✅ **Complete Frontend UI**: 15+ React pages including Template Gallery, Scheduled Vouchers, Transfer Management, Multi-Sig Operations  
 ✅ **Responsive Web App**: User and merchant portals built with React 18 + Vite + TanStack Query  
-✅ **Production Ready**: CI/CD workflows, error handling, and comprehensive documentation
+✅ **Comprehensive Documentation**: API docs (Swagger/OpenAPI), user guides, merchant onboarding, smart contract audit, deployment runbook  
+✅ **Production Ready**: CI/CD workflows, error handling, and enterprise-grade documentation
 
 ## Voucher Types
 
@@ -131,7 +132,16 @@ ServicePass/
 │       │   └── api.js            # API client with 85+ endpoints
 │       └── utils/                # Helper functions
 │           └── helpers.js        # Utility functions
-├── docs/                         # Documentation
+├── docs/                         # Comprehensive Documentation
+│   ├── API_DOCUMENTATION.md     # Complete API reference with Swagger/OpenAPI
+│   ├── USER_GUIDE.md            # End-user documentation and tutorials
+│   ├── MERCHANT_ONBOARDING.md   # Merchant setup and operational guide
+│   ├── SMART_CONTRACT_AUDIT.md  # Security audit report and findings
+│   ├── DEPLOYMENT_RUNBOOK.md    # Production deployment procedures
+│   ├── ARCHITECTURE.md          # System architecture and design
+│   ├── AUTHENTICATION.md        # Auth flows and security
+│   ├── QR_CODE_SYSTEM.md        # QR code implementation
+│   └── FRONTEND_FEATURES.md     # Frontend capabilities
 ├── scripts/                      # Deployment and utility scripts
 └── Move.toml                     # SUI Move project config
 ```
@@ -1469,6 +1479,71 @@ ServicePass maintains comprehensive test coverage across:
 - Code coverage reporting
 - Test failure notifications
 
+## 📚 Documentation
+
+ServicePass includes comprehensive documentation to support developers, users, merchants, and operators:
+
+### [API Documentation](docs/API_DOCUMENTATION.md)
+Complete API reference with Swagger/OpenAPI specifications covering:
+- 85+ documented endpoints with request/response examples
+- Authentication flows (JWT tokens, API keys)
+- OpenAPI 3.0 specification for API integration
+- Rate limiting and security guidelines
+- Error handling and status codes
+- Code examples in multiple languages (cURL, JavaScript, Python)
+
+### [User Guide](docs/USER_GUIDE.md)
+End-user documentation including:
+- Getting started with ServicePass
+- Managing your vouchers and wallet
+- Redemption process and partial redemptions
+- Using advanced features (templates, scheduled vouchers, transfers)
+- Notification preferences and settings
+- Troubleshooting common issues
+- FAQ and support resources
+
+### [Merchant Onboarding Guide](docs/MERCHANT_ONBOARDING.md)
+Comprehensive merchant setup and operations guide:
+- Merchant registration process
+- API key generation and security
+- Accepting voucher redemptions
+- QR code scanning and verification
+- Partial redemption handling
+- Transfer approvals and management
+- Analytics dashboard usage
+- Batch operations and reporting
+- Regulatory compliance and best practices
+
+### [Smart Contract Audit Report](docs/SMART_CONTRACT_AUDIT.md)
+Security audit findings and recommendations:
+- Smart contract security analysis
+- Vulnerability assessment and findings
+- Code quality evaluation
+- Gas optimization recommendations
+- Access control review
+- Testing coverage analysis
+- Deployment verification
+- Security best practices
+
+### [Deployment Runbook](docs/DEPLOYMENT_RUNBOOK.md)
+Production deployment procedures and operations:
+- Infrastructure requirements and setup
+- Smart contract deployment process
+- Backend service deployment
+- Frontend application deployment
+- Database configuration and migration
+- Environment variables and secrets management
+- Monitoring and observability setup
+- Backup and disaster recovery procedures
+- Scaling strategies and performance tuning
+- Troubleshooting and incident response
+
+### Additional Documentation
+- **[Architecture](docs/ARCHITECTURE.md)**: System design and component interactions
+- **[Authentication](docs/AUTHENTICATION.md)**: Auth flows, JWT, API keys, and security
+- **[QR Code System](docs/QR_CODE_SYSTEM.md)**: QR code generation, signing, and verification
+- **[Frontend Features](docs/FRONTEND_FEATURES.md)**: Complete UI capabilities and components
+
 ## License
 
 MIT License - See [LICENSE](LICENSE) file for details
@@ -1500,13 +1575,14 @@ For questions, issues, or support:
 ## Project Status
 
 **Status**: ✅ Active Development  
-**Last Updated**: February 16, 2026  
+**Last Updated**: February 18, 2026  
 **Version**: 1.0.0  
-**Test Coverage**: Comprehensive (1,500+ lines of test code)    
+**Test Coverage**: Comprehensive (1,500+ lines of test code)  
+**Documentation**: Complete with API docs, user guides, merchant onboarding, audit reports, and deployment runbooks  
 **Frontend**: Complete UI with 15+ React pages including all advanced features  
 **Backend**: 85+ API endpoints with full authentication and authorization  
 **Database**: MongoDB with 13+ data models  
-**Blockchain**: SUI Move smart contracts deployed and tested
+**Blockchain**: SUI Move smart contracts deployed and tested  
 **Features**: Core + 5 Advanced Features (Partial Redemption, Transfer Restrictions, Multi-Sig, Scheduled Issuance, Templates)
 
 ---
