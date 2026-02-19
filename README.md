@@ -34,10 +34,13 @@ ServicePass is a **production-ready** voucher system with:
 ✅ **Analytics Dashboard**: Real-time metrics, trend analysis, and business intelligence  
 ✅ **Multi-Channel Notifications**: Email, SMS, and push notifications with retry logic  
 ✅ **Enterprise-Grade Security**: JWT authentication, API keys, QR signatures, and audit trails  
-✅ **Complete Frontend UI**: 15+ React pages including Template Gallery, Scheduled Vouchers, Transfer Management, Multi-Sig Operations  
+✅ **Complete Frontend UI**: 16+ React pages including Admin Panel, Template Gallery, Scheduled Vouchers, Transfer Management, Multi-Sig Operations  
+✅ **Admin Control Panel**: Web-based interface for minting vouchers, managing merchants, viewing analytics, and system configuration  
+✅ **Docker Support**: Multi-stage Dockerfiles, Docker Compose for local development, production-ready containers  
+✅ **Kubernetes Ready**: Complete K8s manifests with auto-scaling, monitoring, and production deployment guide  
 ✅ **Responsive Web App**: User and merchant portals built with React 18 + Vite + TanStack Query  
-✅ **Comprehensive Documentation**: API docs (Swagger/OpenAPI), user guides, merchant onboarding, smart contract audit, deployment runbook  
-✅ **Production Ready**: CI/CD workflows, error handling, and enterprise-grade documentation
+✅ **Comprehensive Documentation**: API docs (Swagger/OpenAPI), user guides, merchant onboarding, smart contract audit, deployment runbooks, Docker & K8s guides  
+✅ **Production Ready**: CI/CD workflows, containerization, orchestration, and enterprise-grade documentation
 
 ## Voucher Types
 
@@ -127,7 +130,8 @@ ServicePass/
 │       │   ├── RedemptionHistory.jsx       # User transactions
 │       │   ├── MerchantRedemptions.jsx     # Merchant transactions
 │       │   ├── MerchantReports.jsx         # Merchant analytics
-│       │   └── AnalyticsDashboard.jsx      # Business intelligence
+│       │   ├── AnalyticsDashboard.jsx      # Business intelligence
+│       │   └── AdminPanel.jsx              # Admin control panel
 │       ├── services/             # API services
 │       │   └── api.js            # API client with 85+ endpoints
 │       └── utils/                # Helper functions
@@ -138,11 +142,24 @@ ServicePass/
 │   ├── MERCHANT_ONBOARDING.md   # Merchant setup and operational guide
 │   ├── SMART_CONTRACT_AUDIT.md  # Security audit report and findings
 │   ├── DEPLOYMENT_RUNBOOK.md    # Production deployment procedures
+│   ├── DOCKER_GUIDE.md          # Docker deployment and containerization
 │   ├── ARCHITECTURE.md          # System architecture and design
 │   ├── AUTHENTICATION.md        # Auth flows and security
 │   ├── QR_CODE_SYSTEM.md        # QR code implementation
 │   └── FRONTEND_FEATURES.md     # Frontend capabilities
+├── k8s/                          # Kubernetes manifests
+│   ├── namespace.yaml           # Namespace configuration
+│   ├── configmap.yaml           # Application configuration
+│   ├── secret.yaml.template     # Secrets template
+│   ├── mongodb.yaml             # MongoDB StatefulSet
+│   ├── redis.yaml               # Redis deployment
+│   ├── backend.yaml             # Backend deployment with HPA
+│   ├── frontend.yaml            # Frontend deployment with HPA
+│   ├── ingress.yaml             # Ingress with TLS
+│   └── README.md                # Kubernetes deployment guide
 ├── scripts/                      # Deployment and utility scripts
+├── docker-compose.yml            # Docker Compose for local development
+├── .env.docker.example           # Docker environment variables template
 └── Move.toml                     # SUI Move project config
 ```
 
@@ -384,9 +401,50 @@ The frontend will be available at `http://localhost:3000`
   - Interactive charts and trend analysis
   - Mobile-responsive design
 
+### Admin Control Panel
+- **Dashboard Overview**:
+  - Real-time system statistics (total vouchers, merchants, users, redemptions)
+  - Quick stats cards with monthly trends
+  - Growth indicators and activity metrics
+  
+- **Mint Vouchers**:
+  - Individual voucher creation form
+  - Select voucher type (Education, Healthcare, Transport, Agriculture)
+  - Configure amount, recipient, merchant, expiry
+  - Add custom metadata
+  - Quick access to bulk mint operations
+  
+- **Manage Merchants**:
+  - Register new merchants with complete details
+  - Configure accepted voucher types
+  - Set contact information and wallet addresses
+  - View all merchants and their status
+  
+- **System Analytics**:
+  - Total value distributed across all types
+  - Redemption rate tracking
+  - Active vouchers in circulation
+  - System uptime monitoring
+  - Export comprehensive reports
+  
+- **System Configuration**:
+  - Enable/disable rate limiting
+  - Toggle maintenance mode
+  - Configure auto-archival settings
+  - Adjust archival threshold (days)
+  - Security settings management
+  
+- **Design Features**:
+  - Modern purple gradient theme
+  - Tabbed interface for organized navigation
+  - Responsive card-based layouts
+  - Real-time form validation
+  - Quick action buttons
+
 ### Navigation & UX
 - **Unified Navigation Bar**: Seamless switching between user and merchant views
 - **Icon-Based Menu**: Clear visual indicators for each section
+- **Admin Panel Access**: Special highlighted link for administrators
 - **Quick Access**: All advanced features easily accessible from navigation
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 - **Real-Time Updates**: Live data refresh using TanStack Query
@@ -1273,13 +1331,27 @@ npm run build
 
 ## Documentation
 
+### Getting Started
+- **[Docker Guide](docs/DOCKER_GUIDE.md)** - Docker deployment and containerization
+- **[Kubernetes Guide](k8s/README.md)** - Production Kubernetes deployment
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Traditional backend deployment
+- **[Frontend Deployment](docs/FRONTEND_DEPLOYMENT.md)** - Frontend deployment options
+
+### API & Integration
 - **[API Reference](docs/API_REFERENCE.md)** - Complete API documentation
 - **[Authentication Guide](docs/AUTHENTICATION.md)** - Authentication and authorization details
 - **[QR Code System](docs/QR_CODE_SYSTEM.md)** - QR code generation and redemption
+
+### System Documentation
 - **[Architecture](docs/ARCHITECTURE.md)** - System design and architecture
-- **[Deployment Guide](docs/DEPLOYMENT.md)** - Backend deployment instructions
-- **[Frontend Features](docs/FRONTEND_FEATURES.md)** - Detailed frontend features
-- **[Frontend Deployment](docs/FRONTEND_DEPLOYMENT.md)** - Frontend deployment guide
+- **[Frontend Features](docs/FRONTEND_FEATURES.md)** - Detailed frontend capabilities
+
+### Operational Guides
+- **[API Documentation](docs/API_DOCUMENTATION.md)** - Enhanced API docs with quick starts and diagrams
+- **[User Guide](docs/USER_GUIDE.md)** - End-user documentation with tutorials
+- **[Merchant Onboarding](docs/MERCHANT_ONBOARDING.md)** - Merchant setup and operations
+- **[Smart Contract Audit](docs/SMART_CONTRACT_AUDIT.md)** - Security audit findings
+- **[Deployment Runbook](docs/DEPLOYMENT_RUNBOOK.md)** - Production operations guide
 
 ## Screenshots
 
@@ -1294,15 +1366,97 @@ Visual charts and insights for business intelligence.
 
 ## Deployment
 
-### Backend
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for backend deployment instructions.
+ServicePass supports multiple deployment strategies for different environments:
 
-### Frontend
+### Local Development with Docker
+
+The fastest way to get started is using Docker Compose:
+
+```bash
+# Copy environment template
+cp .env.docker.example .env
+
+# Edit .env with your configuration
+nano .env
+
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Access services
+# Frontend: http://localhost:3001
+# Backend API: http://localhost:3000
+# MongoDB Express: http://localhost:8081
+```
+
+**Services included:**
+- MongoDB (with persistent storage)
+- Redis (for queue management)
+- Backend API (Node.js)
+- Frontend (React + Nginx)
+- Mongo Express (database admin UI)
+
+See [DOCKER_GUIDE.md](docs/DOCKER_GUIDE.md) for comprehensive Docker deployment instructions.
+
+### Production Deployment with Kubernetes
+
+For production-grade deployments with auto-scaling and high availability:
+
+```bash
+# Build and push Docker images
+docker build -t your-registry/servicepass-backend:latest ./backend
+docker build -t your-registry/servicepass-frontend:latest ./frontend
+docker push your-registry/servicepass-backend:latest
+docker push your-registry/servicepass-frontend:latest
+
+# Create namespace
+kubectl apply -f k8s/namespace.yaml
+
+# Create secrets (replace with actual values)
+kubectl create secret generic servicepass-secrets \
+  --from-literal=MONGODB_URI='...' \
+  --from-literal=JWT_SECRET='...' \
+  -n servicepass
+
+# Deploy infrastructure
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/mongodb.yaml
+kubectl apply -f k8s/redis.yaml
+
+# Deploy application
+kubectl apply -f k8s/backend.yaml
+kubectl apply -f k8s/frontend.yaml
+kubectl apply -f k8s/ingress.yaml
+
+# Verify deployment
+kubectl get pods -n servicepass
+```
+
+**Features:**
+- Horizontal Pod Autoscaling (HPA)
+- Persistent storage for databases
+- Ingress with TLS/SSL
+- Health checks and probes
+- Resource limits and requests
+- Rolling updates with zero downtime
+
+See [k8s/README.md](k8s/README.md) for complete Kubernetes deployment guide.
+
+### Traditional Deployment
+
+#### Backend
+See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for traditional backend deployment instructions.
+
+#### Frontend
 See [FRONTEND_DEPLOYMENT.md](docs/FRONTEND_DEPLOYMENT.md) for frontend deployment options:
 - Vercel
 - Netlify
 - Traditional web servers
-- Docker containersUse Cases
+- Static hosting services
+
+## Use Cases
 
 1. **NGO Educational Programs**: Distribute education vouchers that can only be used for school fees
 2. **Healthcare Initiatives**: Provide healthcare credits for specific medical services
@@ -1592,12 +1746,16 @@ For questions, issues, or support:
 **Last Updated**: February 19, 2026  
 **Version**: 1.0.0  
 **Test Coverage**: Comprehensive (1,500+ lines of test code)  
-**Documentation**: Complete with enhanced API docs, user guides, merchant onboarding, audit reports, and deployment runbooks (includes diagrams, quick starts, and performance tips)  
-**Frontend**: Complete UI with 15+ React pages including all advanced features  
+**Documentation**: Complete with enhanced API docs, user guides, merchant onboarding, audit reports, deployment runbooks, Docker & Kubernetes guides (includes diagrams, quick starts, and performance tips)  
+**Frontend**: Complete UI with 16+ React pages including Admin Panel, Template Gallery, Scheduled Vouchers, Transfer Management, Multi-Sig Operations  
+**Admin Panel**: Web-based control panel for voucher minting, merchant management, analytics, and system configuration  
 **Backend**: 85+ API endpoints with full authentication and authorization  
 **Database**: MongoDB with 13+ data models  
 **Blockchain**: SUI Move smart contracts deployed and tested  
-**Features**: Core + 5 Advanced Features (Partial Redemption, Transfer Restrictions, Multi-Sig, Scheduled Issuance, Templates)
+**Containerization**: Docker & Docker Compose ready for local development  
+**Orchestration**: Kubernetes manifests with HPA, persistent storage, and production-grade configuration  
+**Features**: Core + 5 Advanced Features (Partial Redemption, Transfer Restrictions, Multi-Sig, Scheduled Issuance, Templates)  
+**Deployment**: Multiple options - Docker Compose (local), Kubernetes (production), traditional (VM/bare metal)
 
 ---
 
