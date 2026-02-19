@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tantml:react-query';
 import Navigation from './components/Navigation';
 import UserDashboard from './pages/UserDashboard';
 import MerchantDashboard from './pages/MerchantDashboard';
@@ -14,6 +14,7 @@ import NotificationPreferences from './components/NotificationPreferences';
 import ScheduledVouchers from './pages/ScheduledVouchers';
 import TransferManagement from './pages/TransferManagement';
 import MultiSigOperations from './pages/MultiSigOperations';
+import AdminPanel from './pages/AdminPanel';
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -118,6 +119,12 @@ function App() {
               <Route 
                 path="/merchant/analytics" 
                 element={<AnalyticsDashboard merchantId={merchantId} />} 
+              />
+              
+              {/* Admin Panel */}
+              <Route 
+                path="/admin" 
+                element={<AdminPanel />} 
               />
             </Routes>
           </main>
