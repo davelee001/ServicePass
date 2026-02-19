@@ -1,0 +1,31 @@
+# ServicePass ConfigMap
+# Non-sensitive configuration data
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: servicepass-config
+  namespace: servicepass
+data:
+  # Application Configuration
+  NODE_ENV: "production"
+  PORT: "3000"
+  
+  # API Configuration
+  ALLOWED_ORIGINS: "https://app.servicepass.com,https://www.servicepass.com"
+  
+  # Rate Limiting
+  RATE_LIMIT_WINDOW_MS: "900000"
+  RATE_LIMIT_MAX_REQUESTS: "100"
+  
+  # Database Configuration
+  MONGODB_MAX_POOL_SIZE: "10"
+  MONGODB_MIN_POOL_SIZE: "2"
+  MONGODB_SERVER_SELECTION_TIMEOUT_MS: "30000"
+  MONGODB_SOCKET_TIMEOUT_MS: "45000"
+  
+  # Notification Configuration
+  EMAIL_SERVICE: "gmail"
+  
+  # Redemption Archival
+  REDEMPTION_ARCHIVE_AFTER_DAYS: "90"
+  REDEMPTION_ARCHIVE_BATCH_SIZE: "1000"
