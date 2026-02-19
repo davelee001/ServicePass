@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaWallet, FaStore, FaTicketAlt, FaHistory, FaChartBar, FaChartPie, FaClock, FaExchangeAlt, FaUsers, FaBell, FaLayerGroup } from 'react-icons/fa';
+import { FaWallet, FaStore, FaTicketAlt, FaHistory, FaChartBar, FaChartPie, FaClock, FaExchangeAlt, FaUsers, FaBell, FaLayerGroup, FaShieldAlt } from 'react-icons/fa';
 import { shortenAddress } from '../utils/helpers';
 import './Navigation.css';
 
@@ -74,6 +74,9 @@ function Navigation({ userType, setUserType, walletAddress, setWalletAddress, me
               <Link to="/analytics" className={isActive('/analytics') ? 'active' : ''}>
                 <FaChartPie /> Analytics
               </Link>
+              <Link to="/admin" className={isActive('/admin') ? 'active admin-link' : 'admin-link'}>
+                <FaShieldAlt /> Admin Panel
+              </Link>
             </>
           ) : (
             <>
@@ -100,6 +103,9 @@ function Navigation({ userType, setUserType, walletAddress, setWalletAddress, me
               </Link>
               <Link to="/merchant/analytics" className={isActive('/merchant/analytics') ? 'active' : ''}>
                 <FaChartPie /> Analytics
+              </Link>
+              <Link to="/admin" className={isActive('/admin') ? 'active admin-link' : 'admin-link'}>
+                <FaShieldAlt /> Admin Panel
               </Link>
             </>
           )}
