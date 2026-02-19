@@ -1,0 +1,8 @@
+# ServicePass Kubernetes Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: servicepass
+  labels:
+    name: servicepass
+    environment: production
