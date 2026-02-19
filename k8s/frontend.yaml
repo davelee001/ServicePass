@@ -1,0 +1,88 @@
+# ServicePass Frontend Deployment and Service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servicepass-frontend
+  namespace: servicepass
+  labels:
+    app: servicepass-frontend
+    component: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: servicepass-frontend
+  template:
+    metadata:
+      labels:
+        app: servicepass-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: servicepass/frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicepass-frontend-service
+  namespace: servicepass
+  labels:
+    app: servicepass-frontend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: servicepass-frontend
+
+---
+# Horizontal Pod Autoscaler for Frontend
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: servicepass-frontend-hpa
+  namespace: servicepass
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: servicepass-frontend
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
