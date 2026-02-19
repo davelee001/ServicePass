@@ -77,6 +77,22 @@
   color: white;
 }
 
+.nav-links a.admin-link {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.nav-links a.admin-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.nav-links a.admin-link.active {
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+}
+
 .nav-wallet {
   margin-left: auto;
 }
