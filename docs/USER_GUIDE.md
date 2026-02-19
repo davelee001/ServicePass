@@ -1,9 +1,55 @@
 # ServicePass User Guide
 
 **Version**: 1.0.0  
-**Last Updated**: February 16, 2026
+**Last Updated**: February 16, 2026  
+**Support**: support@servicepass.io  
+**Community**: [Discord](https://discord.gg/servicepass) | [Telegram](https://t.me/servicepass)
 
 Welcome to ServicePass! This guide will help you understand and use the ServicePass platform to manage your vouchers effectively.
+
+---
+
+## 🚀 Quick Start (5 Minutes)
+
+New to ServicePass? Follow these steps to get started immediately:
+
+```mermaid
+graph LR
+    A[1. Connect Wallet] --> B[2. Receive Voucher]
+    B --> C[3. View Balance]
+    C --> D[4. Redeem at Merchant]
+    D --> E[5. Done!]
+    
+    style A fill:#4CAF50
+    style E fill:#2196F3
+```
+
+### Your First 5 Minutes
+
+1. **Connect** → Click "Connect Wallet" and select your SUI wallet
+2. **Receive** → Your organization will send you vouchers
+3. **View** → Check your dashboard to see your vouchers
+4. **Use** → Visit a participating merchant to redeem
+5. **Track** → View your redemption history
+
+**Watch**: [5-Minute Getting Started Video](https://youtube.com/servicepass/getting-started) 📺
+
+---
+
+## 📹 Video Tutorials
+
+Learn ServicePass visually with our video guides:
+
+| Topic | Duration | Link |
+|-------|----------|------|
+| 🎬 Getting Started | 5 min | [Watch Now](https://youtube.com/servicepass/getting-started) |
+| 💳 Managing Vouchers | 8 min | [Watch Now](https://youtube.com/servicepass/managing-vouchers) |
+| 🔄 Partial Redemptions | 6 min | [Watch Now](https://youtube.com/servicepass/partial-redemptions) |
+| 📤 Transferring Vouchers | 7 min | [Watch Now](https://youtube.com/servicepass/transfers) |
+| 🛠️ Advanced Features | 12 min | [Watch Now](https://youtube.com/servicepass/advanced-features) |
+| 🔔 Notification Setup | 4 min | [Watch Now](https://youtube.com/servicepass/notifications) |
+
+**Full Playlist**: [ServicePass Complete Tutorial Series](https://youtube.com/servicepass/playlist)
 
 ---
 
@@ -19,14 +65,33 @@ Welcome to ServicePass! This guide will help you understand and use the ServiceP
 8. [Transfer Management](#transfer-management)
 9. [Multi-Signature Operations](#multi-signature-operations)
 10. [Notifications](#notifications)
-11. [Troubleshooting](#troubleshooting)
-12. [FAQ](#faq)
+11. [Quick Reference Cards](#quick-reference-cards)
+12. [Troubleshooting](#troubleshooting)
+13. [FAQ](#faq)
 
 ---
 
 ## What is ServicePass?
 
 ServicePass is a blockchain-based voucher system that allows you to receive, manage, and redeem digital vouchers for real-world services and goods. Built on the SUI blockchain, ServicePass ensures transparency, security, and accountability for all transactions.
+
+### How It Works
+
+```mermaid
+sequenceDiagram
+    participant O as Organization
+    participant SP as ServicePass
+    participant U as You (User)
+    participant M as Merchant
+    
+    O->>SP: Issues Voucher
+    SP->>U: Voucher Delivered
+    U->>SP: Views Voucher
+    U->>M: Presents QR Code
+    M->>SP: Validates & Redeems
+    SP->>U: Confirmation
+    SP->>M: Payment Release
+```
 
 ### Key Benefits
 
@@ -79,6 +144,34 @@ After logging in, you'll see your dashboard with:
 - **Expired Vouchers** - Vouchers that have passed their expiry date
 - **Recent Activity** - Latest redemptions and transactions
 - **Voucher Breakdown** - Vouchers organized by type
+
+### Dashboard Navigation Map
+
+```mermaid
+graph TD
+    A[Dashboard] --> B[My Vouchers]
+    A --> C[Templates]
+    A --> D[Scheduled]
+    A --> E[Transfers]
+    A --> F[Multi-Sig]
+    A --> G[History]
+    A --> H[Notifications]
+    A --> I[Analytics]
+    
+    B --> B1[Active]
+    B --> B2[Expired]
+    B --> B3[Pending]
+    
+    C --> C1[Browse]
+    C --> C2[My Templates]
+    
+    D --> D1[Upcoming]
+    D --> D2[Recurring]
+    
+    E --> E1[Initiate]
+    E --> E2[Pending]
+    E --> E3[History]
+```
 
 ---
 
@@ -484,7 +577,171 @@ Verify your notification channels work:
 
 ---
 
+## Quick Reference Cards
+
+### 📋 Voucher Status Guide
+
+| Status | Icon | Meaning | Action Available |
+|--------|------|---------|------------------|
+| **Active** | 🟢 | Ready to use | Redeem, Transfer |
+| **Partially Redeemed** | 🟡 | Some balance used | Continue redeeming |
+| **Pending Transfer** | 🔄 | Transfer in progress | Wait for approval |
+| **Expired** | 🔴 | Past expiry date | Contact issuer |
+| **Redeemed** | ✅ | Fully used | View history only |
+
+### 💰 Redemption Quick Reference
+
+```
+┌────────────────────────────────────────┐
+│  REDEMPTION PROCESS                    │
+├────────────────────────────────────────┤
+│  1. Select voucher                     │
+│  2. Show QR code to merchant           │
+│  3. Merchant scans & confirms amount   │
+│  4. Approve transaction                │
+│  5. Receive confirmation               │
+│  ├─ Full: Voucher marked as redeemed  │
+│  └─ Partial: Balance updated           │
+└────────────────────────────────────────┘
+```
+
+###  🔑 Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl + D` | Go to Dashboard |
+| `Ctrl + V` | View Vouchers |
+| `Ctrl + H` | View History |
+| `Ctrl + N` | View Notifications |
+| `Ctrl + K` | Open Command Palette |
+| `Ctrl + /` | Open Help |
+| `Esc` | Close Modal |
+
+### 📱 Mobile App Features
+
+**Download**: [iOS App Store](https://apps.apple.com/servicepass) | [Google Play](https://play.google.com/servicepass)
+
+| Feature | Available | Notes |
+|---------|-----------|-------|
+| View Vouchers | ✅ | Full support |
+| Generate QR Codes | ✅ | Offline capable |
+| Redeem at Merchants | ✅ | With merchant app |
+| Transfer Vouchers | ✅ | Requires internet |
+| View Analytics | ✅ | Full dashboard |
+| Biometric Login | ✅ | Face ID / Fingerprint |
+| Push Notifications | ✅ | Real-time alerts |
+
+### 🎯 Common Tasks Cheat Sheet
+
+**Check Your Balance:**
+```
+Dashboard → Total Balance (top card)
+```
+
+**Find a Merchant:**
+```
+Menu → Merchants → Search by name or location
+```
+
+**Redeem a Voucher:**
+```
+My Vouchers → Select voucher → Show QR Code → Let merchant scan
+```
+
+**Transfer to Someone:**
+```
+My Vouchers → Select voucher → Transfer → Enter recipient wallet address
+```
+
+**View History:**
+```
+History → Filter by date/type → Export if needed
+```
+
+**Enable Notifications:**
+```
+Profile → Notification Preferences → Toggle channels on/off
+```
+
+### 🆘 Emergency Contact Card
+
+```
+╔════════════════════════════════════════╗
+║  SERVICEPASS SUPPORT                   ║
+╠════════════════════════════════════════╣
+║  📧 Email: support@servicepass.io      ║
+║  💬 Live Chat: app.servicepass.io/chat ║
+║  📞 Phone: +1-555-SERVICE (24/7)       ║
+║  🌐 Help Center: help.servicepass.io   ║
+╠════════════════════════════════════════╣
+║  EMERGENCY ISSUES:                     ║
+║  - Lost vouchers                       ║
+║  - Unauthorized transactions           ║
+║  - Account lockout                     ║
+║  Response time: < 1 hour               ║
+╚════════════════════════════════════════╝
+```
+
+### 🔐 Security Checklist
+
+Quick daily security check:
+
+- [ ] Wallet is locked when not in use
+- [ ] Password is unique and strong
+- [ ] Two-factor authentication enabled
+- [ ] Recent transactions look correct
+- [ ] No suspicious activity in history
+- [ ] Email notifications are arriving
+- [ ] Wallet address hasn't changed unexpectedly
+
+**If any item is suspicious**: Contact support immediately at emergency@servicepass.io
+
+### 📊 Voucher Type Quick Reference
+
+| Type | Use For | Typical Amount | Expiry Period |
+|------|---------|----------------|---------------|
+| 🎓 **EDU** | School fees, Exams, Training | $50-500 | 3-12 months |
+| 🏥 **HEALTH** | Clinic visits, Medicines | $20-200 | 1-6 months |
+| 🚌 **TRANSPORT** | Bus, Taxi, Fuel | $10-100 | 1-3 months |
+| 🌾 **AGRI** | Seeds, Fertilizer, Tools | $30-300 | 6-12 months |
+
+### 🔔 Notification Types
+
+| Type | When | Action Required |
+|------|------|-----------------|
+| 📨 **Voucher Received** | New voucher issued | View voucher |
+| ⚠️ **Expiring Soon** | 7 days before expiry | Use voucher |
+| ✅ **Redemption Complete** | Voucher used | Check history |
+| 🔄 **Transfer Pending** | Transfer needs approval | Approve/reject |
+| 🔐 **Security Alert** | Suspicious activity | Review account |
+| 📊 **Weekly Summary** | Every Monday | Review activity |
+
+---
+
 ## Troubleshooting
+
+### Interactive Troubleshooting Guide
+
+```mermaid
+graph TD
+    A[Having an Issue?] --> B{What's wrong?}
+    B -->|Can't see voucher| C[Check wallet address]
+    B -->|Can't redeem| D[Check voucher status]
+    B -->|Can't transfer| E[Check transfer limits]
+    B -->|Other issue| F[Contact support]
+    
+    C --> C1{Address correct?}
+    C1 -->|Yes| C2[Wait for sync]
+    C1 -->|No| C3[Switch wallet]
+    
+    D --> D1{Voucher active?}
+    D1 -->|Yes| D2[Check merchant]
+    D1 -->|No| D3[Voucher expired]
+    
+    E --> E1{Limit reached?}
+    E1 -->|Yes| E2[Request increase]
+    E1 -->|No| E3[Check approval]
+```
 
 ### Common Issues
 

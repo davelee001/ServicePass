@@ -1,28 +1,88 @@
-# ServicePass Deployment Runbook
+#  ServicePass Deployment Runbook
 
 **Version**: 1.0.0  
-**Last Updated**: February 16, 2026  
-**Owner**: DevOps Team  
-**Status**: Production Ready
+**Last Updated**: February 18, 2026  
+**Owner**: DevOps Team - davelee001  
+**Status**: Production Ready  
+**GitHub**: [davelee001/ServicePass](https://github.com/davelee001/ServicePass)
+
+---
+
+## 🚀 Quick Deployment Guide
+
+**For experienced DevOps engineers - Full deployment in 10 minutes:**
+
+```bash
+# 1. Clone and setup
+git clone https://github.com/davelee001/ServicePass.git
+cd ServicePass
+
+# 2. Deploy smart contracts
+cd move && sui client publish --gas-budget 100000000
+
+# 3. Deploy backend
+cd ../backend && ./scripts/deploy-production.sh
+
+# 4. Deploy frontend
+cd ../frontend && vercel --prod
+
+# 5. Verify
+./scripts/verify-deployment.sh
+```
+
+**Detailed instructions below** ↓
+
+---
+
+## Deployment Flow Diagram
+
+```mermaid
+graph TD
+    A[Start Deployment] --> B[Pre-Deployment Checks]
+    B --> C{All Checks Pass?}
+    C -->|No| B
+    C -->|Yes| D[Deploy Smart Contracts]
+    D --> E[Verify Blockchain Deployment]
+    E --> F{Success?}
+    F -->|No| G[Rollback Smart Contracts]
+    F -->|Yes| H[Deploy Backend API]
+    H --> I[Database Migration]
+    I --> J[Deploy Frontend]
+    J --> K[Configure CDN]
+    K --> L[Post-Deployment Tests]
+    L --> M{All Tests Pass?}
+    M -->|No| N[Rollback Deployment]
+    M -->|Yes| O[Enable Monitoring]
+    O --> P[Update DNS]
+    P --> Q[Deployment Complete]
+    
+    G --> R[Investigation Required]
+    N --> R
+    
+    style A fill:#4CAF50
+    style Q fill:#2196F3
+    style R fill:#f44336
+```
 
 ---
 
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Pre-Deployment Checklist](#pre-deployment-checklist)
-3. [Environment Setup](#environment-setup)
-4. [Smart Contract Deployment](#smart-contract-deployment)
-5. [Backend Deployment](#backend-deployment)
-6. [Frontend Deployment](#frontend-deployment)
-7. [Database Setup](#database-setup)
-8. [Configuration Management](#configuration-management)
-9. [Monitoring & Alerting](#monitoring--alerting)
-10. [Post-Deployment Verification](#post-deployment-verification)
-11. [Rollback Procedures](#rollback-procedures)
-12. [Maintenance & Updates](#maintenance--updates)
-13. [Troubleshooting](#troubleshooting)
-14. [Emergency Procedures](#emergency-procedures)
+2. [Environment Comparison](#environment-comparison)
+3. [Pre-Deployment Checklist](#pre-deployment-checklist)
+4. [Environment Setup](#environment-setup)
+5. [Smart Contract Deployment](#smart-contract-deployment)
+6. [Backend Deployment](#backend-deployment)
+7. [Frontend Deployment](#frontend-deployment)
+8. [Database Setup](#database-setup)
+9. [Configuration Management](#configuration-management)
+10. [Monitoring & Alerting](#monitoring--alerting)
+11. [Post-Deployment Verification](#post-deployment-verification)
+12. [Rollback Procedures](#rollback-procedures)
+13. [Maintenance & Updates](#maintenance--updates)
+14. [Troubleshooting](#troubleshooting)
+15. [Emergency Procedures](#emergency-procedures)
 
 ---
 
@@ -32,25 +92,78 @@ This runbook provides comprehensive instructions for deploying and maintaining t
 
 ### System Components
 
-| Component | Technology | Deployment Target |
-|-----------|-----------|-------------------|
-| **Smart Contracts** | Move (SUI) | SUI Blockchain |
-| **Backend API** | Node.js | AWS EC2 / Heroku |
-| **Frontend** | React + Vite | Vercel / Netlify |
-| **Database** | MongoDB | MongoDB Atlas |
-| **Redis** | Redis | Redis Cloud / ElastiCache |
-| **CDN** | CloudFlare | Global |
+| Component | Technology | Deployment Target | Scaling Strategy |
+|-----------|-----------|-------------------|------------------|
+| **Smart Contracts** | Move (SUI) | SUI Blockchain | N/A (Blockchain) |
+| **Backend API** | Node.js 18+ | AWS EC2 / Heroku | Horizontal (Load Balanced) |
+| **Frontend** | React 18 + Vite | Vercel / Netlify | Edge Network (Global CDN) |
+| **Database** | MongoDB 6.0+ | MongoDB Atlas | Replica Set (3 nodes) |
+| **Redis** | Redis 7.0+ | Redis Cloud / ElastiCache | Master-Replica |
+| **CDN** | CloudFlare | Global Edge | Auto-scaling |
 
 ### Deployment Timeline
 
-| Phase | Duration | Description |
-|-------|----------|-------------|
-| **Pre-Deploy** | 4 hours | Setup, testing, preparations |
-| **Smart Contracts** | 1 hour | Blockchain deployment |
-| **Backend** | 2 hours | API server deployment |
-| **Frontend** | 1 hour | Web app deployment |
-| **Verification** | 2 hours | Testing & validation |
-| **Total** | **10 hours** | Complete deployment |
+| Phase | Duration | Description | Team Size |
+|-------|----------|-------------|-----------|
+| **Pre-Deploy** | 4 hours | Setup, testing, preparations | 3-4 engineers |
+| **Smart Contracts** | 1 hour | Blockchain deployment | 2 engineers |
+| **Backend** | 2 hours | API server deployment | 2-3 engineers |
+| **Frontend** | 1 hour | Web app deployment | 1-2 engineers |
+| **Verification** | 2 hours | Testing & validation | Full team |
+| **Total** | **10 hours** | Complete deployment | 4-6 engineers |
+
+---
+
+## Environment Comparison
+
+### Infrastructure Matrix
+
+| Environment | Purpose | Users | Uptime SLA | Data Persistence | Cost/Month |
+|-------------|---------|-------|------------|------------------|------------|
+| **Development** | Feature development | Engineers only | No SLA | Temporary | $50 |
+| **Staging** | Pre-production testing | QA + Engineers | 95% | 30 days | $200 |
+| **Production** | Live system | All users | 99.9% | Permanent | $1,500+ |
+
+### Environment Configuration
+
+| Component | Development | Staging | Production |
+|-----------|------------|---------|------------|
+| **Backend** | Single instance | 2 instances | 4+ instances (auto-scale) |
+| **Database** | Single node | Replica set (2) | Replica set (3) + backup |
+| **Redis** | Single instance | Single instance | Master + 2 replicas |
+| **CDN** | Local only | Regional | Global |
+| **SSL** | Self-signed | Let's Encrypt | Commercial cert |
+| **Monitoring** | Basic logs | DataDog Free | DataDog Pro |
+| **Backups** | None | Daily | Hourly + Point-in-time |
+
+### Network Configuration
+
+```mermaid
+graph TB
+    subgraph Production
+        LB[Load Balancer] --> API1[API Server 1]
+        LB --> API2[API Server 2]
+        LB --> API3[API Server 3]
+        API1 --> DB[(MongoDB Cluster)]
+        API2 --> DB
+        API3 --> DB
+        API1 --> Cache[Redis Cluster]
+        API2 --> Cache
+        API3 --> Cache
+    end
+    
+    subgraph Staging
+        ST_API[API Server] --> ST_DB[(MongoDB)]
+        ST_API --> ST_Cache[Redis]
+    end
+    
+    subgraph Development
+        DEV_API[API Server] --> DEV_DB[(Local MongoDB)]
+    end
+    
+    CDN[CloudFlare CDN] --> LB
+    CDN --> ST_API
+```
 
 ---
 
@@ -59,24 +172,28 @@ This runbook provides comprehensive instructions for deploying and maintaining t
 ### Administrative Tasks
 
 - [ ] **Deployment Window Scheduled**
-  - Date and time confirmed
-  - Stakeholders notified
-  - Maintenance window announced
+  - Date and time confirmed (off-peak hours)
+  - Stakeholders notified (48 hours advance)
+  - Maintenance window announced (user notification)
+  - Change request ticket created
   
 - [ ] **Team Assembled**
   - Deployment lead assigned
   - Technical team on standby
   - Support team briefed
+  - Incident commander designated
   
 - [ ] **Approvals Obtained**
   - Security audit approved
   - Compliance clearance
   - Executive sign-off
+  - Budget approval for infrastructure
   
 - [ ] **Documentation Updated**
   - API documentation current
   - User guides finalized
   - Merchant onboarding ready
+  - Release notes prepared
 
 ### Technical Requirements
 
