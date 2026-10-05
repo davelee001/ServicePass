@@ -13,5 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+          cache-dependency-path: backend/package-lock.json
+      - name: Install backend dependencies
+        run: npm ci --prefix backend
       - name: Run backend suite
         run: npm run test:ci
