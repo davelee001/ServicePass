@@ -13,3 +13,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Test smart contracts
+        run: sui move test --path "$RUNNER_TEMP/servicepass-move"
