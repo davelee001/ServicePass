@@ -12,6 +12,7 @@ beforeAll(async () => {
 
 // Cleanup after each test
 afterEach(async () => {
+    if (mongoose.connection.readyState !== 1) return;
     const collections = mongoose.connection.collections;
     for (const key in collections) {
         await collections[key].deleteMany({});
@@ -21,5 +22,5 @@ afterEach(async () => {
 // Teardown after all tests
 afterAll(async () => {
     await mongoose.connection.close();
-    await mongoServer.stop();
+    if (mongoServer) await mongoServer.stop();
 });
