@@ -1,3 +1,5 @@
+
+- [ ] **3. Remove insecure deployment defaults — P0 · Small**
   Don’t allow placeholder JWT, MongoDB, or other secrets in a production deployment. Supply strong secrets through a secret manager, restrict CORS to the production frontend, and verify startup fails when required production configuration is missing. Review `docker-compose.yml` and `envValidation.js`.
 
 - [ ] **4. Triage dependency vulnerabilities — P1 · Small to medium**
