@@ -6,6 +6,9 @@ on:
       - main
 
 jobs:
+  contract-checks:
+    uses: ./.github/workflows/smart-contract-compilation.yml
+
   deploy:
     needs: [backend-checks, contract-checks]
     runs-on: ubuntu-latest
