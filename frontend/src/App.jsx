@@ -81,7 +81,7 @@ function App() {
                 element={<MultiSigOperations walletAddress={walletAddress} />} 
               />
 
-              {/* Merchant Routes */
+              {/* Merchant Routes */}
               <Route 
                 path="/merchant/dashboard" 
                 element={<MerchantDashboard merchantId={merchantId} />} 
