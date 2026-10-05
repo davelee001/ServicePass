@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+          curl --fail --silent --show-error --location https://raw.githubusercontent.com/MystenLabs/suiup/main/install.sh -o "$RUNNER_TEMP/install-suiup.sh"
+          sh "$RUNNER_TEMP/install-suiup.sh"
+          "$SUIUP_INSTALL_DIR/suiup" install sui@mainnet -y
           echo "$SUIUP_DEFAULT_BIN_DIR" >> "$GITHUB_PATH"
       - name: Assemble Move package
         run: |
