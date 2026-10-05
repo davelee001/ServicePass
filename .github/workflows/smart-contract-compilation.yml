@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+          echo "$SUIUP_DEFAULT_BIN_DIR" >> "$GITHUB_PATH"
+      - name: Assemble Move package
         run: |
           mkdir -p "$RUNNER_TEMP/servicepass-move"
           cp Move.toml "$RUNNER_TEMP/servicepass-move/Move.toml"
