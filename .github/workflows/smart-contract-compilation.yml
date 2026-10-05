@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-    - name: Set up Move CLI
       run: |
         sudo apt update
         sudo apt install -y move-cli
