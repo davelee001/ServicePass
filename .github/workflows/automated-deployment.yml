@@ -6,6 +6,8 @@ on:
       - main
 
 jobs:
+    uses: ./.github/workflows/automated-testing.yml
+
   contract-checks:
     uses: ./.github/workflows/smart-contract-compilation.yml
 
