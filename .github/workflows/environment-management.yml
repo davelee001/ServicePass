@@ -9,6 +9,8 @@ on:
         default: 'dev'
 
 jobs:
+    uses: ./.github/workflows/smart-contract-compilation.yml
+
   manage-environment:
     needs: [backend-checks, contract-checks]
     runs-on: ubuntu-latest
