@@ -1520,7 +1520,6 @@ npm test voucher.model.test.js
 npm test -- --testPathPattern="(voucherTemplate|scheduledVoucher|multiSig|voucherTransfer|templates).*.test.js"
 ```
 
-Run backend tests from `backend/`: the repository-root `npm test` script is a placeholder. Jest loads `src/__tests__/setup.js`, starts MongoDB Memory Server, clears collections after each test, and stops the database after each suite. The first run may download a MongoDB binary and requires network access. Supertest exercises HTTP routes.
 
 ### Test Coverage Overview
 
