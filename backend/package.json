@@ -42,7 +42,9 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
-    "testMatch": ["**/__tests__/**/*.test.js"],
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ],
     "setupFilesAfterEnv": ["<rootDir>/src/__tests__/setup.js"]
   }
 }
