@@ -22,7 +22,6 @@ jobs:
         node-version: '18'
 
     - name: Install dependencies
-      run: npm install
 
     - name: Deploy to selected environment
       env:
