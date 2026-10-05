@@ -7,6 +7,8 @@ let mongoServer;
 beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
     const mongoUri = mongoServer.getUri();
+    // Suites that reconnect must use the same isolated test database.
+    process.env.MONGODB_URI = mongoUri;
     await mongoose.connect(mongoUri);
 }, 120000);
 
