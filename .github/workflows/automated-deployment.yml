@@ -28,5 +28,5 @@ jobs:
       env:
         DEPLOYMENT_KEY: ${{ secrets.DEPLOYMENT_KEY }}
       run: |
-        scp -r ./build user@production-server:/var/www/project
+        scp -r ./frontend/dist/. user@production-server:/var/www/project
         ssh user@production-server 'sudo systemctl restart project-service'
