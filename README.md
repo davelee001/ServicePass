@@ -167,9 +167,11 @@ ServicePass/
 
 ### Prerequisites
 - [SUI CLI](https://docs.sui.io/build/install)
-- Node.js >= 18.x
+- Node.js >= 20.19.0 (required by `mongodb-memory-server` 11.x for backend tests)
 - MongoDB
 - SUI Wallet with testnet/mainnet tokens
+
+Commands below use Bash syntax. In PowerShell, use `Copy-Item` instead of `cp` and `npm.cmd` if execution policy blocks `npm.ps1`. Start from the repository root unless a step specifies otherwise.
 
 ### 1. Deploy Smart Contract
 
@@ -195,6 +197,7 @@ npm install
 cp .env.example .env
 
 # Edit .env and configure:
+# - PORT=5000 (matches the frontend development proxy; the template defaults to 3000)
 # Blockchain Configuration:
 # - PACKAGE_ID (from deployment)
 # - ADMIN_CAP_ID (from deployment)
@@ -241,11 +244,8 @@ cp .env.example .env
 ### 3. Create Admin User
 
 ```bash
-# Create default admin user
-node scripts/createAdmin.js
-
-# Or create with custom credentials
-node scripts/createAdmin.js admin@example.com SecurePass123 "Admin Name"
+# From the backend directory, create an admin with custom credentials
+npm run create-admin -- admin@example.com "ReplaceWithYourPassword" "Admin Name"
 ```
 
 ### 4. Run Backend Server
@@ -258,11 +258,12 @@ npm run dev
 npm start
 ```
 
-The backend API will be available at `http://localhost:3000`
+With `PORT=5000`, the backend API will be available at `http://localhost:5000/api` and the health endpoint at `http://localhost:5000/health`.
 
-### 4. Setup Frontend
+### 5. Setup Frontend
 
 ```bash
+# In a separate terminal, from the repository root
 cd frontend
 
 # Install dependencies
@@ -278,7 +279,14 @@ cp .env.example .env
 npm run dev
 ```
 
-The frontend will be available at `http://localhost:3000`
+The frontend will be available at `http://localhost:3000`. Keep the backend running in its own terminal. The Vite development server proxies `/api` requests to port 5000; `VITE_API_URL` configures the shared Axios client. Some pages use relative `/api` requests directly, so keep the proxy target and backend port aligned.
+
+To build the frontend for deployment, run `npm run build` from `frontend/`; output is written to `frontend/dist/`. Run `npm run preview` to inspect the build locally.
+
+### Current Integration Limitations
+
+- The shared `analyticsAPI.getDashboard()` helper used by AdminPanel does not yet attach a Bearer token. The backend dashboard route requires JWT authentication, so requests through this helper return 401 until token handling is added.
+- GitHub Actions workflows currently select Node.js 18, while the backend test database dependency requires Node.js 20.19.0 or later. Align CI with that requirement before relying on backend test results.
 
 ## Frontend Features
 
@@ -929,7 +937,7 @@ See [Authentication Documentation](docs/AUTHENTICATION.md) for detailed informat
 
 ```bash
 # Register a new user
-curl -X POST http://localhost:3000/api/auth/register \
+curl -X POST http://localhost:5000/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "email": "user@example.com",
@@ -939,7 +947,7 @@ curl -X POST http://localhost:3000/api/auth/register \
   }'
 
 # Login
-curl -X POST http://localhost:3000/api/auth/login \
+curl -X POST http://localhost:5000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "user@example.com",
@@ -950,7 +958,7 @@ curl -X POST http://localhost:3000/api/auth/login \
 ### Minting a Voucher (Admin only)
 
 ```bash
-curl -X POST http://localhost:3000/api/vouchers/mint \
+curl -X POST http://localhost:5000/api/vouchers/mint \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -966,7 +974,7 @@ curl -X POST http://localhost:3000/api/vouchers/mint \
 ### Registering a Merchant (Admin only)
 
 ```bash
-curl -X POST http://localhost:3000/api/merchants/register \
+curl -X POST http://localhost:5000/api/merchants/register \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -981,7 +989,7 @@ curl -X POST http://localhost:3000/api/merchants/register \
 ### Generate API Key for Merchant
 
 ```bash
-curl -X POST http://localhost:3000/api/merchants/CLINIC_001/api-key \
+curl -X POST http://localhost:5000/api/merchants/CLINIC_001/api-key \
   -H "Authorization: Bearer <merchant_or_admin_token>" \
   -H "Content-Type: application/json" \
   -d '{"expiryDays": 365}'
@@ -992,7 +1000,7 @@ curl -X POST http://localhost:3000/api/merchants/CLINIC_001/api-key \
 #### Bulk Voucher Minting (Admin only)
 
 ```bash
-curl -X POST http://localhost:3000/api/vouchers/bulk-mint \
+curl -X POST http://localhost:5000/api/vouchers/bulk-mint \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -1020,7 +1028,7 @@ curl -X POST http://localhost:3000/api/vouchers/bulk-mint \
 #### Batch Merchant Registration (Admin only)
 
 ```bash
-curl -X POST http://localhost:3000/api/merchants/batch-register \
+curl -X POST http://localhost:5000/api/merchants/batch-register \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -1047,7 +1055,7 @@ curl -X POST http://localhost:3000/api/merchants/batch-register \
 
 ```bash
 # Import recipients from CSV file and create vouchers for each
-curl -X POST http://localhost:3000/api/redemptions/import-recipients \
+curl -X POST http://localhost:5000/api/redemptions/import-recipients \
   -H "Authorization: Bearer <admin_or_merchant_token>" \
   -F "file=@recipients.csv"
 
@@ -1062,14 +1070,14 @@ curl -X POST http://localhost:3000/api/redemptions/import-recipients \
 #### Get Notification Preferences
 
 ```bash
-curl -X GET http://localhost:3000/api/notifications/preferences \
+curl -X GET http://localhost:5000/api/notifications/preferences \
   -H "Authorization: Bearer <access_token>"
 ```
 
 #### Update Notification Preferences
 
 ```bash
-curl -X PUT http://localhost:3000/api/notifications/preferences \
+curl -X PUT http://localhost:5000/api/notifications/preferences \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{
@@ -1087,19 +1095,19 @@ curl -X PUT http://localhost:3000/api/notifications/preferences \
 
 ```bash
 # Test email notification
-curl -X POST http://localhost:3000/api/notifications/test-email \
+curl -X POST http://localhost:5000/api/notifications/test-email \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{"subject": "Test Email", "message": "This is a test notification"}'
 
 # Test SMS notification
-curl -X POST http://localhost:3000/api/notifications/test-sms \
+curl -X POST http://localhost:5000/api/notifications/test-sms \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{"phoneNumber": "+1234567890", "message": "Test SMS notification"}'
 
 # Test push notification
-curl -X POST http://localhost:3000/api/notifications/test-push \
+curl -X POST http://localhost:5000/api/notifications/test-push \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{"title": "Test Push", "body": "This is a test push notification"}'
@@ -1108,7 +1116,7 @@ curl -X POST http://localhost:3000/api/notifications/test-push \
 #### Register for Push Notifications
 
 ```bash
-curl -X POST http://localhost:3000/api/notifications/register-push \
+curl -X POST http://localhost:5000/api/notifications/register-push \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{"token": "device_fcm_token"}'
@@ -1118,7 +1126,7 @@ curl -X POST http://localhost:3000/api/notifications/register-push \
 
 ```bash
 # Send bulk notifications
-curl -X POST http://localhost:3000/api/notifications/bulk-send \
+curl -X POST http://localhost:5000/api/notifications/bulk-send \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -1139,7 +1147,7 @@ curl -X POST http://localhost:3000/api/notifications/bulk-send \
   }'
 
 # Check bulk notification status
-curl -X GET http://localhost:3000/api/notifications/bulk-status/batch_123456 \
+curl -X GET http://localhost:5000/api/notifications/bulk-status/batch_123456 \
   -H "Authorization: Bearer <admin_access_token>"
 ```
 
@@ -1147,7 +1155,7 @@ curl -X GET http://localhost:3000/api/notifications/bulk-status/batch_123456 \
 
 ```bash
 # Schedule notification
-curl -X POST http://localhost:3000/api/notifications/schedule \
+curl -X POST http://localhost:5000/api/notifications/schedule \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{
@@ -1163,7 +1171,7 @@ curl -X POST http://localhost:3000/api/notifications/schedule \
   }'
 
 # Cancel scheduled notification
-curl -X DELETE http://localhost:3000/api/notifications/schedule/schedule_123456 \
+curl -X DELETE http://localhost:5000/api/notifications/schedule/schedule_123456 \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -1172,7 +1180,7 @@ curl -X DELETE http://localhost:3000/api/notifications/schedule/schedule_123456 
 #### Create Enhanced Batch Operation
 
 ```bash
-curl -X POST http://localhost:3000/api/batch/create \
+curl -X POST http://localhost:5000/api/batch/create \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -1197,19 +1205,19 @@ curl -X POST http://localhost:3000/api/batch/create \
 
 ```bash
 # Get batch status
-curl -X GET http://localhost:3000/api/batch/status/batch_123456 \
+curl -X GET http://localhost:5000/api/batch/status/batch_123456 \
   -H "Authorization: Bearer <access_token>"
 
 # Get user's batch operations
-curl -X GET http://localhost:3000/api/batch/my-operations?limit=10&status=processing \
+curl -X GET http://localhost:5000/api/batch/my-operations?limit=10&status=processing \
   -H "Authorization: Bearer <access_token>"
 
 # Pause batch operation
-curl -X POST http://localhost:3000/api/batch/pause/batch_123456 \
+curl -X POST http://localhost:5000/api/batch/pause/batch_123456 \
   -H "Authorization: Bearer <access_token>"
 
 # Resume batch operation
-curl -X POST http://localhost:3000/api/batch/resume/batch_123456 \
+curl -X POST http://localhost:5000/api/batch/resume/batch_123456 \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -1217,12 +1225,12 @@ curl -X POST http://localhost:3000/api/batch/resume/batch_123456 \
 
 ```bash
 # Export as JSON
-curl -X GET http://localhost:3000/api/batch/export/batch_123456?format=json \
+curl -X GET http://localhost:5000/api/batch/export/batch_123456?format=json \
   -H "Authorization: Bearer <access_token>" \
   -o batch_results.json
 
 # Export as CSV
-curl -X GET http://localhost:3000/api/batch/export/batch_123456?format=csv \
+curl -X GET http://localhost:5000/api/batch/export/batch_123456?format=csv \
   -H "Authorization: Bearer <access_token>" \
   -o batch_results.csv
 ```
@@ -1230,7 +1238,7 @@ curl -X GET http://localhost:3000/api/batch/export/batch_123456?format=csv \
 #### Enhanced Bulk Voucher Minting
 
 ```bash
-curl -X POST http://localhost:3000/api/vouchers/bulk-mint-enhanced \
+curl -X POST http://localhost:5000/api/vouchers/bulk-mint-enhanced \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -1256,7 +1264,7 @@ curl -X POST http://localhost:3000/api/vouchers/bulk-mint-enhanced \
 
 ```bash
 # Get comprehensive dashboard with filters
-curl -X GET "http://localhost:3000/api/analytics/dashboard?startDate=2024-01-01&endDate=2024-12-31&voucherType=1" \
+curl -X GET "http://localhost:5000/api/analytics/dashboard?startDate=2024-01-01&endDate=2024-12-31&voucherType=1" \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -1264,7 +1272,7 @@ curl -X GET "http://localhost:3000/api/analytics/dashboard?startDate=2024-01-01&
 
 ```bash
 # Get voucher stats by type
-curl -X GET "http://localhost:3000/api/analytics/vouchers?voucherType=2&merchantId=CLINIC_001" \
+curl -X GET "http://localhost:5000/api/analytics/vouchers?voucherType=2&merchantId=CLINIC_001" \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -1272,7 +1280,7 @@ curl -X GET "http://localhost:3000/api/analytics/vouchers?voucherType=2&merchant
 
 ```bash
 # Get merchant analytics
-curl -X GET "http://localhost:3000/api/analytics/merchants?startDate=2024-01-01" \
+curl -X GET "http://localhost:5000/api/analytics/merchants?startDate=2024-01-01" \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -1280,7 +1288,7 @@ curl -X GET "http://localhost:3000/api/analytics/merchants?startDate=2024-01-01"
 
 ```bash
 # Get financial summary
-curl -X GET "http://localhost:3000/api/analytics/financial?startDate=2024-01-01&endDate=2024-12-31" \
+curl -X GET "http://localhost:5000/api/analytics/financial?startDate=2024-01-01&endDate=2024-12-31" \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -1288,11 +1296,11 @@ curl -X GET "http://localhost:3000/api/analytics/financial?startDate=2024-01-01&
 
 ```bash
 # Get daily trends
-curl -X GET "http://localhost:3000/api/analytics/trends?period=daily&voucherType=1" \
+curl -X GET "http://localhost:5000/api/analytics/trends?period=daily&voucherType=1" \
   -H "Authorization: Bearer <access_token>"
 
 # Get weekly trends
-curl -X GET "http://localhost:3000/api/analytics/trends?period=weekly" \
+curl -X GET "http://localhost:5000/api/analytics/trends?period=weekly" \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -1300,17 +1308,17 @@ curl -X GET "http://localhost:3000/api/analytics/trends?period=weekly" \
 
 ```bash
 # Export dashboard data as JSON
-curl -X GET "http://localhost:3000/api/analytics/export?type=dashboard&format=json" \
+curl -X GET "http://localhost:5000/api/analytics/export?type=dashboard&format=json" \
   -H "Authorization: Bearer <access_token>" \
   -o analytics_export.json
 
 # Export voucher stats as CSV
-curl -X GET "http://localhost:3000/api/analytics/export?type=vouchers&format=csv" \
+curl -X GET "http://localhost:5000/api/analytics/export?type=vouchers&format=csv" \
   -H "Authorization: Bearer <access_token>" \
   -o vouchers_stats.csv
 
 # Export financial report
-curl -X GET "http://localhost:3000/api/analytics/export?type=financial&format=json&startDate=2024-01-01" \
+curl -X GET "http://localhost:5000/api/analytics/export?type=financial&format=json&startDate=2024-01-01" \
   -H "Authorization: Bearer <access_token>" \
   -o financial_report.json
 ```
@@ -1319,7 +1327,7 @@ curl -X GET "http://localhost:3000/api/analytics/export?type=financial&format=js
 
 ```bash
 # Get real-time metrics for last 24 hours
-curl -X GET http://localhost:3000/api/analytics/realtime \
+curl -X GET http://localhost:5000/api/analytics/realtime \
   -H "Authorization: Bearer <admin_access_token>"
 ```
 
@@ -1494,9 +1502,13 @@ ServicePass includes a comprehensive test suite with **1,500+ lines of test code
 # Test Move contracts
 sui move test
 
-# Test backend with coverage
+# Test backend (from the repository root)
 cd backend
+npm ci
 npm test
+
+# Generate a coverage report
+npm test -- --coverage
 
 # Run tests in watch mode
 npm test -- --watch
@@ -1507,6 +1519,8 @@ npm test voucher.model.test.js
 # Run all advanced feature tests
 npm test -- --testPathPattern="(voucherTemplate|scheduledVoucher|multiSig|voucherTransfer|templates).*.test.js"
 ```
+
+Run backend tests from `backend/`: the repository-root `npm test` script is a placeholder. Jest loads `src/__tests__/setup.js`, starts MongoDB Memory Server, clears collections after each test, and stops the database after each suite. The first run may download a MongoDB binary and requires network access. Supertest exercises HTTP routes.
 
 ### Test Coverage Overview
 
@@ -1743,7 +1757,7 @@ For questions, issues, or support:
 ## Project Status
 
 **Status**: ✅ Active Development  
-**Last Updated**: February 19, 2026  
+**Last Updated**: October 5, 2026<br>
 **Version**: 1.0.0  
 **Test Coverage**: Comprehensive (1,500+ lines of test code)  
 **Documentation**: Complete with enhanced API docs, user guides, merchant onboarding, audit reports, deployment runbooks, Docker & Kubernetes guides (includes diagrams, quick starts, and performance tips)  
