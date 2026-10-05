@@ -13,6 +13,3 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-    - name: Compile smart contracts
-      run: move build --path move/sources
