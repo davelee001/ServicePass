@@ -1,4 +1,7 @@
 
+- [ ] **2. Fix frontend-to-backend routing — P0 · Small**
+  The Vite proxy targets port `5000`, but the backend uses `3000`; production Nginx also has no `/api` proxy. Choose and configure one production API URL/reverse-proxy setup across `vite.config.js`, `docker-compose.yml`, and `nginx.conf`.
+
 - [ ] **3. Remove insecure deployment defaults — P0 · Small**
   Don’t allow placeholder JWT, MongoDB, or other secrets in a production deployment. Supply strong secrets through a secret manager, restrict CORS to the production frontend, and verify startup fails when required production configuration is missing. Review `docker-compose.yml` and `envValidation.js`.
 
