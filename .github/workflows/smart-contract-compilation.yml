@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
           SUIUP_INSTALL_DIR: ${{ runner.temp }}/sui-bin
           SUIUP_DEFAULT_BIN_DIR: ${{ runner.temp }}/sui-bin
         run: |
