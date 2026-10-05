@@ -13,5 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+          cp -R move/sources "$RUNNER_TEMP/servicepass-move/sources"
+      - name: Build smart contracts
+        run: sui move build --path "$RUNNER_TEMP/servicepass-move"
       - name: Test smart contracts
         run: sui move test --path "$RUNNER_TEMP/servicepass-move"
