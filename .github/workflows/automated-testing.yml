@@ -13,3 +13,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Run backend suite
+        run: npm run test:ci
