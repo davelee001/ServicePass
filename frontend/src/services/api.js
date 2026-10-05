@@ -69,6 +69,14 @@ export const redemptionAPI = {
   },
 };
 
+// Analytics APIs
+export const analyticsAPI = {
+  getDashboard: async (params = {}) => {
+    const response = await api.get('/analytics/dashboard', { params });
+    return response.data.dashboard;
+  },
+};
+
 // Notification APIs
 export const notificationAPI = {
   getPreferences: async () => {
