@@ -1,3 +1,6 @@
+  Don’t allow placeholder JWT, MongoDB, or other secrets in a production deployment. Supply strong secrets through a secret manager, restrict CORS to the production frontend, and verify startup fails when required production configuration is missing. Review `docker-compose.yml` and `envValidation.js`.
+
+- [ ] **4. Triage dependency vulnerabilities — P1 · Small to medium**
   npm reported **30 high-severity advisories** in the backend tree and **4 advisories** in the frontend tree. Review the audit details, update or replace affected dependencies, and rerun tests. In particular, the Sui SDK packages are deprecated; avoid unreviewed `--force` upgrades.
 
 - [ ] **5. Make QR redemption match the contract — P0 · Large**
