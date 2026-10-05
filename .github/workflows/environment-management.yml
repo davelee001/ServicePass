@@ -10,11 +10,12 @@ on:
 
 jobs:
   manage-environment:
+    needs: [backend-checks, contract-checks]
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
