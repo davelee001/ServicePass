@@ -286,7 +286,7 @@ To build the frontend for deployment, run `npm run build` from `frontend/`; outp
 ### Current Integration Limitations
 
 - The shared `analyticsAPI.getDashboard()` helper used by AdminPanel does not yet attach a Bearer token. The backend dashboard route requires JWT authentication, so requests through this helper return 401 until token handling is added.
-- GitHub Actions workflows currently select Node.js 18, while the backend test database dependency requires Node.js 20.19.0 or later. Align CI with that requirement before relying on backend test results.
+- Backend CI uses Node.js 22 and runs the backend Jest suite. Both automatic and manual deployment workflows depend on backend tests and Move build/tests passing for the same revision. Production deployment still contains placeholder server settings that must be configured before use.
 
 ## Frontend Features
 
@@ -1520,6 +1520,7 @@ npm test voucher.model.test.js
 npm test -- --testPathPattern="(voucherTemplate|scheduledVoucher|multiSig|voucherTransfer|templates).*.test.js"
 ```
 
+Run `npm ci --prefix backend` followed by `npm test` from the repository root, or run tests directly from `backend/`. The root `npm run test:ci` command runs Jest in CI mode with a single worker. Jest loads `src/__tests__/setup.js`, starts MongoDB Memory Server, clears collections after each test, and stops the database after each suite. The first run may download a MongoDB binary and requires network access. Supertest exercises HTTP routes.
 
 ### Test Coverage Overview
 
