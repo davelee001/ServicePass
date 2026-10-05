@@ -8,7 +8,7 @@ beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
     const mongoUri = mongoServer.getUri();
     await mongoose.connect(mongoUri);
-});
+}, 120000);
 
 // Cleanup after each test
 afterEach(async () => {
