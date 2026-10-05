@@ -9,6 +9,7 @@ on:
         default: 'dev'
 
 jobs:
+  backend-checks:
     uses: ./.github/workflows/automated-testing.yml
 
   contract-checks:
