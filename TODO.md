@@ -1,3 +1,6 @@
+# ServicePass TODO
+
+- [ ] **1. Make CI run the real checks — P0 · Small**
   The root `npm test` script is a placeholder, while the CI workflow runs it from the root. Update `package.json` and `automated-testing.yml` to install and run the backend suite. Fix the smart-contract workflow’s build command/path too; the Move package manifest is `Move.toml`. Require these checks to pass before deployment.
 
   Progress (October 5, 2026): Root test scripts delegate to the backend; reusable CI workflows install backend dependencies on Node.js 22 and run Jest, and assemble the Move manifest and sources for Sui build/tests. Automatic and manual deployment jobs require both checks. Workflow structure validation passed. The real backend suite currently fails on existing missing dependencies, model validation, and test errors; Move execution still needs verification with Sui CLI. Keep this item open until those checks pass.
