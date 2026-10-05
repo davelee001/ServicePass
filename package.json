@@ -4,6 +4,9 @@
   "description": "A blockchain-based voucher system for real-world services",
   "main": "index.js",
   "scripts": {
+    "test": "npm --prefix backend test --",
+    "test:ci": "npm --prefix backend test -- --ci --runInBand",
+    "build": "npm --prefix frontend run build"
   },
   "repository": {
     "type": "git",
