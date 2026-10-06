@@ -1,3 +1,12 @@
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
+const { validateEnv, getSafeEnvForLogging } = require('../src/config/envValidation');
+const { getCorsConfig } = require('../src/config/cors');
 const { loadSecrets } = require('../src/config/secrets');
 
 function validEnv() {
