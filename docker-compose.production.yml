@@ -1,3 +1,8 @@
+# Standalone production definition: do not merge with docker-compose.yml.
+# Secret-manager agents must materialize these files outside the repository.
+services:
+  backend:
+    build: ./backend
     restart: unless-stopped
     environment:
       NODE_ENV: production
