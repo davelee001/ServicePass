@@ -1028,7 +1028,6 @@ curl -X POST http://localhost:5000/api/vouchers/bulk-mint \
 #### Batch Merchant Registration (Admin only)
 
 ```bash
-curl -X POST http://localhost:5000/api/merchants/batch-register \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -1055,7 +1054,7 @@ curl -X POST http://localhost:5000/api/merchants/batch-register \
 
 ```bash
 # Import recipients from CSV file and create vouchers for each
-curl -X POST http://localhost:5000/api/redemptions/import-recipients \
+curl -X POST http://localhost:3000/api/redemptions/import-recipients \
   -H "Authorization: Bearer <admin_or_merchant_token>" \
   -F "file=@recipients.csv"
 
@@ -1070,6 +1069,7 @@ curl -X POST http://localhost:5000/api/redemptions/import-recipients \
 #### Get Notification Preferences
 
 ```bash
+curl -X GET http://localhost:3000/api/notifications/preferences \
   -H "Authorization: Bearer <access_token>"
 ```
 
