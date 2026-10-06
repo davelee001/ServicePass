@@ -1,11 +1,12 @@
+require('./config/bootstrap');
+
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const helmet = require('helmet');
 const { logger } = require('./utils/logger');
 const Sentry = require('@sentry/node');
 const { ProfilingIntegration } = require('@sentry/profiling-node');
-const { validateEnv, getEnvConfig } = require('./config/envValidation');
+const { getEnvConfig } = require('./config/envValidation');
 const { helmetConfig, getCorsConfig } = require('./config/security');
 const { 
     mongoSanitizeMiddleware, 
@@ -18,8 +19,6 @@ const { httpRequestDurationMicroseconds } = require('./utils/metrics');
 const notificationScheduler = require('./utils/notificationScheduler');
 const batchOperationManager = require('./utils/batchOperationManager');
 const scheduledVoucherProcessor = require('./utils/scheduledVoucherProcessor');
-    process.exit(1);
-}
 
 const envConfig = getEnvConfig();
 const app = express();
