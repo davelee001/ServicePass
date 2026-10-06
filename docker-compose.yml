@@ -100,7 +100,6 @@ services:
     restart: unless-stopped
     ports:
       - "3001:80"
-      VITE_API_URL: http://localhost:3000/api
     depends_on:
       - backend
     networks:

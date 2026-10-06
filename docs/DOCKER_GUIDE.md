@@ -540,3 +540,5 @@ docker stats servicepass-backend
 For issues or questions:
 - GitHub Issues: https://github.com/davelee001/ServicePass/issues
 - Email: david.leekaleer@student.utamu.ac.ug
+
+The frontend Dockerfile sets `VITE_API_URL=/api` before building. Vite embeds configuration into compiled assets, so setting this variable on the running Nginx container will not change the browser API URL. Keep the frontend and API on the same public origin through the proxy. For deployment outside Compose, update the Nginx upstream to the backend's reachable address.
