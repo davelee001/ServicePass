@@ -1225,11 +1225,12 @@ curl -X POST http://localhost:5000/api/batch/resume/batch_123456 \
 
 ```bash
 # Export as JSON
-curl -X GET http://localhost:5000/api/batch/export/batch_123456?format=json \
+curl -X GET http://localhost:3000/api/batch/export/batch_123456?format=json \
   -H "Authorization: Bearer <access_token>" \
   -o batch_results.json
 
 # Export as CSV
+curl -X GET http://localhost:3000/api/batch/export/batch_123456?format=csv \
   -H "Authorization: Bearer <access_token>" \
   -o batch_results.csv
 ```
