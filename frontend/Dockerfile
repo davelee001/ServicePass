@@ -16,6 +16,8 @@ RUN npm ci && \
 
 # Copy application source
 COPY . .
+# The browser uses the same-origin Nginx API proxy. Vite reads this at build time.
+ENV VITE_API_URL=/api
 
 # Build the application
 RUN npm run build
