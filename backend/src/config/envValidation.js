@@ -40,6 +40,15 @@ const optionalEnvVars = [
  * Validate that all required environment variables are set
  * @throws {Error} If any required environment variable is missing
  */
+        if (url.protocol !== 'https:' || origin !== url.origin ||
+            host === 'localhost' || host.endsWith('.localhost') || host === '[::1]' ||
+            /^127\./.test(host) || host === '0.0.0.0' || isPlaceholder(host)) {
+            throw new Error('ALLOWED_ORIGINS must contain exact production HTTPS origins');
+        }
+        return origin;
+    });
+}
+
 function validateEnv() {
     const production = process.env.NODE_ENV === 'production';
     const required = production ? [...requiredEnvVars, ...productionRequired] : requiredEnvVars;
