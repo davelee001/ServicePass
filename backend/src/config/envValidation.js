@@ -44,10 +44,10 @@ function validateEnv() {
     const missing = [];
     const warnings = [];
 
-        if (!process.env[varName]) {
-            missing.push(varName);
-        }
-    });
+        if (!/^0x[0-9a-f]{1,64}$/i.test(process.env[name]) || /^0x0+$/i.test(process.env[name])) invalid.push(name);
+    }
+    if (!['mainnet', 'testnet'].includes(process.env.SUI_NETWORK)) invalid.push('SUI_NETWORK');
+    if (!/^\d+$/.test(process.env.PORT) || Number(process.env.PORT) < 1 || Number(process.env.PORT) > 65535) invalid.push('PORT');
 
     for (const [name, protocols] of [['MONGODB_URI', ['mongodb:', 'mongodb+srv:']], ['REDIS_URL', ['rediss:']]]) {
         try {
