@@ -1,3 +1,12 @@
+
+Copy `.env.production.example` to an ignored `.env.production`, or supply these non-secret settings through deployment automation:
+
+- `SECRETS_DIR`: absolute path to the manager's materialized files.
+- `ALLOWED_ORIGINS`: exact HTTPS frontend origins, comma separated, without paths or trailing slashes. Wildcards, HTTP, localhost, and example hosts are rejected.
+- `SUI_NETWORK`: `testnet` or `mainnet`.
+- `PACKAGE_ID`, `ADMIN_CAP_ID`, `REGISTRY_ID`: actual nonzero deployed object/package IDs.
+
+```bash
 docker compose --env-file .env.production -f docker-compose.production.yml config --quiet
 docker compose --env-file .env.production -f docker-compose.production.yml up --build -d
 ```
