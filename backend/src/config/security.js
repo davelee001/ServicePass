@@ -40,14 +40,7 @@ const helmetConfig = helmet({
 /**
  * CORS configuration
  */
-        credentials: true,
-        optionsSuccessStatus: 200,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-        exposedHeaders: ['X-Total-Count', 'X-Page-Count'],
-        maxAge: 86400, // 24 hours
-    };
-};
+const { getCorsConfig } = require('./cors');
 
 /**
  * Security middleware configuration
