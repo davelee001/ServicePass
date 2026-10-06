@@ -51,11 +51,12 @@ function validateEnv() {
         }
     });
 
-    if (missing.length > 0) {
-        const errorMsg = `Missing required environment variables: ${missing.join(', ')}`;
-        logger.error(errorMsg);
-        throw new Error(errorMsg);
+                ['tlsInsecure', 'tlsAllowInvalidCertificates', 'tlsAllowInvalidHostnames'].some(key => uri.searchParams.get(key) === 'true');
+            if (!protocols.includes(uri.protocol) || !uri.hostname || !isStrongSecret(password, 16) ||
+                !encrypted || disablesTls || isPlaceholder(uri.hostname)) invalid.push(name);
+        } catch { invalid.push(name); }
     }
+    getProductionOrigins(process.env.ALLOWED_ORIGINS);
     if (invalid.length) throw new Error(`Invalid production configuration: ${invalid.join(', ')}`);
 }
 
