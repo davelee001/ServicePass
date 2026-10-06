@@ -40,13 +40,6 @@ const helmetConfig = helmet({
 /**
  * CORS configuration
  */
-const getCorsConfig = () => {
-    const allowedOrigins = process.env.ALLOWED_ORIGINS 
-        ? process.env.ALLOWED_ORIGINS.split(',')
-        : ['http://localhost:3000', 'http://localhost:5173'];
-
-    return {
-        origin: (origin, callback) => {
             // Allow requests with no origin (mobile apps, Postman, etc.)
             if (!origin) return callback(null, true);
             

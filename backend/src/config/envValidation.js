@@ -1,5 +1,3 @@
-const { logger } = require('../utils/logger');
-
 /**
  * Environment variable validation
  * Ensures all required environment variables are set
