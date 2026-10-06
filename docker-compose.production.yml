@@ -1,3 +1,12 @@
+      REGISTRY_ID: ${REGISTRY_ID:?Set REGISTRY_ID}
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+      ENCRYPTION_KEY_FILE: /run/secrets/encryption_key
+      QR_SIGNING_SECRET_FILE: /run/secrets/qr_signing_secret
+      ADMIN_PRIVATE_KEY_FILE: /run/secrets/admin_private_key
+      MONGODB_URI_FILE: /run/secrets/mongodb_uri
+      REDIS_URL_FILE: /run/secrets/redis_url
+    secrets:
+      - jwt_secret
       - encryption_key
       - qr_signing_secret
       - admin_private_key
