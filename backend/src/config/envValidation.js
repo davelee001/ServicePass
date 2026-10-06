@@ -41,9 +41,14 @@ const optionalEnvVars = [
  * @throws {Error} If any required environment variable is missing
  */
 function validateEnv() {
-    const missing = [];
-    const warnings = [];
+    const production = process.env.NODE_ENV === 'production';
+    const required = production ? [...requiredEnvVars, ...productionRequired] : requiredEnvVars;
+    const missing = required.filter(name => !process.env[name] || !process.env[name].trim());
+    if (missing.length) throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
+    if (!production) return;
 
+    const invalid = [];
+    for (const name of ['JWT_SECRET', 'ENCRYPTION_KEY', 'QR_SIGNING_SECRET']) {
         if (!isStrongSecret(process.env[name])) invalid.push(name);
     }
     if (new Set(['JWT_SECRET', 'ENCRYPTION_KEY', 'QR_SIGNING_SECRET'].map(name => process.env[name])).size !== 3) {
