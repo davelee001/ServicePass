@@ -1318,7 +1318,6 @@ curl -X GET "http://localhost:5000/api/analytics/export?type=vouchers&format=csv
   -o vouchers_stats.csv
 
 # Export financial report
-curl -X GET "http://localhost:5000/api/analytics/export?type=financial&format=json&startDate=2024-01-01" \
   -H "Authorization: Bearer <access_token>" \
   -o financial_report.json
 ```
@@ -1327,7 +1326,7 @@ curl -X GET "http://localhost:5000/api/analytics/export?type=financial&format=js
 
 ```bash
 # Get real-time metrics for last 24 hours
-curl -X GET http://localhost:5000/api/analytics/realtime \
+curl -X GET http://localhost:3000/api/analytics/realtime \
   -H "Authorization: Bearer <admin_access_token>"
 ```
 
