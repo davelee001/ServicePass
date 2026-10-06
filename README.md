@@ -197,6 +197,7 @@ npm install
 cp .env.example .env
 
 # Edit .env and configure:
+# - PORT=3000 (matches the backend template and frontend development proxy)
 # Blockchain Configuration:
 # - PACKAGE_ID (from deployment)
 # - ADMIN_CAP_ID (from deployment)
