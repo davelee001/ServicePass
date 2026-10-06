@@ -44,6 +44,15 @@ function validateEnv() {
     const missing = [];
     const warnings = [];
 
+        if (!isStrongSecret(process.env[name])) invalid.push(name);
+    }
+    if (new Set(['JWT_SECRET', 'ENCRYPTION_KEY', 'QR_SIGNING_SECRET'].map(name => process.env[name])).size !== 3) {
+        invalid.push('JWT_SECRET, ENCRYPTION_KEY and QR_SIGNING_SECRET must be distinct');
+    }
+    if (!isStrongSecret(process.env.ADMIN_PRIVATE_KEY) ||
+        !/^[A-Za-z0-9+/]{43}=$/.test(process.env.ADMIN_PRIVATE_KEY) ||
+        Buffer.from(process.env.ADMIN_PRIVATE_KEY, 'base64').length !== 32) invalid.push('ADMIN_PRIVATE_KEY');
+    for (const name of ['PACKAGE_ID', 'ADMIN_CAP_ID', 'REGISTRY_ID']) {
         if (!/^0x[0-9a-f]{1,64}$/i.test(process.env[name]) || /^0x0+$/i.test(process.env[name])) invalid.push(name);
     }
     if (!['mainnet', 'testnet'].includes(process.env.SUI_NETWORK)) invalid.push('SUI_NETWORK');
