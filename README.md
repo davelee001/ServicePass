@@ -279,7 +279,8 @@ cp .env.example .env
 npm run dev
 ```
 
-The frontend will be available at `http://localhost:3000`. Keep the backend running in its own terminal. The Vite development server proxies `/api` requests to port 5000; `VITE_API_URL` configures the shared Axios client. Some pages use relative `/api` requests directly, so keep the proxy target and backend port aligned.
+
+The Docker production frontend is available at `http://localhost:3001`. Its Nginx server forwards `/api` and `/api/?` to `backend:3000`, preserving the path and query string. API responses, including errors, bypass the SPA fallback and static asset cache. The frontend image sets `VITE_API_URL=/api` at build time; runtime container environment variables do not configure compiled Vite assets. When hosting outside Compose, provide the same `/api` reverse proxy and update the Nginx upstream to your backend address.
 
 To build the frontend for deployment, run `npm run build` from `frontend/`; output is written to `frontend/dist/`. Run `npm run preview` to inspect the build locally.
 
