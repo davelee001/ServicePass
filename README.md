@@ -1095,12 +1095,13 @@ curl -X PUT http://localhost:5000/api/notifications/preferences \
 
 ```bash
 # Test email notification
-curl -X POST http://localhost:5000/api/notifications/test-email \
+curl -X POST http://localhost:3000/api/notifications/test-email \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{"subject": "Test Email", "message": "This is a test notification"}'
 
 # Test SMS notification
+curl -X POST http://localhost:3000/api/notifications/test-sms \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{"phoneNumber": "+1234567890", "message": "Test SMS notification"}'
