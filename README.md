@@ -937,7 +937,7 @@ See [Authentication Documentation](docs/AUTHENTICATION.md) for detailed informat
 
 ```bash
 # Register a new user
-curl -X POST http://localhost:5000/api/auth/register \
+curl -X POST http://localhost:3000/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "email": "user@example.com",
@@ -947,6 +947,7 @@ curl -X POST http://localhost:5000/api/auth/register \
   }'
 
 # Login
+curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "user@example.com",
