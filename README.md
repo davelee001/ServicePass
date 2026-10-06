@@ -1116,7 +1116,7 @@ curl -X POST http://localhost:5000/api/notifications/test-push \
 #### Register for Push Notifications
 
 ```bash
-curl -X POST http://localhost:5000/api/notifications/register-push \
+curl -X POST http://localhost:3000/api/notifications/register-push \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{"token": "device_fcm_token"}'
@@ -1126,7 +1126,7 @@ curl -X POST http://localhost:5000/api/notifications/register-push \
 
 ```bash
 # Send bulk notifications
-curl -X POST http://localhost:5000/api/notifications/bulk-send \
+curl -X POST http://localhost:3000/api/notifications/bulk-send \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
