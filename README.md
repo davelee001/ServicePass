@@ -1147,7 +1147,7 @@ curl -X POST http://localhost:5000/api/notifications/bulk-send \
   }'
 
 # Check bulk notification status
-curl -X GET http://localhost:5000/api/notifications/bulk-status/batch_123456 \
+curl -X GET http://localhost:3000/api/notifications/bulk-status/batch_123456 \
   -H "Authorization: Bearer <admin_access_token>"
 ```
 
@@ -1155,6 +1155,7 @@ curl -X GET http://localhost:5000/api/notifications/bulk-status/batch_123456 \
 
 ```bash
 # Schedule notification
+curl -X POST http://localhost:3000/api/notifications/schedule \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{
