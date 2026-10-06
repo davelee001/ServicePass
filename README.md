@@ -1264,7 +1264,6 @@ curl -X POST http://localhost:5000/api/vouchers/bulk-mint-enhanced \
 
 ```bash
 # Get comprehensive dashboard with filters
-curl -X GET "http://localhost:5000/api/analytics/dashboard?startDate=2024-01-01&endDate=2024-12-31&voucherType=1" \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -1272,7 +1271,7 @@ curl -X GET "http://localhost:5000/api/analytics/dashboard?startDate=2024-01-01&
 
 ```bash
 # Get voucher stats by type
-curl -X GET "http://localhost:5000/api/analytics/vouchers?voucherType=2&merchantId=CLINIC_001" \
+curl -X GET "http://localhost:3000/api/analytics/vouchers?voucherType=2&merchantId=CLINIC_001" \
   -H "Authorization: Bearer <access_token>"
 ```
 
