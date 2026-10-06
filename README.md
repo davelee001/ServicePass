@@ -1313,11 +1313,12 @@ curl -X GET "http://localhost:5000/api/analytics/export?type=dashboard&format=js
   -o analytics_export.json
 
 # Export voucher stats as CSV
-curl -X GET "http://localhost:5000/api/analytics/export?type=vouchers&format=csv" \
+curl -X GET "http://localhost:3000/api/analytics/export?type=vouchers&format=csv" \
   -H "Authorization: Bearer <access_token>" \
   -o vouchers_stats.csv
 
 # Export financial report
+curl -X GET "http://localhost:3000/api/analytics/export?type=financial&format=json&startDate=2024-01-01" \
   -H "Authorization: Bearer <access_token>" \
   -o financial_report.json
 ```
