@@ -1300,7 +1300,6 @@ curl -X GET "http://localhost:5000/api/analytics/trends?period=daily&voucherType
   -H "Authorization: Bearer <access_token>"
 
 # Get weekly trends
-curl -X GET "http://localhost:5000/api/analytics/trends?period=weekly" \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -1308,7 +1307,7 @@ curl -X GET "http://localhost:5000/api/analytics/trends?period=weekly" \
 
 ```bash
 # Export dashboard data as JSON
-curl -X GET "http://localhost:5000/api/analytics/export?type=dashboard&format=json" \
+curl -X GET "http://localhost:3000/api/analytics/export?type=dashboard&format=json" \
   -H "Authorization: Bearer <access_token>" \
   -o analytics_export.json
 
