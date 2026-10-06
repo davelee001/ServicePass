@@ -1,3 +1,12 @@
+        MONGODB_URI: `mongodb+srv://app:${secret()}@db.servicepass.org/servicepass`,
+        REDIS_URL: `rediss://app:${secret()}@cache.servicepass.org:6380`,
+    };
+}
+function configure(t, changes = {}) {
+    const original = { ...process.env };
+    for (const name of Object.keys(process.env)) delete process.env[name];
+    Object.assign(process.env, validEnv(), changes);
+    t.after(() => {
         for (const name of Object.keys(process.env)) delete process.env[name];
         Object.assign(process.env, original);
     });
