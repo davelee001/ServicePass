@@ -1,3 +1,9 @@
+const fs = require('node:fs');
+
+const secretNames = [
+    'JWT_SECRET', 'ENCRYPTION_KEY', 'QR_SIGNING_SECRET', 'ADMIN_PRIVATE_KEY',
+    'MONGODB_URI', 'REDIS_URL', 'SMTP_PASS', 'TWILIO_AUTH_TOKEN', 'FIREBASE_PRIVATE_KEY',
+];
 
 function loadSecrets(env = process.env) {
     for (const name of secretNames) {
