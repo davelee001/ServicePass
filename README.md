@@ -1155,7 +1155,6 @@ curl -X GET http://localhost:5000/api/notifications/bulk-status/batch_123456 \
 
 ```bash
 # Schedule notification
-curl -X POST http://localhost:5000/api/notifications/schedule \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{
@@ -1171,7 +1170,7 @@ curl -X POST http://localhost:5000/api/notifications/schedule \
   }'
 
 # Cancel scheduled notification
-curl -X DELETE http://localhost:5000/api/notifications/schedule/schedule_123456 \
+curl -X DELETE http://localhost:3000/api/notifications/schedule/schedule_123456 \
   -H "Authorization: Bearer <access_token>"
 ```
 
