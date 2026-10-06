@@ -1000,7 +1000,7 @@ curl -X POST http://localhost:5000/api/merchants/CLINIC_001/api-key \
 #### Bulk Voucher Minting (Admin only)
 
 ```bash
-curl -X POST http://localhost:5000/api/vouchers/bulk-mint \
+curl -X POST http://localhost:3000/api/vouchers/bulk-mint \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -1028,6 +1028,7 @@ curl -X POST http://localhost:5000/api/vouchers/bulk-mint \
 #### Batch Merchant Registration (Admin only)
 
 ```bash
+curl -X POST http://localhost:3000/api/merchants/batch-register \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
