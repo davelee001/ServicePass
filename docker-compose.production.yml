@@ -1,3 +1,12 @@
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?Set the exact HTTPS frontend origin}
+      SUI_NETWORK: ${SUI_NETWORK:?Set SUI_NETWORK}
+      PACKAGE_ID: ${PACKAGE_ID:?Set PACKAGE_ID}
+      VOUCHER_PACKAGE_ID: ${PACKAGE_ID:?Set PACKAGE_ID}
+      ADMIN_CAP_ID: ${ADMIN_CAP_ID:?Set ADMIN_CAP_ID}
       REGISTRY_ID: ${REGISTRY_ID:?Set REGISTRY_ID}
       JWT_SECRET_FILE: /run/secrets/jwt_secret
       ENCRYPTION_KEY_FILE: /run/secrets/encryption_key
