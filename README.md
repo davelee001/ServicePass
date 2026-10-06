@@ -974,7 +974,6 @@ curl -X POST http://localhost:5000/api/vouchers/mint \
 ### Registering a Merchant (Admin only)
 
 ```bash
-curl -X POST http://localhost:5000/api/merchants/register \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -989,7 +988,7 @@ curl -X POST http://localhost:5000/api/merchants/register \
 ### Generate API Key for Merchant
 
 ```bash
-curl -X POST http://localhost:5000/api/merchants/CLINIC_001/api-key \
+curl -X POST http://localhost:3000/api/merchants/CLINIC_001/api-key \
   -H "Authorization: Bearer <merchant_or_admin_token>" \
   -H "Content-Type: application/json" \
   -d '{"expiryDays": 365}'
