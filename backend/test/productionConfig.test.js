@@ -1,3 +1,12 @@
+for (const name of ['JWT_SECRET', 'ENCRYPTION_KEY', 'QR_SIGNING_SECRET', 'ADMIN_PRIVATE_KEY', 'MONGODB_URI', 'REDIS_URL', 'ALLOWED_ORIGINS']) {
+    test(`production rejects missing ${name}`, t => {
+        configure(t, { [name]: '' });
+        assert.throws(validateEnv, new RegExp(name));
+    });
+}
+for (const value of ['your-jwt-secret-change-in-production', 'adminpassword', 'a'.repeat(64), 'short']) {
+    test(`production rejects weak or placeholder secret (${value.length} characters)`, t => {
+        configure(t, { JWT_SECRET: value });
         assert.throws(validateEnv, /JWT_SECRET/);
     });
 }
