@@ -947,7 +947,6 @@ curl -X POST http://localhost:5000/api/auth/register \
   }'
 
 # Login
-curl -X POST http://localhost:5000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "user@example.com",
@@ -958,7 +957,7 @@ curl -X POST http://localhost:5000/api/auth/login \
 ### Minting a Voucher (Admin only)
 
 ```bash
-curl -X POST http://localhost:5000/api/vouchers/mint \
+curl -X POST http://localhost:3000/api/vouchers/mint \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -974,6 +973,7 @@ curl -X POST http://localhost:5000/api/vouchers/mint \
 ### Registering a Merchant (Admin only)
 
 ```bash
+curl -X POST http://localhost:3000/api/merchants/register \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
