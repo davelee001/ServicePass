@@ -1230,7 +1230,6 @@ curl -X GET http://localhost:5000/api/batch/export/batch_123456?format=json \
   -o batch_results.json
 
 # Export as CSV
-curl -X GET http://localhost:5000/api/batch/export/batch_123456?format=csv \
   -H "Authorization: Bearer <access_token>" \
   -o batch_results.csv
 ```
@@ -1238,7 +1237,7 @@ curl -X GET http://localhost:5000/api/batch/export/batch_123456?format=csv \
 #### Enhanced Bulk Voucher Minting
 
 ```bash
-curl -X POST http://localhost:5000/api/vouchers/bulk-mint-enhanced \
+curl -X POST http://localhost:3000/api/vouchers/bulk-mint-enhanced \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -1264,6 +1263,7 @@ curl -X POST http://localhost:5000/api/vouchers/bulk-mint-enhanced \
 
 ```bash
 # Get comprehensive dashboard with filters
+curl -X GET "http://localhost:3000/api/analytics/dashboard?startDate=2024-01-01&endDate=2024-12-31&voucherType=1" \
   -H "Authorization: Bearer <access_token>"
 ```
 
