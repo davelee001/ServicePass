@@ -1,0 +1,9 @@
+    file: ${SECRETS_DIR:?Set the secret-manager output directory}/qr_signing_secret
+  admin_private_key:
+    file: ${SECRETS_DIR:?Set the secret-manager output directory}/admin_private_key
+  mongodb_uri:
+    file: ${SECRETS_DIR:?Set the secret-manager output directory}/mongodb_uri
+  redis_url:
+    file: ${SECRETS_DIR:?Set the secret-manager output directory}/redis_url
+networks:
+  servicepass-network:
