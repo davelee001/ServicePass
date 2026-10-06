@@ -1180,7 +1180,7 @@ curl -X DELETE http://localhost:5000/api/notifications/schedule/schedule_123456 
 #### Create Enhanced Batch Operation
 
 ```bash
-curl -X POST http://localhost:5000/api/batch/create \
+curl -X POST http://localhost:3000/api/batch/create \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <admin_access_token>" \
   -d '{
@@ -1205,7 +1205,7 @@ curl -X POST http://localhost:5000/api/batch/create \
 
 ```bash
 # Get batch status
-curl -X GET http://localhost:5000/api/batch/status/batch_123456 \
+curl -X GET http://localhost:3000/api/batch/status/batch_123456 \
   -H "Authorization: Bearer <access_token>"
 
 # Get user's batch operations
