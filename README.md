@@ -1070,14 +1070,13 @@ curl -X POST http://localhost:5000/api/redemptions/import-recipients \
 #### Get Notification Preferences
 
 ```bash
-curl -X GET http://localhost:5000/api/notifications/preferences \
   -H "Authorization: Bearer <access_token>"
 ```
 
 #### Update Notification Preferences
 
 ```bash
-curl -X PUT http://localhost:5000/api/notifications/preferences \
+curl -X PUT http://localhost:3000/api/notifications/preferences \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{
