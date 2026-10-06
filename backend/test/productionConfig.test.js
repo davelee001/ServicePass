@@ -1,3 +1,12 @@
+    ['REDIS_URL', 'redis://app:VeryLongPassword123456789@cache.servicepass.org:6379'],
+    ['REDIS_URL', 'rediss://cache.servicepass.org:6380'],
+    ['PACKAGE_ID', '0x...'], ['PORT', '0'], ['ADMIN_PRIVATE_KEY', crypto.randomBytes(32).toString('hex')],
+]) {
+    test(`production rejects invalid ${name}`, t => {
+        configure(t, { [name]: value });
+        assert.throws(validateEnv, new RegExp(name));
+    });
+}
 test('CORS admits listed origins and rejects other browser origins', t => {
     configure(t, { ALLOWED_ORIGINS: 'https://app.servicepass.org, https://portal.servicepass.org' });
     const config = getCorsConfig();
