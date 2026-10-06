@@ -1,3 +1,11 @@
+        condition: service_healthy
+    networks: [servicepass-network]
+secrets:
+  jwt_secret:
+    file: ${SECRETS_DIR:?Set the secret-manager output directory}/jwt_secret
+  encryption_key:
+    file: ${SECRETS_DIR:?Set the secret-manager output directory}/encryption_key
+  qr_signing_secret:
     file: ${SECRETS_DIR:?Set the secret-manager output directory}/qr_signing_secret
   admin_private_key:
     file: ${SECRETS_DIR:?Set the secret-manager output directory}/admin_private_key
