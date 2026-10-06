@@ -1,3 +1,12 @@
+const { loadSecrets } = require('../src/config/secrets');
+
+function validEnv() {
+    const secret = () => crypto.randomBytes(32).toString('hex');
+    return {
+        NODE_ENV: 'production', PORT: '3000', SUI_NETWORK: 'testnet',
+        PACKAGE_ID: '0x1', ADMIN_CAP_ID: '0x2', REGISTRY_ID: '0x3',
+        JWT_SECRET: secret(), ENCRYPTION_KEY: secret(), QR_SIGNING_SECRET: secret(),
+        ADMIN_PRIVATE_KEY: crypto.randomBytes(32).toString('base64'), ALLOWED_ORIGINS: 'https://app.servicepass.org',
         MONGODB_URI: `mongodb+srv://app:${secret()}@db.servicepass.org/servicepass`,
         REDIS_URL: `rediss://app:${secret()}@cache.servicepass.org:6380`,
     };
