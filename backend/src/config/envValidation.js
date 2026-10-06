@@ -44,13 +44,18 @@ function validateEnv() {
     const missing = [];
     const warnings = [];
 
-    // Check required variables
-    requiredEnvVars.forEach(varName => {
         if (!process.env[varName]) {
             missing.push(varName);
         }
     });
 
+    for (const [name, protocols] of [['MONGODB_URI', ['mongodb:', 'mongodb+srv:']], ['REDIS_URL', ['rediss:']]]) {
+        try {
+            const uri = new URL(process.env[name]);
+            const password = decodeURIComponent(uri.password);
+            const encrypted = name === 'REDIS_URL' || uri.protocol === 'mongodb+srv:' ||
+                (uri.searchParams.get('tls') === 'true' || uri.searchParams.get('ssl') === 'true');
+            const disablesTls = ['tls', 'ssl'].some(key => uri.searchParams.get(key) === 'false') ||
                 ['tlsInsecure', 'tlsAllowInvalidCertificates', 'tlsAllowInvalidHostnames'].some(key => uri.searchParams.get(key) === 'true');
             if (!protocols.includes(uri.protocol) || !uri.hostname || !isStrongSecret(password, 16) ||
                 !encrypted || disablesTls || isPlaceholder(uri.hostname)) invalid.push(name);
