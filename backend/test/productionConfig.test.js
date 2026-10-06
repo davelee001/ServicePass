@@ -1,3 +1,12 @@
+test('CORS admits listed origins and rejects other browser origins', t => {
+    configure(t, { ALLOWED_ORIGINS: 'https://app.servicepass.org, https://portal.servicepass.org' });
+    const config = getCorsConfig();
+    config.origin('https://portal.servicepass.org', (err, allowed) => { assert.equal(err, null); assert.equal(allowed, true); });
+    config.origin('https://attacker.org', (err, allowed) => { assert(err); assert.equal(allowed, false); });
+    config.origin(undefined, (err, allowed) => { assert.equal(err, null); assert.equal(allowed, true); });
+});
+test('file secrets load, preserve multiline values, and reject ambiguity or empty files', t => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'servicepass-config-'));
     t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
     const file = path.join(dir, 'secret');
     fs.writeFileSync(file, 'line1\nline2\n');
