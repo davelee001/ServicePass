@@ -2,7 +2,6 @@
 node_modules
 npm-debug.log
 yarn-error.log
-package-lock.json
 yarn.lock
 
 # Test files
@@ -51,6 +50,8 @@ Thumbs.db
 tmp
 temp
 *.tmp
+
+# All environment files and secret-manager output stay outside build contexts
 .env.*
 secrets/
 test/
