@@ -13,6 +13,8 @@
 - [ ] **3. Remove insecure deployment defaults — P0 · Small**
   Don’t allow placeholder JWT, MongoDB, or other secrets in a production deployment. Supply strong secrets through a secret manager, restrict CORS to the production frontend, and verify startup fails when required production configuration is missing. Review `docker-compose.yml` and `envValidation.js`.
 
+  Progress (October 6, 2026): Removed development Compose secret defaults and added a standalone production definition using secret-manager file inputs and authenticated TLS MongoDB/Redis connections. Startup loads secrets and validates production settings before application imports; CORS requires exact HTTPS origins. All 32 focused tests passed, including real server startup rejection, and production Compose parsing passed. Operator secret-manager provisioning and live production verification remain pending; keep this item open until those deployment steps are verified.
+
 - [ ] **4. Triage dependency vulnerabilities — P1 · Small to medium**
   npm reported **30 high-severity advisories** in the backend tree and **4 advisories** in the frontend tree. Review the audit details, update or replace affected dependencies, and rerun tests. In particular, the Sui SDK packages are deprecated; avoid unreviewed `--force` upgrades.
 

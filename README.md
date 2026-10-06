@@ -48,7 +48,7 @@ Work is tracked in [TODO.md](TODO.md).
 
 - **Item 1 ? CI checks:** Root test commands run the backend Jest suite on Node.js 22 in CI. Move CI assembles the root `Move.toml` and `move/sources` for Sui build/tests. Both deployment workflows require these checks for the same revision. Item 1 remains open: the last local backend run had 13 passing and 58 failing tests across 15 failed suites, and Move execution still needs validation.
 - **Item 2 ? API routing:** Implemented and checked off. Both frontend modes use same-origin `/api` requests. Frontend build and development proxy checks passed, including query strings, POST bodies, authentication headers, and API error responses. Live production-container verification is pending because Docker Desktop was not running during validation.
-- **Next ? Deployment secrets:** Item 3 covers placeholder secrets, production CORS, and startup configuration validation. Further work includes dependency triage, contract integration, testnet verification, and production operations readiness.
+- **Item 3: Deployment configuration:** Added fail-closed production startup checks, exact HTTPS CORS origins, and secret-manager file inputs. The standalone production Compose file uses mounted secrets and managed MongoDB/Redis. See [Production configuration](docs/PRODUCTION_CONFIGURATION.md). Actual secret-manager provisioning and live production verification remain pending. Dependency triage is the next implementation item.
 
 | Mode | Frontend URL | API upstream |
 |------|--------------|--------------|
@@ -301,6 +301,8 @@ The development frontend is available at `http://localhost:5173`, with the backe
 The Docker production frontend is available at `http://localhost:3001`. Its Nginx server forwards `/api` and `/api/` to `backend:3000`, preserving the path and query string. API responses, including errors, bypass the SPA fallback and static asset cache. The frontend image sets `VITE_API_URL=/api` at build time; runtime container environment variables do not configure compiled Vite assets. When hosting outside Compose, provide the same `/api` reverse proxy and update the Nginx upstream to your backend address.
 
 To build the frontend for deployment, run `npm run build` from `frontend/`; output is written to `frontend/dist/`. Run `npm run preview` to inspect the build locally.
+
+For production secrets, managed database connections, and HTTPS ingress setup, see [Production configuration](docs/PRODUCTION_CONFIGURATION.md). Production startup rejects missing or insecure settings; run `npm run test:config` to verify those checks.
 
 ### Current Integration Limitations
 
