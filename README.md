@@ -273,12 +273,14 @@ npm install
 cp .env.example .env
 
 # Edit .env and configure API URL
-# VITE_API_URL=http://localhost:5000/api
+# VITE_API_URL=/api
+# VITE_PROXY_TARGET=http://localhost:3000
 
 # Start development server
 npm run dev
 ```
 
+The development frontend is available at `http://localhost:5173`, with the backend on port 3000. Browser requests use `/api`; Vite forwards them to `VITE_PROXY_TARGET` (default `http://localhost:3000`). Docker's development frontend uses the same port 5173 and proxies to `http://backend:3000` on the Compose network.
 
 The Docker production frontend is available at `http://localhost:3001`. Its Nginx server forwards `/api` and `/api/?` to `backend:3000`, preserving the path and query string. API responses, including errors, bypass the SPA fallback and static asset cache. The frontend image sets `VITE_API_URL=/api` at build time; runtime container environment variables do not configure compiled Vite assets. When hosting outside Compose, provide the same `/api` reverse proxy and update the Nginx upstream to your backend address.
 
