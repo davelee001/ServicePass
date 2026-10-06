@@ -18,15 +18,6 @@ const { httpRequestDurationMicroseconds } = require('./utils/metrics');
 const notificationScheduler = require('./utils/notificationScheduler');
 const batchOperationManager = require('./utils/batchOperationManager');
 const scheduledVoucherProcessor = require('./utils/scheduledVoucherProcessor');
-
-// Load environment variables
-dotenv.config();
-
-// Validate environment variables on startup
-try {
-    validateEnv();
-} catch (error) {
-    logger.error('Environment validation failed:', error.message);
     process.exit(1);
 }
 
