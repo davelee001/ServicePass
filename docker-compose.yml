@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:-adminpassword}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:?Set MONGODB_PASSWORD}
       MONGO_INITDB_DATABASE: servicepass
     ports:
       - "27017:27017"
@@ -52,8 +52,11 @@ services:
     environment:
       NODE_ENV: development
       PORT: 3000
-      MONGODB_URI: mongodb://admin:${MONGODB_PASSWORD:-adminpassword}@mongodb:27017/servicepass?authSource=admin
+      MONGODB_URI: mongodb://admin:${MONGODB_PASSWORD:?Set MONGODB_PASSWORD}@mongodb:27017/servicepass?authSource=admin
       REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set ENCRYPTION_KEY}
+      QR_SIGNING_SECRET: ${QR_SIGNING_SECRET:?Set QR_SIGNING_SECRET}
       ALLOWED_ORIGINS: http://localhost:5173,http://localhost:3001
       
       # SUI Blockchain Configuration
