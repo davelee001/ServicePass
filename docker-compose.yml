@@ -54,12 +54,10 @@ services:
       PORT: 3000
       MONGODB_URI: mongodb://admin:${MONGODB_PASSWORD:-adminpassword}@mongodb:27017/servicepass?authSource=admin
       REDIS_URL: redis://redis:6379
-      JWT_SECRET: ${JWT_SECRET:-your-jwt-secret-change-in-production}
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-your-encryption-key-32-chars-min}
-      QR_SIGNING_SECRET: ${QR_SIGNING_SECRET:-your-qr-signing-secret}
       ALLOWED_ORIGINS: http://localhost:5173,http://localhost:3001
       
       # SUI Blockchain Configuration
+      SUI_NETWORK: ${SUI_NETWORK:-testnet}
       PACKAGE_ID: ${PACKAGE_ID}
       ADMIN_CAP_ID: ${ADMIN_CAP_ID}
       REGISTRY_ID: ${REGISTRY_ID}
@@ -140,8 +138,8 @@ services:
       - "8081:8081"
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASSWORD:-adminpassword}
-      ME_CONFIG_MONGODB_URL: mongodb://admin:${MONGODB_PASSWORD:-adminpassword}@mongodb:27017/
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASSWORD:?Set MONGODB_PASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://admin:${MONGODB_PASSWORD:?Set MONGODB_PASSWORD}@mongodb:27017/
       ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER:-admin}
       ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD:?Set MONGO_EXPRESS_PASSWORD for the dev profile}
     depends_on:
