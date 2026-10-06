@@ -40,6 +40,15 @@ const optionalEnvVars = [
  * Validate that all required environment variables are set
  * @throws {Error} If any required environment variable is missing
  */
+const productionRequired = ['ENCRYPTION_KEY', 'QR_SIGNING_SECRET', 'ALLOWED_ORIGINS', 'REDIS_URL'];
+
+function isPlaceholder(value) {
+    return /your[-_ ]|change[-_ ]?(this|me|in|it)|placeholder|replace|default[-_ ]|adminpassword|example|0x\.\.\.|suiprivkey\.\.\./i.test(value);
+}
+
+function isStrongSecret(value, minLength = 32) {
+    return typeof value === 'string' && value.length >= minLength &&
+        new Set(value).size >= 12 && !isPlaceholder(value);
 }
 
 function getProductionOrigins(value) {
