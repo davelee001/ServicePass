@@ -121,12 +121,14 @@ services:
     ports:
       - "5173:5173"
     environment:
-      VITE_API_URL: http://localhost:3000/api
+      VITE_API_URL: /api
+      VITE_PROXY_TARGET: http://backend:3000
     volumes:
       - ./frontend:/app
       - /app/node_modules
     networks:
       - servicepass-network
+    depends_on:
       - backend
     profiles:
       - dev
