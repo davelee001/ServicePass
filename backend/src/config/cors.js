@@ -1,3 +1,6 @@
+const { getProductionOrigins } = require('./envValidation');
+
+function getCorsConfig() {
     const production = process.env.NODE_ENV === 'production';
     const allowedOrigins = production
         ? getProductionOrigins(process.env.ALLOWED_ORIGINS)
