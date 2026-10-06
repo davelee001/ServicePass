@@ -1,3 +1,12 @@
+    test(`production rejects unsafe CORS origin ${origin}`, t => {
+        configure(t, { ALLOWED_ORIGINS: origin });
+        assert.throws(validateEnv, /ALLOWED_ORIGINS/);
+    });
+}
+for (const [name, value] of [
+    ['MONGODB_URI', 'mongodb://db.servicepass.org/servicepass'],
+    ['MONGODB_URI', 'mongodb+srv://app:adminpassword@db.servicepass.org/servicepass'],
+    ['MONGODB_URI', 'mongodb+srv://app:VeryLongPassword123456789@db.servicepass.org/servicepass?tls=false'],
     ['REDIS_URL', 'redis://app:VeryLongPassword123456789@cache.servicepass.org:6379'],
     ['REDIS_URL', 'rediss://cache.servicepass.org:6380'],
     ['PACKAGE_ID', '0x...'], ['PORT', '0'], ['ADMIN_PRIVATE_KEY', crypto.randomBytes(32).toString('hex')],
