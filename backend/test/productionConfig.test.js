@@ -1,3 +1,11 @@
+    t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+    const file = path.join(dir, 'secret');
+    fs.writeFileSync(file, 'line1\nline2\n');
+    const env = { FIREBASE_PRIVATE_KEY_FILE: file };
+    loadSecrets(env);
+    assert.equal(env.FIREBASE_PRIVATE_KEY, 'line1\nline2');
+    assert.throws(() => loadSecrets({ JWT_SECRET: 'set', JWT_SECRET_FILE: file }), /not both/);
+    fs.writeFileSync(file, '\n');
     assert.throws(() => loadSecrets({ JWT_SECRET_FILE: file }), /empty/);
     assert.throws(() => loadSecrets({ JWT_SECRET_FILE: path.join(dir, 'missing') }), /Unable to read JWT_SECRET_FILE/);
 });
