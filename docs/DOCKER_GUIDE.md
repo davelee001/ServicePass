@@ -540,5 +540,9 @@ docker stats servicepass-backend
 For issues or questions:
 - GitHub Issues: https://github.com/davelee001/ServicePass/issues
 - Email: david.leekaleer@student.utamu.ac.ug
+The backend listens on port 3000. Browser API calls use the relative `/api` path in both frontend modes:
+
+- The production frontend at `http://localhost:3001` uses Nginx to proxy `/api` and `/api/` to `http://backend:3000`, preserving the path and query string. API responses bypass the SPA fallback and static file cache.
+- The development frontend at `http://localhost:5173` uses Vite's proxy. Compose sets `VITE_PROXY_TARGET=http://backend:3000`; outside Docker the default is `http://localhost:3000`.
 
 The frontend Dockerfile sets `VITE_API_URL=/api` before building. Vite embeds configuration into compiled assets, so setting this variable on the running Nginx container will not change the browser API URL. Keep the frontend and API on the same public origin through the proxy. For deployment outside Compose, update the Nginx upstream to the backend's reachable address.
