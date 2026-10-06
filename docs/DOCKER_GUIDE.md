@@ -541,6 +541,7 @@ For issues or questions:
 - GitHub Issues: https://github.com/davelee001/ServicePass/issues
 - Email: david.leekaleer@student.utamu.ac.ug
 
+
 ## API Routing
 
 The backend listens on port 3000. Browser API calls use the relative `/api` path in both frontend modes:
