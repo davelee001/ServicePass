@@ -1,3 +1,12 @@
+|------|-------|
+| `jwt_secret` | Random JWT signing secret |
+| `encryption_key` | Independent random encryption passphrase |
+| `qr_signing_secret` | Independent random QR signing secret |
+| `admin_private_key` | Actual Sui admin signing key: 32-byte Ed25519 secret encoded as base64 (the current backend format) |
+| `mongodb_uri` | Authenticated MongoDB URI with TLS enabled |
+| `redis_url` | Authenticated `rediss://` URI |
+
+Generate each application secret independently with at least 32 random bytes, encoded as hex or base64, and store it directly in your secret manager. Use a generated database password of at least 16 characters. Keep encryption keys stable for existing encrypted data; replacing them requires a data migration. Restrict host file access to the deployment identity and ensure the backend container's UID 1001 can read the mounted files. Compose file secrets are mounted files, not a secret vault. Do not commit or bake credentials into images.
 
 Copy `.env.production.example` to an ignored `.env.production`, or supply these non-secret settings through deployment automation:
 
