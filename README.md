@@ -1280,7 +1280,7 @@ curl -X GET "http://localhost:5000/api/analytics/vouchers?voucherType=2&merchant
 
 ```bash
 # Get merchant analytics
-curl -X GET "http://localhost:5000/api/analytics/merchants?startDate=2024-01-01" \
+curl -X GET "http://localhost:3000/api/analytics/merchants?startDate=2024-01-01" \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -1288,6 +1288,7 @@ curl -X GET "http://localhost:5000/api/analytics/merchants?startDate=2024-01-01"
 
 ```bash
 # Get financial summary
+curl -X GET "http://localhost:3000/api/analytics/financial?startDate=2024-01-01&endDate=2024-12-31" \
   -H "Authorization: Bearer <access_token>"
 ```
 
