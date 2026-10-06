@@ -1,3 +1,12 @@
+        assert.throws(validateEnv, /JWT_SECRET/);
+    });
+}
+test('production rejects reused signing and encryption secrets', t => {
+    configure(t);
+    process.env.ENCRYPTION_KEY = process.env.JWT_SECRET;
+    assert.throws(validateEnv, /distinct/);
+});
+for (const origin of ['*', 'http://app.servicepass.org', 'https://localhost', 'https://127.0.0.1', 'https://app.servicepass.org/path', 'https://app.servicepass.org,', 'https://example.com']) {
     test(`production rejects unsafe CORS origin ${origin}`, t => {
         configure(t, { ALLOWED_ORIGINS: origin });
         assert.throws(validateEnv, /ALLOWED_ORIGINS/);
