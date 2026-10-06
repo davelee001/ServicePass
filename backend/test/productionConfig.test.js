@@ -1,3 +1,12 @@
+        for (const name of Object.keys(process.env)) delete process.env[name];
+        Object.assign(process.env, original);
+    });
+}
+
+test('valid generated production secrets and exact HTTPS origin are accepted', t => {
+    configure(t);
+    assert.doesNotThrow(validateEnv);
+});
 for (const name of ['JWT_SECRET', 'ENCRYPTION_KEY', 'QR_SIGNING_SECRET', 'ADMIN_PRIVATE_KEY', 'MONGODB_URI', 'REDIS_URL', 'ALLOWED_ORIGINS']) {
     test(`production rejects missing ${name}`, t => {
         configure(t, { [name]: '' });
