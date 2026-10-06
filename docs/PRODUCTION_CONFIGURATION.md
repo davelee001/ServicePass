@@ -1,3 +1,12 @@
+# Production configuration
+
+Use the standalone `docker-compose.production.yml`; do not merge it with the development Compose file. It runs the backend with `NODE_ENV=production`, exposes the frontend only on host loopback, and uses managed MongoDB and Redis services. Terminate HTTPS at your host ingress and forward the public frontend origin to `127.0.0.1:3001`. Nginx forwards `/api` to the private backend.
+
+## Secret-manager integration
+
+Configure your secret-manager agent (for example Vault Agent, AWS Secrets Manager through your deployment automation, or Azure Key Vault through your platform) to materialize the following files in a protected directory outside the repository. This project consumes those files; it does not provision a secret-manager account or fetch secrets from a particular provider.
+
+| File | Value |
 |------|-------|
 | `jwt_secret` | Random JWT signing secret |
 | `encryption_key` | Independent random encryption passphrase |
