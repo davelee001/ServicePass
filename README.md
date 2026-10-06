@@ -1209,10 +1209,11 @@ curl -X GET http://localhost:5000/api/batch/status/batch_123456 \
   -H "Authorization: Bearer <access_token>"
 
 # Get user's batch operations
-curl -X GET http://localhost:5000/api/batch/my-operations?limit=10&status=processing \
+curl -X GET http://localhost:3000/api/batch/my-operations?limit=10&status=processing \
   -H "Authorization: Bearer <access_token>"
 
 # Pause batch operation
+curl -X POST http://localhost:3000/api/batch/pause/batch_123456 \
   -H "Authorization: Bearer <access_token>"
 
 # Resume batch operation
