@@ -56,15 +56,6 @@ function validateEnv() {
         logger.error(errorMsg);
         throw new Error(errorMsg);
     }
-            'ENCRYPTION_KEY',
-            'ALLOWED_ORIGINS',
-            'REDIS_URL',
-        ];
-
-        productionRecommended.forEach(varName => {
-            if (!process.env[varName]) {
-                warnings.push(varName);
-            }
         });
 
         if (warnings.length > 0) {
