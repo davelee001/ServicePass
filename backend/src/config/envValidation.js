@@ -56,14 +56,7 @@ function validateEnv() {
         logger.error(errorMsg);
         throw new Error(errorMsg);
     }
-        });
-
-        if (warnings.length > 0) {
-            logger.warn(`Recommended environment variables not set for production: ${warnings.join(', ')}`);
-        }
-    }
-
-    logger.info('Environment variables validated successfully');
+    if (invalid.length) throw new Error(`Invalid production configuration: ${invalid.join(', ')}`);
 }
 
 /**
