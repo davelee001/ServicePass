@@ -551,4 +551,7 @@ The backend listens on port 3000. Browser API calls use the relative `/api` path
 
 The frontend Dockerfile sets `VITE_API_URL=/api` before building. Vite embeds configuration into compiled assets, so setting this variable on the running Nginx container will not change the browser API URL. Keep the frontend and API on the same public origin through the proxy. For deployment outside Compose, update the Nginx upstream to the backend's reachable address.
 
+
+## Production secrets and startup validation
+
 Use the standalone `docker-compose.production.yml` with secret-manager materialized files and managed MongoDB/Redis. The development Compose file no longer supplies secret defaults. See [Production configuration](PRODUCTION_CONFIGURATION.md) for required file names, permissions, HTTPS origins, startup checks, and deployment commands.
