@@ -56,10 +56,6 @@ function validateEnv() {
         logger.error(errorMsg);
         throw new Error(errorMsg);
     }
-
-    // Check optional but recommended variables
-    if (process.env.NODE_ENV === 'production') {
-        const productionRecommended = [
             'ENCRYPTION_KEY',
             'ALLOWED_ORIGINS',
             'REDIS_URL',
@@ -85,7 +81,7 @@ function validateEnv() {
  */
 function getSafeEnvForLogging() {
     const safeEnv = {};
-    const sensitiveKeys = ['PRIVATE_KEY', 'SECRET', 'PASSWORD', 'KEY', 'TOKEN'];
+    const sensitiveKeys = ['PRIVATE_KEY', 'SECRET', 'PASSWORD', 'KEY', 'TOKEN', 'URI', 'URL'];
 
     Object.keys(process.env).forEach(key => {
         const isSensitive = sensitiveKeys.some(sensitive => 
@@ -121,6 +117,7 @@ function getEnvConfig() {
 
 module.exports = {
     validateEnv,
+    getProductionOrigins,
     getSafeEnvForLogging,
     getEnvConfig,
     requiredEnvVars,
