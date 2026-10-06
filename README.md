@@ -1101,13 +1101,12 @@ curl -X POST http://localhost:5000/api/notifications/test-email \
   -d '{"subject": "Test Email", "message": "This is a test notification"}'
 
 # Test SMS notification
-curl -X POST http://localhost:5000/api/notifications/test-sms \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{"phoneNumber": "+1234567890", "message": "Test SMS notification"}'
 
 # Test push notification
-curl -X POST http://localhost:5000/api/notifications/test-push \
+curl -X POST http://localhost:3000/api/notifications/test-push \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{"title": "Test Push", "body": "This is a test push notification"}'
