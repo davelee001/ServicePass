@@ -40,15 +40,15 @@ ServicePass is an **actively developed** voucher system with:
 ✅ **Kubernetes Ready**: Complete K8s manifests with auto-scaling, monitoring, and production deployment guide  
 ✅ **Responsive Web App**: User and merchant portals built with React 18 + Vite + TanStack Query  
 ✅ **Comprehensive Documentation**: API docs (Swagger/OpenAPI), user guides, merchant onboarding, smart contract audit, deployment runbooks, Docker & K8s guides  
-✅ **Production Ready**: CI/CD workflows, containerization, orchestration, and enterprise-grade documentation
+✅ **Deployment Tooling**: CI/CD workflows, containerization, orchestration, and deployment documentation
 
 ## Current Development Status
 
 Work is tracked in [TODO.md](TODO.md).
 
-- **Item 1 ? CI checks:** Root test commands run the backend Jest suite on Node.js 22 in CI. Move CI assembles the root `Move.toml` and `move/sources` for Sui build/tests. Both deployment workflows require these checks for the same revision. Item 1 remains open: the last local backend run had 13 passing and 58 failing tests across 15 failed suites, and Move execution still needs validation.
-- **Item 2 ? API routing:** Implemented and checked off. Both frontend modes use same-origin `/api` requests. Frontend build and development proxy checks passed, including query strings, POST bodies, authentication headers, and API error responses. Live production-container verification is pending because Docker Desktop was not running during validation.
-- **Item 3: Deployment configuration:** Added fail-closed production startup checks, exact HTTPS CORS origins, and secret-manager file inputs. The standalone production Compose file uses mounted secrets and managed MongoDB/Redis. See [Production configuration](docs/PRODUCTION_CONFIGURATION.md). Actual secret-manager provisioning and live production verification remain pending. Dependency triage is the next implementation item.
+- **Item 1: CI checks:** Root test commands run the backend Jest suite on Node.js 22 in CI. Move CI assembles the root `Move.toml` and `move/sources` for Sui build/tests. Both deployment workflows require these checks for the same revision. Item 1 remains open: the last local backend run had 13 passing and 58 failing tests across 15 failed suites, and Move execution still needs validation.
+- **Item 2: API routing:** Implemented and checked off. Both frontend modes use same-origin `/api` requests. Frontend build and development proxy checks passed, including query strings, POST bodies, authentication headers, and API error responses. Live production-container verification is pending because Docker Desktop was not running during validation.
+- **Item 3: Deployment configuration:** Added fail-closed production startup checks, exact HTTPS CORS origins, and secret-manager file inputs. The standalone production Compose file uses mounted secrets and managed MongoDB/Redis. See [Production configuration](docs/PRODUCTION_CONFIGURATION.md). All **32 focused configuration tests passed**, including actual server startup rejection, secret file handling, and CORS checks; both Compose definitions passed configuration parsing. Actual secret-manager provisioning and live production verification remain pending, so item 3 stays open. Dependency triage is the next implementation item.
 
 | Mode | Frontend URL | API upstream |
 |------|--------------|--------------|
@@ -303,6 +303,31 @@ The Docker production frontend is available at `http://localhost:3001`. Its Ngin
 To build the frontend for deployment, run `npm run build` from `frontend/`; output is written to `frontend/dist/`. Run `npm run preview` to inspect the build locally.
 
 For production secrets, managed database connections, and HTTPS ingress setup, see [Production configuration](docs/PRODUCTION_CONFIGURATION.md). Production startup rejects missing or insecure settings; run `npm run test:config` to verify those checks.
+
+### Production Configuration Quick Start
+
+Use the standalone production definition with externally managed databases and secret files supplied by your secret-manager agent:
+
+```bash
+# Fill in non-secret settings: HTTPS origins, deployment IDs, and SECRETS_DIR
+cp .env.production.example .env.production
+
+# Verify the configuration and start after provisioning the secret files
+docker compose --env-file .env.production -f docker-compose.production.yml config --quiet
+docker compose --env-file .env.production -f docker-compose.production.yml up --build -d
+```
+
+Do not merge this file with the development Compose definition. Production mounts six backend secrets through `NAME_FILE` inputs, requires authenticated TLS MongoDB/Redis connections, and exposes the frontend only at `127.0.0.1:3001` behind your HTTPS ingress. Application startup rejects missing files, placeholder or weak secrets, reused signing/encryption secrets, and unsafe CORS origins before importing application services. The admin key must be the base64-encoded 32-byte Ed25519 secret expected by the current backend.
+
+For development, populate the blank secret fields in `.env.docker.example`; Compose no longer supplies default passwords or signing secrets. Secret-manager provisioning and live deployment verification are still operator tasks. See [Production configuration](docs/PRODUCTION_CONFIGURATION.md) for file names, permissions, and key rotation considerations.
+
+```bash
+# Run production configuration checks from the repository root
+npm ci --prefix backend
+npm run test:config
+```
+
+These focused checks run before the backend Jest suite in `npm run test:ci`. Their passing result does not resolve the existing backend suite failures.
 
 ### Current Integration Limitations
 
