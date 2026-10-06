@@ -40,6 +40,15 @@ const optionalEnvVars = [
  * Validate that all required environment variables are set
  * @throws {Error} If any required environment variable is missing
  */
+}
+
+function getProductionOrigins(value) {
+    if (!value || !value.trim()) throw new Error('ALLOWED_ORIGINS is required in production');
+    return value.split(',').map(origin => {
+        origin = origin.trim();
+        let url;
+        try { url = new URL(origin); } catch { throw new Error('ALLOWED_ORIGINS must contain exact HTTPS origins'); }
+        const host = url.hostname.toLowerCase();
         if (url.protocol !== 'https:' || origin !== url.origin ||
             host === 'localhost' || host.endsWith('.localhost') || host === '[::1]' ||
             /^127\./.test(host) || host === '0.0.0.0' || isPlaceholder(host)) {
