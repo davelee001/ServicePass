@@ -26,7 +26,7 @@
 
 ### 🎯 What's Included?
 
-ServicePass is a **production-ready** voucher system with:
+ServicePass is an **actively developed** voucher system with:
 
 ✅ **5 Advanced Features**: Partial Redemption, Transfer Restrictions, Multi-Sig Operations, Scheduled Issuance, Voucher Templates  
 ✅ **85+ API Endpoints**: Complete REST API with authentication, validation, and rate limiting  
@@ -36,11 +36,27 @@ ServicePass is a **production-ready** voucher system with:
 ✅ **Enterprise-Grade Security**: JWT authentication, API keys, QR signatures, and audit trails  
 ✅ **Complete Frontend UI**: 16+ React pages including Admin Panel, Template Gallery, Scheduled Vouchers, Transfer Management, Multi-Sig Operations  
 ✅ **Admin Control Panel**: Web-based interface for minting vouchers, managing merchants, viewing analytics, and system configuration  
-✅ **Docker Support**: Multi-stage Dockerfiles, Docker Compose for local development, production-ready containers  
+✅ **Docker Support**: Multi-stage Dockerfiles, Docker Compose for local development, and multi-stage container builds  
 ✅ **Kubernetes Ready**: Complete K8s manifests with auto-scaling, monitoring, and production deployment guide  
 ✅ **Responsive Web App**: User and merchant portals built with React 18 + Vite + TanStack Query  
 ✅ **Comprehensive Documentation**: API docs (Swagger/OpenAPI), user guides, merchant onboarding, smart contract audit, deployment runbooks, Docker & K8s guides  
 ✅ **Production Ready**: CI/CD workflows, containerization, orchestration, and enterprise-grade documentation
+
+## Current Development Status
+
+Work is tracked in [TODO.md](TODO.md).
+
+- **Item 1 ? CI checks:** Root test commands run the backend Jest suite on Node.js 22 in CI. Move CI assembles the root `Move.toml` and `move/sources` for Sui build/tests. Both deployment workflows require these checks for the same revision. Item 1 remains open: the last local backend run had 13 passing and 58 failing tests across 15 failed suites, and Move execution still needs validation.
+- **Item 2 ? API routing:** Implemented and checked off. Both frontend modes use same-origin `/api` requests. Frontend build and development proxy checks passed, including query strings, POST bodies, authentication headers, and API error responses. Live production-container verification is pending because Docker Desktop was not running during validation.
+- **Next ? Deployment secrets:** Item 3 covers placeholder secrets, production CORS, and startup configuration validation. Further work includes dependency triage, contract integration, testnet verification, and production operations readiness.
+
+| Mode | Frontend URL | API upstream |
+|------|--------------|--------------|
+| Local Vite | `http://localhost:5173` | `http://localhost:3000` |
+| Compose development | `http://localhost:5173` | `http://backend:3000` through Vite |
+| Compose Nginx | `http://localhost:3001` | `http://backend:3000` through Nginx |
+
+Browser API paths retain the `/api` prefix. Production readiness depends on resolving and validating the remaining checklist items.
 
 ## Voucher Types
 
@@ -282,7 +298,7 @@ npm run dev
 
 The development frontend is available at `http://localhost:5173`, with the backend on port 3000. Browser requests use `/api`; Vite forwards them to `VITE_PROXY_TARGET` (default `http://localhost:3000`). Docker's development frontend uses the same port 5173 and proxies to `http://backend:3000` on the Compose network.
 
-The Docker production frontend is available at `http://localhost:3001`. Its Nginx server forwards `/api` and `/api/?` to `backend:3000`, preserving the path and query string. API responses, including errors, bypass the SPA fallback and static asset cache. The frontend image sets `VITE_API_URL=/api` at build time; runtime container environment variables do not configure compiled Vite assets. When hosting outside Compose, provide the same `/api` reverse proxy and update the Nginx upstream to your backend address.
+The Docker production frontend is available at `http://localhost:3001`. Its Nginx server forwards `/api` and `/api/` to `backend:3000`, preserving the path and query string. API responses, including errors, bypass the SPA fallback and static asset cache. The frontend image sets `VITE_API_URL=/api` at build time; runtime container environment variables do not configure compiled Vite assets. When hosting outside Compose, provide the same `/api` reverse proxy and update the Nginx upstream to your backend address.
 
 To build the frontend for deployment, run `npm run build` from `frontend/`; output is written to `frontend/dist/`. Run `npm run preview` to inspect the build locally.
 
@@ -1760,15 +1776,15 @@ For questions, issues, or support:
 ## Project Status
 
 **Status**: ✅ Active Development  
-**Last Updated**: October 5, 2026<br>
+**Last Updated**: October 6, 2026<br>
 **Version**: 1.0.0  
-**Test Coverage**: Comprehensive (1,500+ lines of test code)  
+**Test Validation**: Last local backend run: 13 passed, 58 failed; fixes pending.<br>
 **Documentation**: Complete with enhanced API docs, user guides, merchant onboarding, audit reports, deployment runbooks, Docker & Kubernetes guides (includes diagrams, quick starts, and performance tips)  
 **Frontend**: Complete UI with 16+ React pages including Admin Panel, Template Gallery, Scheduled Vouchers, Transfer Management, Multi-Sig Operations  
 **Admin Panel**: Web-based control panel for voucher minting, merchant management, analytics, and system configuration  
 **Backend**: 85+ API endpoints with full authentication and authorization  
 **Database**: MongoDB with 13+ data models  
-**Blockchain**: SUI Move smart contracts deployed and tested  
+**Blockchain**: SUI Move contracts; current Move CI and full testnet flows require verification.<br>
 **Containerization**: Docker & Docker Compose ready for local development  
 **Orchestration**: Kubernetes manifests with HPA, persistent storage, and production-grade configuration  
 **Features**: Core + 5 Advanced Features (Partial Redemption, Transfer Restrictions, Multi-Sig, Scheduled Issuance, Templates)  
@@ -1795,4 +1811,4 @@ ServicePass uses GitHub Actions to automate the development and deployment proce
 5. **Environment Management**: Handles deployments to development, staging, and production environments.
 6. **Nice-to-Have Enhancements**: Includes Slack notifications, dependency caching, and security audits.
 
-These workflows ensure a robust and efficient development lifecycle, reducing manual effort and improving reliability.
+Backend tests and Move build/tests are reusable checks required by automatic and manual deployment jobs. The backend workflow installs dependencies from `backend/package-lock.json` and runs `npm run test:ci` from the repository root. The automatic deployment workflow builds `frontend/dist` after both checks pass; its target server settings still require configuration. Workflow configuration alone does not establish that the current application checks pass.
