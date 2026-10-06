@@ -197,7 +197,6 @@ npm install
 cp .env.example .env
 
 # Edit .env and configure:
-# - PORT=5000 (matches the frontend development proxy; the template defaults to 3000)
 # Blockchain Configuration:
 # - PACKAGE_ID (from deployment)
 # - ADMIN_CAP_ID (from deployment)
@@ -258,7 +257,7 @@ npm run dev
 npm start
 ```
 
-With `PORT=5000`, the backend API will be available at `http://localhost:5000/api` and the health endpoint at `http://localhost:5000/health`.
+With `PORT=3000`, the backend API will be available at `http://localhost:3000/api` and the health endpoint at `http://localhost:3000/health`.
 
 ### 5. Setup Frontend
 
