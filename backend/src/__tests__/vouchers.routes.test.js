@@ -90,7 +90,7 @@ describe('Vouchers Routes - QR Code Functionality', () => {
             const response = await request(app)
                 .post('/api/vouchers/mint')
                 .send({
-                    voucherType: 'EDU',
+                    voucherType: '1',
                     // Missing amount and recipient
                 });
 
@@ -99,20 +99,20 @@ describe('Vouchers Routes - QR Code Functionality', () => {
         });
 
         it('should generate valid signature for QR code', async () => {
-            const mockObjectId = '0xvoucher456';
+            const mockObjectId = '0x4444444444444444444444444444444444444444444444444444444444444444';
             suiClient.signAndExecuteTransaction.mockResolvedValue({
                 digest: 'txn-digest-456',
                 objectChanges: [
                     {
                         type: 'created',
-                        objectType: 'mock-package-id::voucher_system::Voucher',
+                        objectType: '0x5555555555555555555555555555555555555555555555555555555555555555::voucher_system::Voucher',
                         objectId: mockObjectId,
                     },
                 ],
             });
 
             const voucherData = {
-                voucherType: 'HEALTH',
+                voucherType: '2',
                 amount: 2000,
                 recipient: '0xrecipient456',
                 merchantId: 'merchant-002',
