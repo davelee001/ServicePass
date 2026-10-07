@@ -42,8 +42,8 @@ router.post('/create',
                 parallelProcessing,
                 userId
             });
-            
-            res.json({ 
+
+            res.json({
                 message: 'Batch operation created successfully',
                 ...result
             });
@@ -65,19 +65,19 @@ router.get('/status/:batchId',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
             const { batchId } = req.params;
             const status = await batchOperationManager.getOperationStatus(batchId);
-            
+
             if (status.error) {
                 return res.status(404).json({ error: status.error });
             }
-            
+
             // Check if user can access this operation
             const operation = await BatchOperation.findOne({ batchId });
             if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {
