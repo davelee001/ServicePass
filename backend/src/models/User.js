@@ -100,16 +100,16 @@ userSchema.methods.incLoginAttempts = function() {
             $unset: { lockUntil: 1 },
         });
     }
-    
+
     const updates = { $inc: { loginAttempts: 1 } };
     const maxAttempts = 5;
     const lockTime = 2 * 60 * 60 * 1000; // 2 hours
-    
+
     // Lock the account if we've reached max attempts
     if (this.loginAttempts + 1 >= maxAttempts && !this.isLocked()) {
         updates.$set = { lockUntil: Date.now() + lockTime };
     }
-    
+
     return this.updateOne(updates);
 };
 
