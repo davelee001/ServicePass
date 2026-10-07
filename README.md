@@ -46,11 +46,13 @@ ServicePass is an **actively developed** voucher system with:
 
 Work is tracked in [TODO.md](TODO.md).
 
-- **Item 1: CI checks:** Root test commands run the backend Jest suite on Node.js 22 in CI. Move CI assembles the root `Move.toml` and `move/sources` for Sui build/tests. Both deployment workflows require these checks for the same revision. Item 1 remains open: the last local backend run had 13 passing and 58 failing tests across 15 failed suites, and Move execution still needs validation.
+- **Item 1: CI checks:** Root test commands run the backend Jest suite on Node.js 22 in CI. Move CI assembles the root `Move.toml` and `move/sources` for Sui build/tests. Both deployment workflows require these checks for the same revision. Item 1 remains open: the pre-upgrade baseline had 13 passing and 58 failing tests across 15 failed suites. The post-upgrade run still fails on existing application/test issues and stops at server-import configuration validation; Move execution also needs validation.
 - **Item 2: API routing:** Implemented and checked off. Both frontend modes use same-origin `/api` requests. Frontend build and development proxy checks passed, including query strings, POST bodies, authentication headers, and API error responses. Live production-container verification is pending because Docker Desktop was not running during validation.
 - **Item 3: Deployment configuration:** Added fail-closed production startup checks, exact HTTPS CORS origins, and secret-manager file inputs. The standalone production Compose file uses mounted secrets and managed MongoDB/Redis. See [Production configuration](docs/PRODUCTION_CONFIGURATION.md). All **32 focused configuration tests passed**, including actual server startup rejection, secret file handling, and CORS checks; both Compose definitions passed configuration parsing. Actual secret-manager provisioning and live production verification remain pending, so item 3 stays open. Dependency triage is documented in [Dependency triage](docs/DEPENDENCY_TRIAGE.md).
 
-**Item 4: Dependency triage:** Fresh backend and frontend audits report zero known vulnerabilities after reviewed upgrades. See [Dependency triage](docs/DEPENDENCY_TRIAGE.md) for validation and the backend SDK migration carried into item 5. Six checklist items remain open: 1, 3, and 5-8.
+- **Item 4: Dependency triage:** Completed and checked off. Fresh online audits report zero known vulnerabilities in both full dependency trees, including development packages. Frontend build, API proxy checks, 32 configuration tests, and one coverage-loader compatibility test passed. Backend Sui SDK migration is carried into item 5. See [Dependency triage](docs/DEPENDENCY_TRIAGE.md) for upgrade decisions and test limitations.
+
+**6 TODO items remain open:** 1 and 3 require remaining validation/provisioning; items 5-8 cover contract integration, on-chain enforcement, testnet verification, and production security/operations. Item 5 is the next implementation task.
 
 | Mode | Frontend URL | API upstream |
 |------|--------------|--------------|
@@ -59,6 +61,29 @@ Work is tracked in [TODO.md](TODO.md).
 | Compose Nginx | `http://localhost:3001` | `http://backend:3000` through Nginx |
 
 Browser API paths retain the `/api` prefix. Production readiness depends on resolving and validating the remaining checklist items.
+
+## Dependency Validation
+
+Audit results from October 7, 2026:
+
+| Dependency tree | Before | After |
+|-----------------|--------|-------|
+| Backend, including development packages | 30 high, 5 moderate | 0 findings |
+| Frontend, including development packages | 1 high, 3 moderate | 0 findings |
+
+The reviewed toolchain uses Jest 30.5.2, Vite 7.3.7, React plugin 5.2.0, and React Router 7.18.4 on Node.js 22.12 or later. Nodemon was replaced by Node's built-in watch mode; unused frontend Sui packages and the npm crypto shim were removed. Backend/frontend lockfiles are included for reproducible installs. A tested, scoped YAML-parser override removes the remaining Jest coverage dependency findings.
+
+```bash
+# From the repository root
+npm ci --prefix backend
+npm ci --prefix frontend
+npm run audit
+npm run test:config
+npm run test:dependencies
+npm run build
+```
+
+`npm run audit` explicitly fetches online advisories; offline audit results are not reliable evidence of a clean tree. The CI audit job checks both projects. The backend still uses deprecated `@mysten/sui.js`; its migration requires coordinated transaction and signer changes in item 5. Zero audit findings do not establish application or contract security, and the full backend regression suite is still failing.
 
 ## Voucher Types
 
@@ -329,7 +354,7 @@ npm ci --prefix backend
 npm run test:config
 ```
 
-These focused checks run before the backend Jest suite in `npm run test:ci`. Their passing result does not resolve the existing backend suite failures.
+Configuration and dependency-compatibility checks run before the backend Jest suite in `npm run test:ci`. Their passing result does not resolve the existing backend suite failures.
 
 ### Current Integration Limitations
 
@@ -1807,7 +1832,7 @@ For questions, issues, or support:
 **Status**: ✅ Active Development  
 **Last Updated**: October 7, 2026<br>
 **Version**: 1.0.0  
-**Test Validation**: Last local backend run: 13 passed, 58 failed; fixes pending.<br>
+**Test Validation**: 33 focused checks pass; full backend regression suite still fails.<br>
 **Documentation**: Complete with enhanced API docs, user guides, merchant onboarding, audit reports, deployment runbooks, Docker & Kubernetes guides (includes diagrams, quick starts, and performance tips)  
 **Frontend**: Complete UI with 16+ React pages including Admin Panel, Template Gallery, Scheduled Vouchers, Transfer Management, Multi-Sig Operations  
 **Admin Panel**: Web-based control panel for voucher minting, merchant management, analytics, and system configuration  
