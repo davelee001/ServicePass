@@ -148,7 +148,7 @@ class NotificationManager {
                     results.push({ channel: 'sms', status: 'sent', result: smsResult });
                 } catch (error) {
                     logger.error(`Failed to send SMS notification to ${preferences.sms.phoneNumber}:`, error);
-                    
+
                     const historyRecord = new NotificationHistory({
                         userId,
                         type,
@@ -202,7 +202,7 @@ class NotificationManager {
 
                     results.push({ channel: 'push', status: 'sent', result: pushResult });
                 } catch (error) {                        priority: priority,                    logger.error(`Failed to send push notification:`, error);
-                    
+
                     const historyRecord = new NotificationHistory({
                         userId,
                         type,
@@ -250,8 +250,8 @@ class NotificationManager {
     }
 
     shouldSendSMS(preferences, type) {
-        return preferences.sms.enabled && 
-               preferences.sms.phoneNumber && 
+        return preferences.sms.enabled &&
+               preferences.sms.phoneNumber &&
                preferences.sms[this.getPreferenceKey(type)];
     }
 
