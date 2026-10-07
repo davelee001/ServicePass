@@ -80,13 +80,13 @@ class BatchOperationManager {
         if (!this.operationQueues.has(priority)) {
             this.operationQueues.set(priority, []);
         }
-        
+
         this.operationQueues.get(priority).push(batchOperation);
-        
+
         // Sort by priority (high first, then medium, then low)
         this.sortQueuesByPriority();
     }
-    
+
     // Sort queues by priority
     sortQueuesByPriority() {
         const priorities = ['high', 'medium', 'low'];
