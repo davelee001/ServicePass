@@ -119,9 +119,9 @@ class AnalyticsDashboard {
                                 $cond: [
                                     {
                                         $and: [
-                                            { $ne: ['$expiryTimestamp', null] },
-                                            { $lt: ['$expiryTimestamp', Date.now()] },
-                                            { $eq: ['$isRedeemed', false] }
+                                            { $gt: ['$expiryTimestamp', 0] },
+                                            { $lte: ['$expiryTimestamp', Date.now()] },
+                                            { $in: ['$status', ['active', 'partially_redeemed', 'expired']] }
                                         ]
                                     },
                                     1,
@@ -129,7 +129,7 @@ class AnalyticsDashboard {
                                 ]
                             }
                         },
-                        redeemed: { $sum: { $cond: ['$isRedeemed', 1, 0] } },
+                        redeemed: { $sum: { $cond: [{ $eq: ['$status', 'fully_redeemed'] }, 1, 0] } },
                         averageValue: { $avg: '$amount' }
                     }
                 }
@@ -173,7 +173,7 @@ class AnalyticsDashboard {
     async getRedemptionStats(dateFilter = {}, filters = {}) {
         try {
             const matchStage = { ...dateFilter };
-            
+
             if (filters.merchantId) {
                 matchStage.merchantId = filters.merchantId;
             }
@@ -186,7 +186,7 @@ class AnalyticsDashboard {
                         total: { $sum: 1 },
                         totalValue: { $sum: '$amount' },
                         averageValue: { $avg: '$amount' },
-                        uniqueUsers: { $addToSet: '$userWalletAddress' },
+                        uniqueUsers: { $addToSet: '$redeemedBy' },
                         uniqueMerchants: { $addToSet: '$merchantId' }
                     }
                 },
