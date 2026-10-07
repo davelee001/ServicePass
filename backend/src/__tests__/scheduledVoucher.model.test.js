@@ -117,16 +117,16 @@ describe('ScheduledVoucher Model', () => {
         test('should increment retry count on multiple failures', async () => {
             await schedule.markFailed('Error 1');
             expect(schedule.retryCount).toBe(1);
-            
+
             await schedule.markFailed('Error 2');
             expect(schedule.retryCount).toBe(2);
-            
+
             await schedule.markFailed('Error 3');
             expect(schedule.retryCount).toBe(3);
         });
 
         test('should mark as cancelled', async () => {
-            await schedule.markCancelled();
+            await schedule.cancel();
             expect(schedule.status).toBe('cancelled');
         });
     });
