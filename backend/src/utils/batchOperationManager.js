@@ -66,17 +66,17 @@ class BatchOperationManager {
                 totalRecords: batchOperation.totalRecords,
                 estimatedDuration: this.estimateProcessingTime(batchOperation)
             };
-            
+
         } catch (error) {
             logger.error('Error creating batch operation:', error);
             throw error;
         }
     }
-    
+
     // Add operation to processing queue
     addToQueue(batchOperation) {
         const priority = batchOperation.metadata.priority;
-        
+
         if (!this.operationQueues.has(priority)) {
             this.operationQueues.set(priority, []);
         }
