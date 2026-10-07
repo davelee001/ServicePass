@@ -115,11 +115,11 @@ router.get('/my-operations',
             const userId = req.user.userId;
 
             let operations;
-            
+
             if (status) {
-                operations = await BatchOperation.find({ 
-                    initiatedBy: userId, 
-                    status 
+                operations = await BatchOperation.find({
+                    initiatedBy: userId,
+                    status
                 })
                 .sort({ createdAt: -1 })
                 .limit(limit)
@@ -129,7 +129,7 @@ router.get('/my-operations',
             } else {
                 operations = await batchOperationManager.getUserOperations(userId, limit, offset);
             }
-            
+
             res.json({ operations });
         } catch (error) {
             logger.error('Error fetching user batch operations:', error);
@@ -149,9 +149,9 @@ router.post('/pause/:batchId',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
