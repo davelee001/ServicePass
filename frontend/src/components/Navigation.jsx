@@ -53,6 +53,9 @@ function Navigation({ userType, setUserType, walletAddress, setWalletAddress, me
               <Link to="/user/vouchers" className={isActive('/user/vouchers') ? 'active' : ''}>
                 <FaTicketAlt /> My Vouchers
               </Link>
+              <Link to="/user/redeem" className={isActive('/user/redeem') ? 'active' : ''}>
+                <FaTicketAlt /> Approve Redemption
+              </Link>
               <Link to="/user/templates" className={isActive('/user/templates') ? 'active' : ''}>
                 <FaLayerGroup /> Templates
               </Link>
@@ -82,6 +85,9 @@ function Navigation({ userType, setUserType, walletAddress, setWalletAddress, me
             <>
               <Link to="/merchant/dashboard" className={isActive('/merchant/dashboard') ? 'active' : ''}>
                 <FaChartBar /> Dashboard
+              </Link>
+              <Link to="/merchant/redeem" className={isActive('/merchant/redeem') ? 'active' : ''}>
+                <FaTicketAlt /> Request Redemption
               </Link>
               <Link to="/merchant/redemptions" className={isActive('/merchant/redemptions') ? 'active' : ''}>
                 <FaTicketAlt /> Redemptions
