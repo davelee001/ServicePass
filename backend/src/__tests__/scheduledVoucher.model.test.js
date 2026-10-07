@@ -102,15 +102,15 @@ describe('ScheduledVoucher Model', () => {
 
             expect(schedule.status).toBe('completed');
             expect(schedule.voucherId).toBe(voucherId);
-            expect(schedule.completedAt).toBeDefined();
+            expect(schedule.processedAt).toBeDefined();
         });
 
         test('should mark as failed with error', async () => {
             const error = 'Test error message';
-            await schedule.markFailed(error);
-            
+            await schedule.markFailed(new Error(error));
+
             expect(schedule.status).toBe('failed');
-            expect(schedule.error).toBe(error);
+            expect(schedule.error.message).toBe(error);
             expect(schedule.retryCount).toBe(1);
         });
 
