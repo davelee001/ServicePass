@@ -114,7 +114,7 @@ npm run test:dependencies
 npm run build
 ```
 
-`npm run audit` explicitly fetches online advisories; offline audit results are not reliable evidence of a clean tree. The CI audit job checks both projects. The backend now uses `@mysten/sui` 2 with its JSON-RPC compatibility bridge; transport migration remains necessary. See [QR redemption](docs/QR_REDEMPTION.md). Zero audit findings do not establish application or contract security, and the full backend regression suite is still failing.
+`npm run audit` explicitly fetches online advisories; offline audit results are not reliable evidence of a clean tree. The CI audit job checks both projects. The backend now uses `@mysten/sui` 2 with its JSON-RPC compatibility bridge; transport migration remains necessary. See [QR redemption](docs/QR_REDEMPTION.md). Zero audit findings do not establish application or contract security. The backend regression suite now passes.
 
 ## Voucher Types
 
@@ -385,7 +385,7 @@ npm ci --prefix backend
 npm run test:config
 ```
 
-Configuration, dependency compatibility, QR redemption, and SDK/Jest checks run before the backend Jest suite in `npm run test:ci`. Their passing result does not resolve the existing backend suite failures.
+Configuration, dependency compatibility, QR redemption, and SDK/Jest checks run before the backend Jest suite in `npm run test:ci`. The complete command now passes, including all 219 backend regression tests.
 
 ### Current Integration Limitations
 
@@ -1072,7 +1072,7 @@ curl -X POST http://localhost:3000/api/vouchers/mint \
     "amount": 5000,
     "recipient": "0x...",
     "merchantId": "SCHOOL_001",
-    "expiryTimestamp": 1735689600,
+    "expiryTimestamp": 1798761600000,
     "metadata": "Grade 10 School Fees"
   }'
 ```
