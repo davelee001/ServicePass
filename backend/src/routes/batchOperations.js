@@ -294,13 +294,13 @@ router.get('/results/:batchId',
 
             const { batchId } = req.params;
             const { page = 1, limit = 50 } = req.query;
-            
+
             const operation = await BatchOperation.findOne({ batchId });
-            
+
             if (!operation) {
                 return res.status(404).json({ error: 'Operation not found' });
             }
-            
+
             // Check if user can access this operation
             if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Access denied' });
