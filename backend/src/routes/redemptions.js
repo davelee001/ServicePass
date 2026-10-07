@@ -287,14 +287,14 @@ router.get('/user/:walletAddress',
         }
 
         const { walletAddress } = req.params;
-        
+
         const redemptions = await Redemption.find({ redeemedBy: walletAddress })
             .sort({ redeemedAt: -1 });
-        
-        res.json({ 
-            walletAddress, 
+
+        res.json({
+            walletAddress,
             count: redemptions.length,
-            redemptions 
+            redemptions
         });
     } catch (error) {
         logger.error(`Error fetching user redemptions: ${error.message}`, { walletAddress: req.params.walletAddress });
