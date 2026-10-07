@@ -238,21 +238,21 @@ describe('MultiSigOperation Model', () => {
 
     describe('Operation Types', () => {
         const operationTypes = [
-            'CREATE_VOUCHER_BATCH',
-            'MODIFY_CRITICAL_SETTINGS',
-            'DELETE_MULTIPLE_VOUCHERS',
-            'CHANGE_MERCHANT_STATUS',
-            'BULK_TRANSFER',
-            'EMERGENCY_FREEZE',
-            'SYSTEM_MAINTENANCE',
-            'SECURITY_UPDATE'
+            'mint_large_batch',
+            'update_system_config',
+            'delete_vouchers',
+            'revoke_merchant',
+            'bulk_transfer',
+            'emergency_pause',
+            'emergency_unpause',
+            'register_merchant'
         ];
 
         test.each(operationTypes)('should accept operation type: %s', async (type) => {
             const operation = new MultiSigOperation({
                 operationType: type,
                 operationData: {},
-                initiatedBy: new mongoose.Types.ObjectId(),
+                createdBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 2
             });
 
@@ -268,7 +268,7 @@ describe('MultiSigOperation Model', () => {
             const admin3 = new mongoose.Types.ObjectId();
 
             const operation = await MultiSigOperation.create({
-                operationType: 'BULK_TRANSFER',
+                operationType: 'bulk_transfer',
                 operationData: { amount: 1000, recipients: 10 },
                 initiatedBy: admin1,
                 requiredSignatures: 2
