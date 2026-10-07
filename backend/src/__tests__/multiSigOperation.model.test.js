@@ -17,9 +17,9 @@ describe('MultiSigOperation Model', () => {
     describe('Operation Creation', () => {
         test('should create a valid multi-sig operation', async () => {
             const operationData = {
-                operationType: 'CREATE_VOUCHER_BATCH',
+                operationType: 'mint_large_batch',
                 operationData: { voucherCount: 100, type: 1 },
-                initiatedBy: new mongoose.Types.ObjectId(),
+                createdBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 2
             };
 
@@ -35,7 +35,7 @@ describe('MultiSigOperation Model', () => {
 
         test('should generate unique operationId', async () => {
             const op1 = new MultiSigOperation({
-                operationType: 'CREATE_VOUCHER_BATCH',
+                operationType: 'mint_large_batch',
                 operationData: { count: 100 },
                 initiatedBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 2
