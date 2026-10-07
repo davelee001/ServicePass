@@ -124,7 +124,7 @@ describe('Analytics Dashboard', () => {
         test('should filter by merchant', async () => {
             const filters = { merchantId: testMerchant.merchantId };
             const dashboard = await analyticsDashboard.getDashboardOverview(filters);
-            
+
             expect(dashboard.summary).toBeDefined();
         });
     });
@@ -159,16 +159,16 @@ describe('Analytics Dashboard', () => {
         });
 
         test('should filter vouchers by merchant', async () => {
-            const stats = await analyticsDashboard.getVoucherStats({}, { 
-                merchantId: testMerchant.address 
+            const stats = await analyticsDashboard.getVoucherStats({}, {
+                merchantId: testMerchant.merchantId
             });
 
             expect(stats.total).toBe(3);
         });
 
         test('should filter vouchers by type', async () => {
-            const stats = await analyticsDashboard.getVoucherStats({}, { 
-                voucherType: '1' 
+            const stats = await analyticsDashboard.getVoucherStats({}, {
+                voucherType: '1'
             });
 
             expect(stats.total).toBe(1);
@@ -204,8 +204,8 @@ describe('Analytics Dashboard', () => {
         });
 
         test('should filter redemptions by merchant', async () => {
-            const stats = await analyticsDashboard.getRedemptionStats({}, { 
-                merchantId: testMerchant.address 
+            const stats = await analyticsDashboard.getRedemptionStats({}, {
+                merchantId: testMerchant.merchantId
             });
 
             expect(stats.total).toBe(2);
