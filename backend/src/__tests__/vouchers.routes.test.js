@@ -11,9 +11,9 @@ jest.mock('../config/sui', () => ({
         getOwnedObjects: jest.fn(),
     },
     getAdminKeypair: jest.fn(() => ({ /* mock keypair */ })),
-    PACKAGE_ID: 'mock-package-id',
-    ADMIN_CAP_ID: 'mock-admin-cap',
-    REGISTRY_ID: 'mock-registry',
+    PACKAGE_ID: '0x5555555555555555555555555555555555555555555555555555555555555555',
+    ADMIN_CAP_ID: '0x6666666666666666666666666666666666666666666666666666666666666666',
+    REGISTRY_ID: '0x7777777777777777777777777777777777777777777777777777777777777777',
 }));
 
 jest.mock('../utils/logger', () => ({
@@ -48,13 +48,13 @@ app.use('/api/vouchers', vouchersRouter);
 describe('Vouchers Routes - QR Code Functionality', () => {
     describe('POST /api/vouchers/mint', () => {
         it('should mint a voucher and generate QR code', async () => {
-            const mockObjectId = '0xvoucher123';
+            const mockObjectId = '0x3333333333333333333333333333333333333333333333333333333333333333';
             suiClient.signAndExecuteTransaction.mockResolvedValue({
                 digest: 'txn-digest-123',
                 objectChanges: [
                     {
                         type: 'created',
-                        objectType: 'mock-package-id::voucher_system::Voucher',
+                        objectType: '0x5555555555555555555555555555555555555555555555555555555555555555::voucher_system::Voucher',
                         objectId: mockObjectId,
                     },
                 ],
