@@ -7,7 +7,7 @@ require('./setup');
 // Mock dependencies
 jest.mock('../config/sui', () => ({
     suiClient: {
-        signAndExecuteTransactionBlock: jest.fn(),
+        signAndExecuteTransaction: jest.fn(),
         getOwnedObjects: jest.fn(),
     },
     getAdminKeypair: jest.fn(() => ({ /* mock keypair */ })),
@@ -49,7 +49,7 @@ describe('Vouchers Routes - QR Code Functionality', () => {
     describe('POST /api/vouchers/mint', () => {
         it('should mint a voucher and generate QR code', async () => {
             const mockObjectId = '0xvoucher123';
-            suiClient.signAndExecuteTransactionBlock.mockResolvedValue({
+            suiClient.signAndExecuteTransaction.mockResolvedValue({
                 digest: 'txn-digest-123',
                 objectChanges: [
                     {
@@ -100,7 +100,7 @@ describe('Vouchers Routes - QR Code Functionality', () => {
 
         it('should generate valid signature for QR code', async () => {
             const mockObjectId = '0xvoucher456';
-            suiClient.signAndExecuteTransactionBlock.mockResolvedValue({
+            suiClient.signAndExecuteTransaction.mockResolvedValue({
                 digest: 'txn-digest-456',
                 objectChanges: [
                     {
