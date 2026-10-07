@@ -707,9 +707,9 @@ class AnalyticsDashboard {
     // Helper methods
     buildDateFilter(dateRange) {
         if (!dateRange) return {};
-        
+
         const filter = {};
-        
+
         if (dateRange.start && dateRange.end) {
             filter.createdAt = {
                 $gte: new Date(dateRange.start),
@@ -772,7 +772,7 @@ class AnalyticsDashboard {
             data,
             timestamp: Date.now()
         });
-        
+
         // Clean up old cache entries
         if (this.cache.size > 100) {
             const oldestKey = this.cache.keys().next().value;
