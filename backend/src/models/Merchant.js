@@ -34,14 +34,18 @@ const merchantSchema = new mongoose.Schema({
     contactEmail: String,
     contactPhone: String,
     location: {
-        type: {
-            type: String,
-            enum: ['Point'],
-            default: 'Point',
-        },
-        coordinates: {
-            type: [Number], // [longitude, latitude]
-        },
+        type: new mongoose.Schema({
+            type: { type: String, enum: ['Point'], default: 'Point' },
+            coordinates: {
+                type: [Number], required: true,
+                validate: {
+                    validator: value => value.length === 2 && value.every(Number.isFinite)
+                        && Math.abs(value[0]) <= 180 && Math.abs(value[1]) <= 90,
+                    message: 'Coordinates must contain valid longitude and latitude',
+                },
+            },
+        }, { _id: false }),
+        default: undefined,
     },
     // API Key fields
     apiKey: {
