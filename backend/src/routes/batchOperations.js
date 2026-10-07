@@ -156,17 +156,17 @@ router.post('/pause/:batchId',
             }
 
             const { batchId } = req.params;
-            
+
             // Check if user can pause this operation
             const operation = await BatchOperation.findOne({ batchId });
             if (!operation) {
                 return res.status(404).json({ error: 'Operation not found' });
             }
-            
+
             if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Access denied' });
             }
-            
+
             if (!['queued', 'processing'].includes(operation.status)) {
                 return res.status(400).json({ error: 'Operation cannot be paused in current status' });
             }
