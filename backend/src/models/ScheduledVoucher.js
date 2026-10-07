@@ -1,8 +1,10 @@
+const { randomUUID } = require('node:crypto');
 const mongoose = require('mongoose');
 
 const scheduledVoucherSchema = new mongoose.Schema({
     scheduleId: {
         type: String,
+        default: () => 'SCH_' + randomUUID(),
         required: true,
         unique: true,
         index: true
