@@ -172,22 +172,22 @@ router.post('/mint',
         }
 
         if (error.name === 'ValidationError') {
-            return res.status(400).json({ 
-                error: 'Invalid data', 
-                message: error.message 
+            return res.status(400).json({
+                error: 'Invalid data',
+                message: error.message
             });
         }
-        
-        res.status(500).json({ 
-            error: 'Internal server error', 
-            message: 'Failed to mint voucher. Please contact support if the issue persists.' 
+
+        res.status(500).json({
+            error: 'Internal server error',
+            message: 'Failed to mint voucher. Please contact support if the issue persists.'
         });
     }
 });
 
 // Get vouchers owned by an address
-router.get('/owner/:address', 
-    optionalAuth, 
+router.get('/owner/:address',
+    optionalAuth,
     readLimiter,
     [
         param('address').isString().trim().matches(/^0x[a-fA-F0-9]{64}$/).withMessage('Invalid address format'),
