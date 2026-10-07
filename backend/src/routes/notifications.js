@@ -732,7 +732,7 @@ router.get('/rate-limits/:userId',
             }
 
             const rateLimitsStatus = await notificationManager.getRateLimitStatus(userId);
-            
+
             res.json({ rateLimits: rateLimitsStatus });
         } catch (error) {
             logger.error('Error fetching rate limits:', error);
@@ -756,14 +756,14 @@ router.post('/send-custom',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
             const { userId, type, data, customVariables = {}, priority = 'medium' } = req.body;
-            
+
             // Check permissions for sending to other users
             if (userId !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Insufficient permissions to send notifications to other users' });
