@@ -12,13 +12,13 @@ const { verifyToken, adminOnly } = require('../middleware/auth');
 const { readLimiter, writeLimiter } = require('../middleware/rateLimiter');
 
 // Get user's notification preferences
-router.get('/preferences', 
+router.get('/preferences',
     verifyToken,
     readLimiter,
     async (req, res) => {
         try {
             const userId = req.user.userId;
-            
+
             let preferences = await NotificationPreferences.findOne({ userId });
             if (!preferences) {
                 // Create default preferences
@@ -27,7 +27,7 @@ router.get('/preferences',
                 });
                 await preferences.save();
             }
-            
+
             res.json({ preferences });
         } catch (error) {
             logger.error('Error fetching notification preferences:', error);
