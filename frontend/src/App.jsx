@@ -15,6 +15,8 @@ import ScheduledVouchers from './pages/ScheduledVouchers';
 import TransferManagement from './pages/TransferManagement';
 import MultiSigOperations from './pages/MultiSigOperations';
 import AdminPanel from './pages/AdminPanel';
+import OwnerRedemption from './pages/OwnerRedemption';
+import MerchantQrRedemption from './pages/MerchantQrRedemption';
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -46,6 +48,8 @@ function App() {
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Navigate to="/user/dashboard" replace />} />
+              <Route path="/user/redeem" element={<OwnerRedemption />} />
+              <Route path="/merchant/redeem" element={<MerchantQrRedemption />} />
               
               {/* User Routes */}
               <Route 
