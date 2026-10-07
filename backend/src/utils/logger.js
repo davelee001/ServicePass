@@ -1,10 +1,10 @@
 const winston = require('winston');
-require('winston-elasticsearch');
 const { getEnvConfig } = require('../config/envValidation');
 
 const envConfig = getEnvConfig();
 
 const logger = winston.createLogger({
+    silent: envConfig.isTest,
     level: envConfig.logLevel || 'info',
     format: winston.format.combine(
         winston.format.timestamp(),
