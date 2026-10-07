@@ -90,13 +90,13 @@ let server;
 
 const gracefulShutdown = async () => {
     logger.info('Graceful shutdown initiated...');
-    
+
     // Stop notification scheduler
     notificationScheduler.stopJobs();
-    
+
     // Stop scheduled voucher processor
     scheduledVoucherProcessor.stop();
-    
+
     // Stop blockchain listener
     await stopListening();
     
