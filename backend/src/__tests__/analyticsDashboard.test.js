@@ -70,21 +70,21 @@ describe('Analytics Dashboard', () => {
         // Create test redemptions
         testRedemptions = await Redemption.insertMany([
             {
-                voucherId: 'V987654321',
-                userAddress: '0xuser123',
-                merchantAddress: testMerchant.address,
+                voucherObjectId: 'V987654321', transactionDigest: 'redeem-V987654321',
+                redeemedBy: '0xuser123',
+                merchantId: testMerchant.merchantId,
                 voucherType: 2,
-                value: 200,
-                timestamp: new Date(),
+                amount: 200,
+                redeemedAt: new Date(),
                 status: 'completed'
             },
             {
-                voucherId: 'V111111111',
-                userAddress: '0xuser456',
-                merchantAddress: testMerchant.address,
+                voucherObjectId: 'V111111111', transactionDigest: 'redeem-V111111111',
+                redeemedBy: '0xuser456',
+                merchantId: testMerchant.merchantId,
                 voucherType: 1,
-                value: 150,
-                timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
+                amount: 150,
+                createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
                 status: 'completed'
             }
         ]);
