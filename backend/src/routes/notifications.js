@@ -660,7 +660,7 @@ router.get('/analytics',
         try {
             const isAdmin = req.user.role === 'admin';
             let analytics;
-            
+
             if (isAdmin) {
                 analytics = await notificationManager.getAnalytics();
             } else {
@@ -668,7 +668,7 @@ router.get('/analytics',
                 const userId = req.user.userId;
                 analytics = await notificationManager.getUserAnalytics(userId);
             }
-            
+
             res.json({ analytics });
         } catch (error) {
             logger.error('Error fetching notification analytics:', error);
@@ -691,9 +691,9 @@ router.post('/test-retry',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
