@@ -568,11 +568,11 @@ router.get('/bulk-status/:batchId',
         try {
             const { batchId } = req.params;
             const status = await notificationManager.getBatchStatus(batchId);
-            
+
             if (status.error) {
                 return res.status(404).json({ error: status.error });
             }
-            
+
             res.json({ batchStatus: status });
         } catch (error) {
             logger.error('Error fetching batch status:', error);
@@ -596,9 +596,9 @@ router.post('/schedule',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
