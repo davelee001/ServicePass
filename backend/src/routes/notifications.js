@@ -315,7 +315,7 @@ router.post('/schedule',
             }
 
             const { userId, type, data, scheduleTime, options = {} } = req.body;
-            
+
             const scheduledAt = new Date(scheduleTime);
             if (scheduledAt <= new Date()) {
                 return res.status(400).json({ error: 'Schedule time must be in the future' });
@@ -350,7 +350,7 @@ router.get('/scheduled',
     async (req, res) => {
         try {
             const { status, type } = req.query;
-            
+
             const filter = {};
             if (status) filter.status = status;
             if (type) filter.type = type;
@@ -404,7 +404,7 @@ router.get('/analytics',
     async (req, res) => {
         try {
             const { startDate, endDate } = req.query;
-            
+
             const matchFilter = {};
             if (startDate && endDate) {
                 matchFilter.sentAt = {
