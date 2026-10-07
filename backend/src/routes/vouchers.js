@@ -196,8 +196,8 @@ router.get('/owner/:address',
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ 
-                error: 'Validation failed', 
+            return res.status(400).json({
+                error: 'Validation failed',
                 details: errors.array().map(e => ({ field: e.path, message: e.msg }))
             });
         }
@@ -221,18 +221,18 @@ router.get('/owner/:address',
         });
     } catch (error) {
         logger.error(`Error fetching vouchers: ${error.message}`, { address: req.params.address });
-        
+
         if (error.isBlockchainError) {
-            return res.status(503).json({ 
-                error: 'Blockchain query failed', 
+            return res.status(503).json({
+                error: 'Blockchain query failed',
                 message: 'Unable to fetch vouchers from blockchain. Please try again later.',
                 retryable: true
             });
         }
-        
-        res.status(500).json({ 
-            error: 'Internal server error', 
-            message: 'Failed to fetch vouchers' 
+
+        res.status(500).json({
+            error: 'Internal server error',
+            message: 'Failed to fetch vouchers'
         });
     }
 });
