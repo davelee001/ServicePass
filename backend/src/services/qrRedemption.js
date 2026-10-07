@@ -1,7 +1,7 @@
 const crypto = require('node:crypto');
 const { Transaction } = require('@mysten/sui/transactions');
 const { verifyTransactionSignature } = require('@mysten/sui/verify');
-const { normalizeSuiAddress, normalizeSuiObjectId } = require('@mysten/sui/utils');
+const { normalizeSuiAddress, normalizeSuiObjectId, SUI_CLOCK_OBJECT_ID } = require('@mysten/sui/utils');
 
 class RedemptionError extends Error {
     constructor(status, message) { super(message); this.status = status; }
@@ -28,10 +28,11 @@ function createQrRedemptionService({ client, store, packageId, registryId, secre
         const voucherId = objectId(payload.voucherId);
         const merchantObjectId = objectId(merchant.onChainObjectId);
         if (await store.findRedemption(voucherId)) fail(409, 'Voucher already redeemed');
-        const [voucherResult, merchantResult, registryResult] = await Promise.all([
+        const [voucherResult, merchantResult, registryResult, clockResult] = await Promise.all([
             client.getObject({ id: voucherId, options: { showContent: true, showOwner: true } }),
             client.getObject({ id: merchantObjectId, options: { showContent: true, showOwner: true } }),
             client.getObject({ id: objectId(registryId), options: { showContent: true, showOwner: true } }),
+            client.getObject({ id: SUI_CLOCK_OBJECT_ID, options: { showContent: true, showOwner: true } }),
         ]);
         const voucher = voucherResult.data;
         const onChainMerchant = merchantResult.data;
