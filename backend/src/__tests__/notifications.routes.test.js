@@ -195,9 +195,14 @@ describe('Notification System Tests', () => {
     });
 
     describe('Notification Manager', () => {
+        beforeEach(async () => {
+            await require('../models/User').create({ userId: 'test-user-123', password: 'test-password-123', email: 'test@example.com', name: 'Test User' });
+            jest.clearAllMocks();
+            require('../utils/notificationService').sendEmail.mockResolvedValue({ messageId: 'test-email' });
+        });
         it('should send email notification when enabled', async () => {
             const notificationService = require('../utils/notificationService');
-            
+
             // Create user preferences
             await NotificationPreferences.create({
                 userId: 'test-user-123',
