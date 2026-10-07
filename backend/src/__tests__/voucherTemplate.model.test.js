@@ -17,9 +17,9 @@ describe('VoucherTemplate Model', () => {
     describe('Template Creation', () => {
         test('should create a valid template', async () => {
             const templateData = {
-                name: 'Student Stipend',
+                createdBy: 'test-admin',   name: 'Student Stipend',
                 description: 'Monthly student support voucher',
-                category: 'education',
+                metadata: { category: 'education' },
                 voucherType: 1,
                 defaultValue: 500,
                 defaultExpiryDays: 30,
@@ -36,7 +36,7 @@ describe('VoucherTemplate Model', () => {
             expect(savedTemplate._id).toBeDefined();
             expect(savedTemplate.templateId).toBeDefined();
             expect(savedTemplate.name).toBe(templateData.name);
-            expect(savedTemplate.category).toBe(templateData.category);
+            expect(savedTemplate.metadata.category).toBe(templateData.metadata.category);
             expect(savedTemplate.isActive).toBe(true);
             expect(savedTemplate.usageCount).toBe(0);
         });
