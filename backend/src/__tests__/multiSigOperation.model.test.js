@@ -150,18 +150,19 @@ describe('MultiSigOperation Model', () => {
             operation = await MultiSigOperation.create({
                 operationType: 'bulk_transfer',
                 operationData: { count: 50 },
-                initiatedBy: new mongoose.Types.ObjectId(),
+                createdBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 2
             });
         });
 
         test('should mark as executed', async () => {
-            const result = { success: true, count: 50 };
-            await operation.markExecuted(result);
-            
+            const result = { success: true, data: { count: 50 } };
+            operation.status = 'approved';
+            await operation.execute('test-admin', result);
+
             expect(operation.status).toBe('executed');
             expect(operation.executedAt).toBeDefined();
-            expect(operation.executionResult).toEqual(result);
+            expect(operation.result.toObject()).toEqual(result);
         });
 
         test('should mark as rejected', async () => {
