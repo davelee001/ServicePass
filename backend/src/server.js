@@ -98,8 +98,10 @@ const gracefulShutdown = async () => {
     scheduledVoucherProcessor.stop();
 
     // Stop blockchain listener
-    await stopListening();
-    
+    await require('./services/blockchainListener').stopListening();
+    require('./utils/notificationManager').stopProcessors();
+    batchOperationManager.stopProcessor();
+
     if (server) {
         server.close(() => {
             logger.info('Server closed');
@@ -110,15 +112,14 @@ const gracefulShutdown = async () => {
     }
 };
 
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+
 
 // Start server
 const startServer = async () => {
     try {
         // Connect to database
-        await connectToDatabase();
-        
+        await connectDB();
+
         // Start blockchain listener
         await startListening();
         
