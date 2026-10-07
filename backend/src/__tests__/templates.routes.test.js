@@ -340,14 +340,14 @@ describe('Template Routes', () => {
                 },
                 {
                     name: 'Popular 2',
-                    category: 'healthcare',
+                    createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'healthcare',
                     voucherType: 2,
                     defaultValue: 200,
                     usageCount: 30
                 },
                 {
                     name: 'Not Popular',
-                    category: 'transport',
+                    createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'transport',
                     voucherType: 3,
                     defaultValue: 150,
                     usageCount: 5
@@ -363,7 +363,7 @@ describe('Template Routes', () => {
 
             expect(response.body.templates).toBeDefined();
             expect(response.body.templates.length).toBeGreaterThan(0);
-            
+
             // Should be sorted by usage count descending
             for (let i = 1; i < response.body.templates.length; i++) {
                 expect(response.body.templates[i - 1].usageCount >= response.body.templates[i].usageCount).toBe(true);
@@ -384,7 +384,7 @@ describe('Template Routes', () => {
         beforeEach(async () => {
             template = await VoucherTemplate.create({
                 name: 'To Delete',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'education',
                 voucherType: 1,
                 defaultValue: 500
             });
