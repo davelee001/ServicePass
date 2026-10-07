@@ -115,7 +115,7 @@ describe('Analytics Routes', () => {
 
             expect(response.body.dashboard).toBeDefined();
             expect(response.body.dashboard.summary).toBeDefined();
-            expect(response.body.dashboard.recentMetrics).toBeDefined();
+            expect(response.body.dashboard.trendData).toBeDefined();
         });
 
         test('should filter by date range', async () => {
@@ -184,7 +184,7 @@ describe('Analytics Routes', () => {
         test('should filter by merchant', async () => {
             const response = await request(app)
                 .get('/api/analytics/redemptions')
-                .query({ merchantId: testMerchant.address })
+                .query({ merchantId: testMerchant.merchantId })
                 .expect(200);
 
             expect(response.body.redemptionStats).toBeDefined();
@@ -206,7 +206,7 @@ describe('Analytics Routes', () => {
                 req.user = {
                     _id: new mongoose.Types.ObjectId(),
                     role: 'merchant',
-                    merchantId: testMerchant.address
+                    merchantId: testMerchant.merchantId
                 };
                 next();
             };
