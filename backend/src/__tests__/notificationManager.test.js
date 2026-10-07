@@ -224,7 +224,7 @@ describe('Notification Manager', () => {
             await User.create({
                 userId: 'user-123',
                 email: 'test@example.com',
-                name: 'Test User'
+                password: 'test-password-123', name: 'Test User'
             });
 
             await NotificationPreferences.create({
@@ -237,13 +237,13 @@ describe('Notification Manager', () => {
 
             // Create expiring voucher
             await Voucher.create({
-                voucherObjectId: 'voucher-123',
-                owner: 'user-123',
+                voucherId: 'voucher-123', transactionDigest: 'mint-123',
+                recipient: 'user-123',
                 voucherType: 'Education',
                 amount: 100,
                 merchantId: 'school-1',
                 expiryTimestamp: threeDaysFromNow.getTime(),
-                isRedeemed: false
+                status: 'active'
             });
 
             const count = await notificationManager.checkExpiringVouchers();
@@ -264,7 +264,7 @@ describe('Notification Manager', () => {
             await User.create({
                 userId: 'user-123',
                 email: 'test@example.com',
-                name: 'Test User'
+                password: 'test-password-123', name: 'Test User'
             });
 
             await NotificationPreferences.create({
