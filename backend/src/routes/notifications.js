@@ -768,15 +768,15 @@ router.post('/send-custom',
             if (userId !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Insufficient permissions to send notifications to other users' });
             }
-            
+
             const result = await notificationManager.sendNotification(
-                userId, 
-                type, 
-                data, 
+                userId,
+                type,
+                data,
                 { priority, customVariables }
             );
-            
-            res.json({ 
+
+            res.json({
                 message: 'Notification sent successfully',
                 result
             });
