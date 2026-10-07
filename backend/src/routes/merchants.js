@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, param, validationResult } = require('express-validator');
 const Merchant = require('../models/Merchant');
-const { TransactionBlock } = require('@mysten/sui.js/transactions');
+const { Transaction } = require('@mysten/sui/transactions');
 const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID } = require('../config/sui');
 const { logger } = require('../utils/logger');
 const { verifyToken, adminOnly, adminOrMerchant } = require('../middleware/auth');
@@ -46,24 +46,30 @@ router.post('/register',
 
         // Register on-chain
         const adminKeypair = getAdminKeypair();
-        const tx = new TransactionBlock();
+        const tx = new Transaction();
 
         tx.moveCall({
             target: `${PACKAGE_ID}::voucher_system::register_merchant`,
             arguments: [
                 tx.object(ADMIN_CAP_ID),
-                tx.pure(Array.from(Buffer.from(merchantId))),
-                tx.pure(Array.from(Buffer.from(name))),
-                tx.pure(voucherTypesAccepted),
+                tx.pure.vector('u8', Array.from(Buffer.from(merchantId))),
+                tx.pure.vector('u8', Array.from(Buffer.from(name))),
+                tx.pure.vector('u8', voucherTypesAccepted.map(Number)),
             ],
         });
 
         const result = await executeTransactionWithRetry(suiClient, {
             signer: adminKeypair,
-            transactionBlock: tx,
+            transaction: tx,
+            options: { showObjectChanges: true, showEffects: true },
         });
 
-        // Save to database
+        if (result.effects?.status?.status !== 'success') throw new Error('Merchant registration failed on-chain');
+        const createdMerchant = result.objectChanges?.find(change => change.type === 'created' &&
+            change.objectType === `${PACKAGE_ID}::voucher_system::Merchant`);
+        if (!createdMerchant) throw new Error('Merchant object ID missing from registration effects');
+
+        // Save the actual shared object ID, never the transaction digest.
         const merchant = new Merchant({
             merchantId,
             name,
@@ -71,7 +77,7 @@ router.post('/register',
             voucherTypesAccepted,
             contactEmail,
             contactPhone,
-            onChainObjectId: result.digest, // Store transaction digest for reference
+            onChainObjectId: createdMerchant.objectId,
         });
 
         await merchant.save();
@@ -280,8 +286,9 @@ router.post('/batch-register',
             }
 
             const adminKeypair = getAdminKeypair();
-            const tx = new TransactionBlock();
+            const tx = new Transaction();
 
+            const pendingMerchants = [];
             for (const { merchantId, name, walletAddress, voucherTypesAccepted, contactEmail, contactPhone } of merchants) {
                 // Check if merchant already exists
                 const existingMerchant = await Merchant.findOne({ merchantId });
@@ -296,29 +303,32 @@ router.post('/batch-register',
                     target: `${PACKAGE_ID}::voucher_system::register_merchant`,
                     arguments: [
                         tx.object(ADMIN_CAP_ID),
-                        tx.pure(Array.from(Buffer.from(merchantId))),
-                        tx.pure(Array.from(Buffer.from(name))),
-                        tx.pure(voucherTypesAccepted),
+                        tx.pure.vector('u8', Array.from(Buffer.from(merchantId))),
+                        tx.pure.vector('u8', Array.from(Buffer.from(name))),
+                        tx.pure.vector('u8', voucherTypesAccepted.map(Number)),
                     ],
                 });
 
-                // Save to database
-                const merchant = new Merchant({
-                    merchantId,
-                    name,
-                    walletAddress,
-                    voucherTypesAccepted,
-                    contactEmail,
-                    contactPhone,
-                });
-
-                await merchant.save();
+                pendingMerchants.push({ merchantId, name, walletAddress, voucherTypesAccepted, contactEmail, contactPhone });
             }
 
             const result = await executeTransactionWithRetry(suiClient, {
-                signer: adminKeypair,
-                transactionBlock: tx,
+                signer: adminKeypair, transaction: tx,
+                options: { showObjectChanges: true, showEffects: true },
             });
+            if (result.effects?.status?.status !== 'success') throw new Error('Batch registration failed on-chain');
+            const objectIds = result.objectChanges.filter(change => change.type === 'created' &&
+                change.objectType === `${PACKAGE_ID}::voucher_system::Merchant`).map(change => change.objectId);
+            const created = await suiClient.multiGetObjects({ ids: objectIds, options: { showContent: true } });
+            for (const details of pendingMerchants) {
+                const object = created.find(value => {
+                    const field = value.data?.content?.fields?.merchant_id;
+                    const id = typeof field === 'string' ? field : field?.fields?.bytes ? Buffer.from(field.fields.bytes).toString('utf8') : null;
+                    return id === details.merchantId;
+                });
+                if (!object?.data?.objectId) throw new Error('Batch merchant object mapping missing');
+                await Merchant.create({ ...details, onChainObjectId: object.data.objectId });
+            }
 
             res.status(200).json({
                 message: 'Batch merchants registered successfully',
