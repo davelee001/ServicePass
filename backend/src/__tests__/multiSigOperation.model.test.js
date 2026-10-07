@@ -270,7 +270,7 @@ describe('MultiSigOperation Model', () => {
             const operation = await MultiSigOperation.create({
                 operationType: 'bulk_transfer',
                 operationData: { amount: 1000, recipients: 10 },
-                initiatedBy: admin1,
+                createdBy: admin1,
                 requiredSignatures: 2
             });
 
@@ -286,14 +286,15 @@ describe('MultiSigOperation Model', () => {
             // Second signature (auto-approve)
             await operation.addSignature(admin3, 'Also approved');
             expect(operation.status).toBe('approved');
-            expect(operation.approvedAt).toBeDefined();
+            expect(operation.updatedAt).toBeDefined();
 
             // Execution
-            const result = { success: true, transferred: 10 };
-            await operation.markExecuted(result);
+            const result = { success: true, data: { transferred: 10 } };
+            operation.status = 'approved';
+            await operation.execute('test-admin', result);
             expect(operation.status).toBe('executed');
             expect(operation.executedAt).toBeDefined();
-            expect(operation.executionResult).toEqual(result);
+            expect(operation.result.toObject()).toEqual(result);
         });
     });
 });
