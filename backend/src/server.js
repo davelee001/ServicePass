@@ -1,17 +1,21 @@
 require('./config/bootstrap');
 
+// Initialize optional telemetry before loading the framework.
+if (process.env.SENTRY_DSN) {
+    const Sentry = require('@sentry/node');
+    Sentry.init({ dsn: process.env.SENTRY_DSN, environment: process.env.NODE_ENV, tracesSampleRate: 0.1 });
+}
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const { logger } = require('./utils/logger');
-const Sentry = require('@sentry/node');
-const { ProfilingIntegration } = require('@sentry/profiling-node');
 const { getEnvConfig } = require('./config/envValidation');
 const { helmetConfig, getCorsConfig } = require('./config/security');
-const { 
-    mongoSanitizeMiddleware, 
-    xssMiddleware, 
-    hppMiddleware 
+const {
+    mongoSanitizeMiddleware,
+    xssMiddleware,
+    hppMiddleware
 } = require('./middleware/sanitization');
 const { generalLimiter } = require('./middleware/rateLimiter');
 const { startListening, stopListening } = require('./services/blockchainListener');
