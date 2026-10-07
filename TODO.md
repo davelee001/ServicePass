@@ -20,10 +20,12 @@
 
   Completed triage (October 7, 2026): Reviewed upgrades and a tested, scoped coverage-loader override reduced fresh backend and frontend npm audits to zero findings. Removed unused frontend Sui packages, Nodemon, and the npm crypto shim; upgraded Jest/Vite/React Router; aligned Docker with Node 22 and enabled committed lockfiles. Frontend build, proxy checks, 32 configuration tests, and coverage-loader compatibility checks passed. The existing backend regression suite still fails. Backend Sui SDK migration is explicitly carried into item 5; see docs/DEPENDENCY_TRIAGE.md.
 
-- [ ] **5. Make QR redemption match the contract — P0 · Large**
+- [x] **5. Make QR redemption match the contract — P0 · Large**
   The backend call’s arguments do not match the Move function signature, and the route uses the admin keypair as a placeholder signer. A voucher is an owner-held object, so the backend admin cannot simply consume a user’s voucher. Decide whether the user signs or the app sponsors transactions, then align the API, signer flow, and contract and cover the full path with a test. See `redemptions.js` and `voucher_system.move`.
 
   Additional scope from dependency triage: migrate the backend from deprecated `@mysten/sui.js` to the supported SDK while aligning transaction builders, typed Move arguments, execution methods, and the chosen signer flow.
+
+  Completed implementation (October 7, 2026): QR redemption now prepares the exact registry/merchant/owner-held voucher transaction and requires the current owner's wallet signature and gas payment. Confirmation verifies effects/events and supports idempotent recovery of the same digest. Merchant registration stores actual object IDs. Backend/frontend migrated to SDK 2 with typed arguments; backend CI/Docker use Node 24 for Jest ESM compatibility. Focused HTTP and signature tests pass with an injected ledger; actual Move execution and browser testnet validation remain item 7, and on-chain expiry/merchant enforcement remain item 6. See docs/QR_REDEMPTION.md.
 
 - [ ] **6. Correct on-chain expiry and merchant enforcement — P0 · Large**
   The contract compares `expiry_timestamp` with the Sui epoch number, while the app/tests use millisecond timestamps. Pick a consistent on-chain time source/unit. Also enforce voucher-to-merchant restrictions on-chain rather than trusting only QR payload checks.
