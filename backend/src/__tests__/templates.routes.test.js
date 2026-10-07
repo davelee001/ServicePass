@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 describe('Template Routes', () => {
     let adminToken, userToken, adminUser;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         // Create admin user
         adminUser = await User.create({
             email: 'admin@test.com',
@@ -26,13 +26,13 @@ describe('Template Routes', () => {
 
         // Generate tokens
         adminToken = jwt.sign(
-            { id: adminUser._id, role: 'admin' },
+            { userId: adminUser._id, role: 'admin' },
             process.env.JWT_SECRET || 'test-secret',
             { expiresIn: '1h' }
         );
 
         userToken = jwt.sign(
-            { id: regularUser._id, role: 'user' },
+            { userId: regularUser._id, role: 'user' },
             process.env.JWT_SECRET || 'test-secret',
             { expiresIn: '1h' }
         );
