@@ -326,21 +326,18 @@ describe('Analytics Dashboard', () => {
             await Redemption.deleteMany({});
 
             const trends = await analyticsDashboard.getTrendData();
-            
-            expect(trends.vouchers).toHaveLength(0);
-            expect(trends.redemptions).toHaveLength(0);
+
+            expect(trends.mintingTrend).toHaveLength(0);
+            expect(trends.redemptionTrend).toHaveLength(0);
         });
     });
 
     describe('Cache Management', () => {
         test('should cache dashboard results', async () => {
-            // First call should fetch from database
-            const start1 = Date.now();
+            const aggregate = jest.spyOn(Voucher, 'aggregate');
             const dashboard1 = await analyticsDashboard.getDashboardOverview();
-            const time1 = Date.now() - start1;
-
-            // Second call should be faster (from cache)
-            const start2 = Date.now();
+            const calls = aggregate.mock.calls.length;
+            expect(calls).toBeGreaterThan(0);
             const dashboard2 = await analyticsDashboard.getDashboardOverview();
             const time2 = Date.now() - start2;
 
