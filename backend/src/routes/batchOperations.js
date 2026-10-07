@@ -238,20 +238,20 @@ router.delete('/cancel/:batchId',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
             const { batchId } = req.params;
-            
+
             // Check if user can cancel this operation
             const operation = await BatchOperation.findOne({ batchId });
             if (!operation) {
                 return res.status(404).json({ error: 'Operation not found' });
             }
-            
+
             if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Access denied' });
             }
