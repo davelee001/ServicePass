@@ -200,16 +200,16 @@ router.post('/',
 
         logger.info(`Redemption recorded: ${transactionDigest}`, { merchantId, voucherObjectId });
 
-        res.status(201).json({ 
-            success: true, 
+        res.status(201).json({
+            success: true,
             redemption,
             message: 'Redemption recorded successfully'
         });
     } catch (error) {
         logger.error(`Error recording redemption: ${error.message}`, { stack: error.stack });
-        
+
         if (error.name === 'ValidationError') {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 error: 'Invalid data',
                 message: error.message
             });
