@@ -227,8 +227,8 @@ describe('Analytics Dashboard', () => {
         });
 
         test('should filter merchant stats by specific merchant', async () => {
-            const stats = await analyticsDashboard.getMerchantStats({}, { 
-                merchantId: testMerchant.address 
+            const stats = await analyticsDashboard.getMerchantStats({}, {
+                merchantId: testMerchant.merchantId
             });
 
             expect(stats.totalMerchants).toBe(1);
@@ -241,7 +241,7 @@ describe('Analytics Dashboard', () => {
 
             expect(Array.isArray(distribution)).toBe(true);
             expect(distribution[0]).toHaveProperty('_id');
-            expect(distribution[0]).toHaveProperty('count');
+            expect(distribution[0]).toHaveProperty('totalMinted');
             expect(distribution[0]).toHaveProperty('totalValue');
 
             // Should have at least 3 types from our test data
@@ -250,7 +250,7 @@ describe('Analytics Dashboard', () => {
 
         test('should be empty when no vouchers exist', async () => {
             await Voucher.deleteMany({});
-            
+
             const distribution = await analyticsDashboard.getVoucherTypeDistribution();
             expect(Array.isArray(distribution)).toBe(true);
             expect(distribution.length).toBe(0);
@@ -261,9 +261,9 @@ describe('Analytics Dashboard', () => {
         test('should return expiry statistics', async () => {
             const stats = await analyticsDashboard.getExpiryStats();
 
-            expect(stats).toHaveProperty('expiringIn7Days');
-            expect(stats).toHaveProperty('expiringIn30Days');
-            expect(stats).toHaveProperty('expired');
+            expect(stats).toHaveProperty('expiringThisWeek');
+            expect(stats).toHaveProperty('expiringThisMonth');
+            expect(stats).toHaveProperty('alreadyExpired');
             expect(stats).toHaveProperty('totalActive');
 
             expect(stats.expired).toBe(1); // One expired voucher
