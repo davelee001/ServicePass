@@ -43,15 +43,15 @@ describe('VoucherTemplate Model', () => {
 
         test('should generate unique templateId', async () => {
             const template1 = new VoucherTemplate({
-                name: 'Template 1',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, name: 'Template 1',
+                metadata: { category: 'education' },
                 voucherType: 1,
                 defaultValue: 100
             });
 
             const template2 = new VoucherTemplate({
-                name: 'Template 2',
-                category: 'healthcare',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, name: 'Template 2',
+                metadata: { category: 'healthcare' },
                 voucherType: 2,
                 defaultValue: 200
             });
@@ -75,8 +75,8 @@ describe('VoucherTemplate Model', () => {
 
         test('should validate voucher type range', async () => {
             const template = new VoucherTemplate({
-                name: 'Invalid Type',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, name: 'Invalid Type',
+                metadata: { category: 'education' },
                 voucherType: 5, // Invalid
                 defaultValue: 100
             });
