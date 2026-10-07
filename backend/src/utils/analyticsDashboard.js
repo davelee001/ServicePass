@@ -241,8 +241,8 @@ class AnalyticsDashboard {
     // Get merchant performance metrics
     async getMerchantStats(dateFilter = {}, filters = {}) {
         try {
-            const matchStage = { createdAt: dateFilter.createdAt || {} };
-            
+            const matchStage = { ...dateFilter };
+
             if (filters.merchantId) {
                 matchStage.merchantId = filters.merchantId;
             }
@@ -255,7 +255,7 @@ class AnalyticsDashboard {
                         _id: '$merchantId',
                         totalRedemptions: { $sum: 1 },
                         totalValue: { $sum: '$amount' },
-                        uniqueCustomers: { $addToSet: '$userWalletAddress' },
+                        uniqueCustomers: { $addToSet: '$redeemedBy' },
                         averageTransactionValue: { $avg: '$amount' }
                     }
                 },
@@ -310,14 +310,14 @@ class AnalyticsDashboard {
     async getVoucherTypeDistribution(dateFilter = {}, filters = {}) {
         try {
             const matchStage = { ...dateFilter };
-            
+
             if (filters.merchantId) {
                 matchStage.merchantId = filters.merchantId;
             }
 
             const typeMapping = {
                 '1': 'Education',
-                '2': 'Healthcare', 
+                '2': 'Healthcare',
                 '3': 'Transport',
                 '4': 'Agriculture'
             };
