@@ -17,13 +17,13 @@ class AnalyticsDashboard {
         try {
             const { dateRange, merchantId, voucherType } = filters;
             const cacheKey = `dashboard_overview_${JSON.stringify(filters)}`;
-            
+
             // Check cache first
             const cached = this.getFromCache(cacheKey);
             if (cached) return cached;
 
             const dateFilter = this.buildDateFilter(dateRange);
-            
+
             const [
                 voucherStats,
                 redemptionStats,
@@ -72,6 +72,11 @@ class AnalyticsDashboard {
     // Get detailed voucher statistics
     async getVoucherStats(dateFilter = {}, filters = {}) {
         try {
+            for (const value of Object.values(dateFilter.createdAt || {})) {
+                if (!(value instanceof Date) || !Number.isFinite(value.getTime())) {
+                    throw new Error('Invalid date filter');
+                }
+            }
             const matchStage = { ...dateFilter };
             
             if (filters.merchantId) {
