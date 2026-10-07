@@ -68,7 +68,7 @@ router.post('/redeem-partial',
 
         // Check if merchant matches
         if (voucher.merchantId !== merchantId) {
-            return res.status(403).json({ 
+            return res.status(403).json({
                 error: 'Voucher not valid for this merchant',
                 message: 'This voucher can only be redeemed at the designated merchant.'
             });
@@ -76,7 +76,7 @@ router.post('/redeem-partial',
 
         // Validate redemption amount
         if (amount > voucher.remainingAmount) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 error: 'Insufficient voucher balance',
                 message: `Only ${voucher.remainingAmount} remaining on this voucher.`,
                 remainingAmount: voucher.remainingAmount
@@ -117,14 +117,14 @@ router.post('/redeem-partial',
             logger.error('Failed to send partial redemption notification:', notificationError);
         }
 
-        logger.info(`Partial redemption: ${voucherId}`, { 
-            merchantId, 
-            amount, 
-            remainingAmount: voucher.remainingAmount 
+        logger.info(`Partial redemption: ${voucherId}`, {
+            merchantId,
+            amount,
+            remainingAmount: voucher.remainingAmount
         });
 
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             message: 'Partial redemption successful',
             redeemedAmount: amount,
             remainingAmount: voucher.remainingAmount,
