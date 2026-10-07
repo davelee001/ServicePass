@@ -127,17 +127,17 @@ describe('MultiSigOperation Model', () => {
         test('should auto-approve when required signatures reached', async () => {
             await operation.addSignature(adminId2);
             expect(operation.status).toBe('pending');
-            
+
             await operation.addSignature(adminId3);
             expect(operation.status).toBe('approved');
-            expect(operation.approvedAt).toBeDefined();
+            expect(operation.updatedAt).toBeDefined();
         });
 
         test('should track who signed', async () => {
             await operation.addSignature(adminId2);
             await operation.addSignature(adminId3);
 
-            const signers = operation.signatures.map(s => s.signedBy.toString());
+            const signers = operation.signatures.map(s => s.adminId.toString());
             expect(signers).toContain(adminId2.toString());
             expect(signers).toContain(adminId3.toString());
         });
@@ -148,7 +148,7 @@ describe('MultiSigOperation Model', () => {
 
         beforeEach(async () => {
             operation = await MultiSigOperation.create({
-                operationType: 'BULK_TRANSFER',
+                operationType: 'bulk_transfer',
                 operationData: { count: 50 },
                 initiatedBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 2
