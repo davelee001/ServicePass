@@ -83,7 +83,7 @@ router.get('/status/:batchId',
             if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Access denied' });
             }
-            
+
             res.json({ batchOperation: status });
         } catch (error) {
             logger.error('Error fetching batch operation status:', error);
@@ -105,15 +105,15 @@ router.get('/my-operations',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
             const { limit = 20, offset = 0, status } = req.query;
             const userId = req.user.userId;
-            
+
             let operations;
             
             if (status) {
