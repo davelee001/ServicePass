@@ -67,9 +67,9 @@ describe('MultiSigOperation Model', () => {
 
         test('should validate required signatures range', async () => {
             const operation = new MultiSigOperation({
-                operationType: 'CREATE_VOUCHER_BATCH',
+                operationType: 'mint_large_batch',
                 operationData: {},
-                initiatedBy: new mongoose.Types.ObjectId(),
+                createdBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 15 // Too many
             });
 
@@ -78,7 +78,7 @@ describe('MultiSigOperation Model', () => {
 
         test('should set default expiry to 24 hours', async () => {
             const operation = new MultiSigOperation({
-                operationType: 'CREATE_VOUCHER_BATCH',
+                operationType: 'mint_large_batch',
                 operationData: {},
                 initiatedBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 2
