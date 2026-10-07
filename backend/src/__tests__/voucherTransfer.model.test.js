@@ -66,6 +66,7 @@ describe('VoucherTransfer Model', () => {
 
         test('should validate transfer type', async () => {
             const transfer = new VoucherTransfer({
+                amount: 100,
                 voucherId: 'voucher_123',
                 fromAddress: '0x' + '1'.repeat(64),
                 toAddress: '0x' + '2'.repeat(64),
@@ -78,6 +79,7 @@ describe('VoucherTransfer Model', () => {
 
         test('should require essential fields', async () => {
             const transfer = new VoucherTransfer({
+                amount: 100,
                 voucherId: 'voucher_123'
                 // Missing required fields
             });
@@ -91,6 +93,7 @@ describe('VoucherTransfer Model', () => {
 
         beforeEach(async () => {
             transfer = await VoucherTransfer.create({
+
                 voucherId: 'voucher_123',
                 fromAddress: '0x' + '1'.repeat(64),
                 toAddress: '0x' + '2'.repeat(64),
