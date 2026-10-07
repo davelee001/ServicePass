@@ -107,13 +107,468 @@ class BatchOperationManager {
         const random = crypto.randomBytes(4).toString('hex');
         return `batch_${timestamp}_${random}`;
     }
-    
+
     // Start the batch processor
-    startBatchProcessor() {
-        setInterval(async () => {
+    stopProcessor() {
+        if (this.processorTimer) clearInterval(this.processorTimer);
+        this.processorTimer = null;
+    }
+
+    startProcessor() {
+        if (this.processorTimer) return;
+        this.processorTimer = setInterval(async () => {
             await this.processNextBatch();
         }, 1000); // Check every second
     }
-    
+
     // Process next batch in queue
-    async processNextBatch() {\n        // Get active operations count\n        const activeCount = this.activeOperations.size;\n        const maxConcurrent = process.env.MAX_CONCURRENT_BATCHES || 3;\n        \n        if (activeCount >= maxConcurrent) {\n            return; // Don't start new operations if at max capacity\n        }\n        \n        // Find next operation to process\n        let nextOperation = null;\n        \n        for (const [priority, queue] of this.operationQueues.entries()) {\n            if (queue.length > 0) {\n                nextOperation = queue.shift();\n                break;\n            }\n        }\n        \n        if (!nextOperation) {\n            return; // No operations to process\n        }\n        \n        // Start processing the operation\n        this.activeOperations.set(nextOperation.batchId, nextOperation);\n        \n        try {\n            await this.processBatchOperation(nextOperation);\n        } catch (error) {\n            logger.error(`Error processing batch ${nextOperation.batchId}:`, error);\n            await this.markOperationFailed(nextOperation, error.message);\n        } finally {\n            this.activeOperations.delete(nextOperation.batchId);\n        }\n    }\n    \n    // Process a single batch operation\n    async processBatchOperation(batchOperation) {\n        try {\n            // Update status to processing\n            batchOperation.status = 'processing';\n            batchOperation.startTime = new Date();\n            await batchOperation.save();\n            \n            logger.info(`Starting batch operation ${batchOperation.batchId}`);\n            \n            const { data, parallelProcessing, maxRetries } = batchOperation.parameters;\n            const batchSize = batchOperation.batchSize;\n            \n            // Split data into chunks\n            const chunks = this.createChunks(data, batchSize);\n            let processedCount = 0;\n            let successCount = 0;\n            let failureCount = 0;\n            \n            for (let i = 0; i < chunks.length; i++) {\n                // Check if operation is paused\n                if (this.pausedOperations.has(batchOperation.batchId)) {\n                    await this.pauseOperation(batchOperation);\n                    return;\n                }\n                \n                const chunk = chunks[i];\n                let chunkResults;\n                \n                if (parallelProcessing) {\n                    chunkResults = await this.processChunkParallel(batchOperation, chunk, i);\n                } else {\n                    chunkResults = await this.processChunkSequential(batchOperation, chunk, i);\n                }\n                \n                // Update progress\n                processedCount += chunk.length;\n                successCount += chunkResults.filter(r => r.status === 'success').length;\n                failureCount += chunkResults.filter(r => r.status === 'failed').length;\n                \n                batchOperation.processedRecords = processedCount;\n                batchOperation.successfulRecords = successCount;\n                batchOperation.failedRecords = failureCount;\n                batchOperation.progress = Math.round((processedCount / batchOperation.totalRecords) * 100);\n                batchOperation.results.push(...chunkResults);\n                \n                // Save progress\n                await batchOperation.save();\n                \n                // Emit progress update (if using WebSockets or EventEmitter)\n                this.emitProgress(batchOperation);\n                \n                logger.info(`Batch ${batchOperation.batchId} progress: ${batchOperation.progress}%`);\n            }\n            \n            // Complete the operation\n            batchOperation.status = 'completed';\n            batchOperation.endTime = new Date();\n            await batchOperation.save();\n            \n            this.metrics.successfulOperations++;\n            this.updateAverageProcessingTime(batchOperation);\n            \n            logger.info(`Batch operation ${batchOperation.batchId} completed successfully`);\n            \n            // Send completion notification\n            await this.sendCompletionNotification(batchOperation);\n            \n        } catch (error) {\n            await this.markOperationFailed(batchOperation, error.message);\n            throw error;\n        }\n    }\n    \n    // Process chunk in parallel\n    async processChunkParallel(batchOperation, chunk, chunkIndex) {\n        const promises = chunk.map((item, itemIndex) => \n            this.processItem(batchOperation, item, chunkIndex * batchOperation.batchSize + itemIndex)\n        );\n        \n        const results = await Promise.allSettled(promises);\n        \n        return results.map((result, itemIndex) => {\n            if (result.status === 'fulfilled') {\n                return {\n                    recordIndex: chunkIndex * batchOperation.batchSize + itemIndex,\n                    status: 'success',\n                    data: result.value,\n                    processedAt: new Date()\n                };\n            } else {\n                return {\n                    recordIndex: chunkIndex * batchOperation.batchSize + itemIndex,\n                    status: 'failed',\n                    error: result.reason.message,\n                    processedAt: new Date()\n                };\n            }\n        });\n    }\n    \n    // Process chunk sequentially\n    async processChunkSequential(batchOperation, chunk, chunkIndex) {\n        const results = [];\n        \n        for (let itemIndex = 0; itemIndex < chunk.length; itemIndex++) {\n            try {\n                const result = await this.processItem(\n                    batchOperation, \n                    chunk[itemIndex], \n                    chunkIndex * batchOperation.batchSize + itemIndex\n                );\n                \n                results.push({\n                    recordIndex: chunkIndex * batchOperation.batchSize + itemIndex,\n                    status: 'success',\n                    data: result,\n                    processedAt: new Date()\n                });\n            } catch (error) {\n                results.push({\n                    recordIndex: chunkIndex * batchOperation.batchSize + itemIndex,\n                    status: 'failed',\n                    error: error.message,\n                    processedAt: new Date()\n                });\n            }\n        }\n        \n        return results;\n    }\n    \n    // Process individual item based on operation type\n    async processItem(batchOperation, item, index) {\n        const { operationType } = batchOperation;\n        \n        switch (operationType) {\n            case 'bulk_mint_vouchers':\n                return await this.mintVoucher(item);\n            case 'batch_register_merchants':\n                return await this.registerMerchant(item);\n            case 'import_recipients':\n                return await this.createVoucherForRecipient(item);\n            case 'bulk_notifications':\n                return await this.sendNotification(item);\n            default:\n                throw new Error(`Unknown operation type: ${operationType}`);\n        }\n    }\n    \n    // Mint voucher implementation\n    async mintVoucher(voucherData) {\n        // Implementation for minting voucher\n        // This would call the existing voucher minting logic\n        const voucherService = require('../services/voucherService');\n        return await voucherService.mintVoucher(voucherData);\n    }\n    \n    // Register merchant implementation\n    async registerMerchant(merchantData) {\n        // Implementation for registering merchant\n        const merchantService = require('../services/merchantService');\n        return await merchantService.registerMerchant(merchantData);\n    }\n    \n    // Create voucher for recipient implementation\n    async createVoucherForRecipient(recipientData) {\n        // Implementation for creating voucher for recipient\n        const voucherService = require('../services/voucherService');\n        return await voucherService.createVoucherForRecipient(recipientData);\n    }\n    \n    // Send notification implementation\n    async sendNotification(notificationData) {\n        // Implementation for sending notification\n        const notificationManager = require('./notificationManager');\n        return await notificationManager.sendNotification(\n            notificationData.userId,\n            notificationData.type,\n            notificationData.data,\n            notificationData.options\n        );\n    }\n    \n    // Create chunks from data\n    createChunks(data, chunkSize) {\n        const chunks = [];\n        for (let i = 0; i < data.length; i += chunkSize) {\n            chunks.push(data.slice(i, i + chunkSize));\n        }\n        return chunks;\n    }\n    \n    // Pause operation\n    async pauseOperation(batchOperation) {\n        batchOperation.status = 'paused';\n        batchOperation.metadata.pausedAt = new Date();\n        await batchOperation.save();\n        \n        this.pausedOperations.set(batchOperation.batchId, batchOperation);\n        this.activeOperations.delete(batchOperation.batchId);\n        \n        logger.info(`Batch operation ${batchOperation.batchId} paused`);\n    }\n    \n    // Resume operation\n    async resumeOperation(batchId) {\n        try {\n            const batchOperation = this.pausedOperations.get(batchId);\n            \n            if (!batchOperation) {\n                throw new Error(`Paused operation ${batchId} not found`);\n            }\n            \n            batchOperation.status = 'queued';\n            batchOperation.metadata.resumedAt = new Date();\n            await batchOperation.save();\n            \n            this.pausedOperations.delete(batchId);\n            this.addToQueue(batchOperation);\n            \n            logger.info(`Batch operation ${batchId} resumed`);\n            \n            return { success: true, message: 'Operation resumed successfully' };\n            \n        } catch (error) {\n            logger.error(`Error resuming operation ${batchId}:`, error);\n            throw error;\n        }\n    }\n    \n    // Cancel operation\n    async cancelOperation(batchId) {\n        try {\n            const batchOperation = await BatchOperation.findOne({ batchId });\n            \n            if (!batchOperation) {\n                throw new Error(`Operation ${batchId} not found`);\n            }\n            \n            batchOperation.status = 'cancelled';\n            batchOperation.endTime = new Date();\n            await batchOperation.save();\n            \n            // Remove from active operations and queues\n            this.activeOperations.delete(batchId);\n            this.pausedOperations.delete(batchId);\n            \n            // Remove from queues\n            for (const queue of this.operationQueues.values()) {\n                const index = queue.findIndex(op => op.batchId === batchId);\n                if (index !== -1) {\n                    queue.splice(index, 1);\n                }\n            }\n            \n            logger.info(`Batch operation ${batchId} cancelled`);\n            \n            return { success: true, message: 'Operation cancelled successfully' };\n            \n        } catch (error) {\n            logger.error(`Error cancelling operation ${batchId}:`, error);\n            throw error;\n        }\n    }\n    \n    // Mark operation as failed\n    async markOperationFailed(batchOperation, errorMessage) {\n        batchOperation.status = 'failed';\n        batchOperation.endTime = new Date();\n        batchOperation.errors.push({\n            error: errorMessage,\n            timestamp: new Date()\n        });\n        \n        await batchOperation.save();\n        \n        this.metrics.failedOperations++;\n        \n        logger.error(`Batch operation ${batchOperation.batchId} failed: ${errorMessage}`);\n    }\n    \n    // Send completion notification\n    async sendCompletionNotification(batchOperation) {\n        try {\n            const notificationManager = require('./notificationManager');\n            \n            const duration = this.formatDuration(\n                batchOperation.endTime - batchOperation.startTime\n            );\n            \n            await notificationManager.sendNotification(\n                batchOperation.initiatedBy,\n                'bulk_operation_complete',\n                {\n                    operationType: batchOperation.operationType,\n                    batchId: batchOperation.batchId,\n                    totalRecords: batchOperation.totalRecords,\n                    successCount: batchOperation.successfulRecords,\n                    failureCount: batchOperation.failedRecords,\n                    duration\n                },\n                { priority: 'medium' }\n            );\n        } catch (error) {\n            logger.error('Error sending completion notification:', error);\n        }\n    }\n    \n    // Get operation status\n    async getOperationStatus(batchId) {\n        try {\n            const batchOperation = await BatchOperation.findOne({ batchId });\n            \n            if (!batchOperation) {\n                return { error: 'Operation not found' };\n            }\n            \n            return {\n                batchId: batchOperation.batchId,\n                operationType: batchOperation.operationType,\n                status: batchOperation.status,\n                progress: batchOperation.progress,\n                totalRecords: batchOperation.totalRecords,\n                processedRecords: batchOperation.processedRecords,\n                successfulRecords: batchOperation.successfulRecords,\n                failedRecords: batchOperation.failedRecords,\n                startTime: batchOperation.startTime,\n                endTime: batchOperation.endTime,\n                estimatedCompletion: batchOperation.estimatedCompletion,\n                errors: batchOperation.errors,\n                metadata: batchOperation.metadata\n            };\n        } catch (error) {\n            logger.error(`Error getting operation status for ${batchId}:`, error);\n            throw error;\n        }\n    }\n    \n    // Get all operations for user\n    async getUserOperations(userId, limit = 20, offset = 0) {\n        try {\n            const operations = await BatchOperation.find({ initiatedBy: userId })\n                .sort({ createdAt: -1 })\n                .limit(limit)\n                .skip(offset)\n                .select('-results') // Exclude detailed results for list view\n                .lean();\n            \n            return operations;\n        } catch (error) {\n            logger.error(`Error fetching operations for user ${userId}:`, error);\n            throw error;\n        }\n    }\n    \n    // Get system metrics\n    getMetrics() {\n        return {\n            ...this.metrics,\n            activeOperationsCount: this.activeOperations.size,\n            pausedOperationsCount: this.pausedOperations.size,\n            queuedOperationsCount: Array.from(this.operationQueues.values())\n                .reduce((total, queue) => total + queue.length, 0)\n        };\n    }\n    \n    // Estimate processing time\n    estimateProcessingTime(batchOperation) {\n        const { totalRecords, batchSize } = batchOperation;\n        const avgTimePerRecord = this.metrics.averageProcessingTime || 100; // ms\n        const totalTime = totalRecords * avgTimePerRecord;\n        \n        return Math.ceil(totalTime / 1000); // Return in seconds\n    }\n    \n    // Update average processing time\n    updateAverageProcessingTime(batchOperation) {\n        const duration = batchOperation.endTime - batchOperation.startTime;\n        const timePerRecord = duration / batchOperation.totalRecords;\n        \n        if (this.metrics.averageProcessingTime === 0) {\n            this.metrics.averageProcessingTime = timePerRecord;\n        } else {\n            this.metrics.averageProcessingTime = \n                (this.metrics.averageProcessingTime + timePerRecord) / 2;\n        }\n    }\n    \n    // Format duration\n    formatDuration(milliseconds) {\n        const seconds = Math.floor(milliseconds / 1000);\n        const minutes = Math.floor(seconds / 60);\n        const hours = Math.floor(minutes / 60);\n        \n        if (hours > 0) {\n            return `${hours}h ${minutes % 60}m ${seconds % 60}s`;\n        } else if (minutes > 0) {\n            return `${minutes}m ${seconds % 60}s`;\n        } else {\n            return `${seconds}s`;\n        }\n    }\n    \n    // Emit progress update (placeholder for WebSocket implementation)\n    emitProgress(batchOperation) {\n        // This would emit progress to WebSocket clients\n        // Implementation depends on your WebSocket setup\n        logger.debug(`Progress update for ${batchOperation.batchId}: ${batchOperation.progress}%`);\n    }\n}\n\nmodule.exports = new BatchOperationManager();
+    async processNextBatch() {
+        // Get active operations count
+        const activeCount = this.activeOperations.size;
+        const maxConcurrent = process.env.MAX_CONCURRENT_BATCHES || 3;
+
+        if (activeCount >= maxConcurrent) {
+            return; // Don't start new operations if at max capacity
+        }
+
+        // Find next operation to process
+        let nextOperation = null;
+
+        for (const [priority, queue] of this.operationQueues.entries()) {
+            if (queue.length > 0) {
+                nextOperation = queue.shift();
+                break;
+            }
+        }
+
+        if (!nextOperation) {
+            return; // No operations to process
+        }
+
+        // Start processing the operation
+        this.activeOperations.set(nextOperation.batchId, nextOperation);
+
+        try {
+            await this.processBatchOperation(nextOperation);
+        } catch (error) {
+            logger.error(`Error processing batch ${nextOperation.batchId}:`, error);
+            await this.markOperationFailed(nextOperation, error.message);
+        } finally {
+            this.activeOperations.delete(nextOperation.batchId);
+        }
+    }
+
+    // Process a single batch operation
+    async processBatchOperation(batchOperation) {
+        try {
+            // Update status to processing
+            batchOperation.status = 'processing';
+            batchOperation.startTime = new Date();
+            await batchOperation.save();
+
+            logger.info(`Starting batch operation ${batchOperation.batchId}`);
+
+            const { data, parallelProcessing, maxRetries } = batchOperation.parameters;
+            const batchSize = batchOperation.batchSize;
+
+            // Split data into chunks
+            const chunks = this.createChunks(data, batchSize);
+            let processedCount = 0;
+            let successCount = 0;
+            let failureCount = 0;
+
+            for (let i = 0; i < chunks.length; i++) {
+                // Check if operation is paused
+                if (this.pausedOperations.has(batchOperation.batchId)) {
+                    await this.pauseOperation(batchOperation);
+                    return;
+                }
+
+                const chunk = chunks[i];
+                let chunkResults;
+
+                if (parallelProcessing) {
+                    chunkResults = await this.processChunkParallel(batchOperation, chunk, i);
+                } else {
+                    chunkResults = await this.processChunkSequential(batchOperation, chunk, i);
+                }
+
+                // Update progress
+                processedCount += chunk.length;
+                successCount += chunkResults.filter(r => r.status === 'success').length;
+                failureCount += chunkResults.filter(r => r.status === 'failed').length;
+
+                batchOperation.processedRecords = processedCount;
+                batchOperation.successfulRecords = successCount;
+                batchOperation.failedRecords = failureCount;
+                batchOperation.progress = Math.round((processedCount / batchOperation.totalRecords) * 100);
+                batchOperation.results.push(...chunkResults);
+
+                // Save progress
+                await batchOperation.save();
+
+                // Emit progress update (if using WebSockets or EventEmitter)
+                this.emitProgress(batchOperation);
+
+                logger.info(`Batch ${batchOperation.batchId} progress: ${batchOperation.progress}%`);
+            }
+
+            // Complete the operation
+            batchOperation.status = 'completed';
+            batchOperation.endTime = new Date();
+            await batchOperation.save();
+
+            this.metrics.successfulOperations++;
+            this.updateAverageProcessingTime(batchOperation);
+
+            logger.info(`Batch operation ${batchOperation.batchId} completed successfully`);
+
+            // Send completion notification
+            await this.sendCompletionNotification(batchOperation);
+
+        } catch (error) {
+            await this.markOperationFailed(batchOperation, error.message);
+            throw error;
+        }
+    }
+
+    // Process chunk in parallel
+    async processChunkParallel(batchOperation, chunk, chunkIndex) {
+        const promises = chunk.map((item, itemIndex) =>
+            this.processItem(batchOperation, item, chunkIndex * batchOperation.batchSize + itemIndex)
+        );
+
+        const results = await Promise.allSettled(promises);
+
+        return results.map((result, itemIndex) => {
+            if (result.status === 'fulfilled') {
+                return {
+                    recordIndex: chunkIndex * batchOperation.batchSize + itemIndex,
+                    status: 'success',
+                    data: result.value,
+                    processedAt: new Date()
+                };
+            } else {
+                return {
+                    recordIndex: chunkIndex * batchOperation.batchSize + itemIndex,
+                    status: 'failed',
+                    error: result.reason.message,
+                    processedAt: new Date()
+                };
+            }
+        });
+    }
+
+    // Process chunk sequentially
+    async processChunkSequential(batchOperation, chunk, chunkIndex) {
+        const results = [];
+
+        for (let itemIndex = 0; itemIndex < chunk.length; itemIndex++) {
+            try {
+                const result = await this.processItem(
+                    batchOperation,
+                    chunk[itemIndex],
+                    chunkIndex * batchOperation.batchSize + itemIndex
+                );
+
+                results.push({
+                    recordIndex: chunkIndex * batchOperation.batchSize + itemIndex,
+                    status: 'success',
+                    data: result,
+                    processedAt: new Date()
+                });
+            } catch (error) {
+                results.push({
+                    recordIndex: chunkIndex * batchOperation.batchSize + itemIndex,
+                    status: 'failed',
+                    error: error.message,
+                    processedAt: new Date()
+                });
+            }
+        }
+
+        return results;
+    }
+
+    // Process individual item based on operation type
+    async processItem(batchOperation, item, index) {
+        const { operationType } = batchOperation;
+
+        switch (operationType) {
+            case 'bulk_mint_vouchers':
+                return await this.mintVoucher(item);
+            case 'batch_register_merchants':
+                return await this.registerMerchant(item);
+            case 'import_recipients':
+                return await this.createVoucherForRecipient(item);
+            case 'bulk_notifications':
+                return await this.sendNotification(item);
+            default:
+                throw new Error(`Unknown operation type: ${operationType}`);
+        }
+    }
+
+    // Mint voucher implementation
+    async mintVoucher(voucherData) {
+        // Implementation for minting voucher
+        // This would call the existing voucher minting logic
+        const voucherService = require('../services/voucherService');
+        return await voucherService.mintVoucher(voucherData);
+    }
+
+    // Register merchant implementation
+    async registerMerchant(merchantData) {
+        // Implementation for registering merchant
+        const merchantService = require('../services/merchantService');
+        return await merchantService.registerMerchant(merchantData);
+    }
+
+    // Create voucher for recipient implementation
+    async createVoucherForRecipient(recipientData) {
+        // Implementation for creating voucher for recipient
+        const voucherService = require('../services/voucherService');
+        return await voucherService.createVoucherForRecipient(recipientData);
+    }
+
+    // Send notification implementation
+    async sendNotification(notificationData) {
+        // Implementation for sending notification
+        const notificationManager = require('./notificationManager');
+        return await notificationManager.sendNotification(
+            notificationData.userId,
+            notificationData.type,
+            notificationData.data,
+            notificationData.options
+        );
+    }
+
+    // Create chunks from data
+    createChunks(data, chunkSize) {
+        const chunks = [];
+        for (let i = 0; i < data.length; i += chunkSize) {
+            chunks.push(data.slice(i, i + chunkSize));
+        }
+        return chunks;
+    }
+
+    // Pause operation
+    async pauseOperation(batchOperation) {
+        batchOperation.status = 'paused';
+        batchOperation.metadata.pausedAt = new Date();
+        await batchOperation.save();
+
+        this.pausedOperations.set(batchOperation.batchId, batchOperation);
+        this.activeOperations.delete(batchOperation.batchId);
+
+        logger.info(`Batch operation ${batchOperation.batchId} paused`);
+    }
+
+    // Resume operation
+    async resumeOperation(batchId) {
+        try {
+            const batchOperation = this.pausedOperations.get(batchId);
+
+            if (!batchOperation) {
+                throw new Error(`Paused operation ${batchId} not found`);
+            }
+
+            batchOperation.status = 'queued';
+            batchOperation.metadata.resumedAt = new Date();
+            await batchOperation.save();
+
+            this.pausedOperations.delete(batchId);
+            this.addToQueue(batchOperation);
+
+            logger.info(`Batch operation ${batchId} resumed`);
+
+            return { success: true, message: 'Operation resumed successfully' };
+
+        } catch (error) {
+            logger.error(`Error resuming operation ${batchId}:`, error);
+            throw error;
+        }
+    }
+
+    // Cancel operation
+    async cancelOperation(batchId) {
+        try {
+            const batchOperation = await BatchOperation.findOne({ batchId });
+
+            if (!batchOperation) {
+                throw new Error(`Operation ${batchId} not found`);
+            }
+
+            batchOperation.status = 'cancelled';
+            batchOperation.endTime = new Date();
+            await batchOperation.save();
+
+            // Remove from active operations and queues
+            this.activeOperations.delete(batchId);
+            this.pausedOperations.delete(batchId);
+
+            // Remove from queues
+            for (const queue of this.operationQueues.values()) {
+                const index = queue.findIndex(op => op.batchId === batchId);
+                if (index !== -1) {
+                    queue.splice(index, 1);
+                }
+            }
+
+            logger.info(`Batch operation ${batchId} cancelled`);
+
+            return { success: true, message: 'Operation cancelled successfully' };
+
+        } catch (error) {
+            logger.error(`Error cancelling operation ${batchId}:`, error);
+            throw error;
+        }
+    }
+
+    // Mark operation as failed
+    async markOperationFailed(batchOperation, errorMessage) {
+        batchOperation.status = 'failed';
+        batchOperation.endTime = new Date();
+        batchOperation.errors.push({
+            error: errorMessage,
+            timestamp: new Date()
+        });
+
+        await batchOperation.save();
+
+        this.metrics.failedOperations++;
+
+        logger.error(`Batch operation ${batchOperation.batchId} failed: ${errorMessage}`);
+    }
+
+    // Send completion notification
+    async sendCompletionNotification(batchOperation) {
+        try {
+            const notificationManager = require('./notificationManager');
+
+            const duration = this.formatDuration(
+                batchOperation.endTime - batchOperation.startTime
+            );
+
+            await notificationManager.sendNotification(
+                batchOperation.initiatedBy,
+                'bulk_operation_complete',
+                {
+                    operationType: batchOperation.operationType,
+                    batchId: batchOperation.batchId,
+                    totalRecords: batchOperation.totalRecords,
+                    successCount: batchOperation.successfulRecords,
+                    failureCount: batchOperation.failedRecords,
+                    duration
+                },
+                { priority: 'medium' }
+            );
+        } catch (error) {
+            logger.error('Error sending completion notification:', error);
+        }
+    }
+
+    // Get operation status
+    async getOperationStatus(batchId) {
+        try {
+            const batchOperation = await BatchOperation.findOne({ batchId });
+
+            if (!batchOperation) {
+                return { error: 'Operation not found' };
+            }
+
+            return {
+                batchId: batchOperation.batchId,
+                operationType: batchOperation.operationType,
+                status: batchOperation.status,
+                progress: batchOperation.progress,
+                totalRecords: batchOperation.totalRecords,
+                processedRecords: batchOperation.processedRecords,
+                successfulRecords: batchOperation.successfulRecords,
+                failedRecords: batchOperation.failedRecords,
+                startTime: batchOperation.startTime,
+                endTime: batchOperation.endTime,
+                estimatedCompletion: batchOperation.estimatedCompletion,
+                errors: batchOperation.errors,
+                metadata: batchOperation.metadata
+            };
+        } catch (error) {
+            logger.error(`Error getting operation status for ${batchId}:`, error);
+            throw error;
+        }
+    }
+
+    // Get all operations for user
+    async getUserOperations(userId, limit = 20, offset = 0) {
+        try {
+            const operations = await BatchOperation.find({ initiatedBy: userId })
+                .sort({ createdAt: -1 })
+                .limit(limit)
+                .skip(offset)
+                .select('-results') // Exclude detailed results for list view
+                .lean();
+
+            return operations;
+        } catch (error) {
+            logger.error(`Error fetching operations for user ${userId}:`, error);
+            throw error;
+        }
+    }
+
+    // Get system metrics
+    getMetrics() {
+        return {
+            ...this.metrics,
+            activeOperationsCount: this.activeOperations.size,
+            pausedOperationsCount: this.pausedOperations.size,
+            queuedOperationsCount: Array.from(this.operationQueues.values())
+                .reduce((total, queue) => total + queue.length, 0)
+        };
+    }
+
+    // Estimate processing time
+    estimateProcessingTime(batchOperation) {
+        const { totalRecords, batchSize } = batchOperation;
+        const avgTimePerRecord = this.metrics.averageProcessingTime || 100; // ms
+        const totalTime = totalRecords * avgTimePerRecord;
+
+        return Math.ceil(totalTime / 1000); // Return in seconds
+    }
+
+    // Update average processing time
+    updateAverageProcessingTime(batchOperation) {
+        const duration = batchOperation.endTime - batchOperation.startTime;
+        const timePerRecord = duration / batchOperation.totalRecords;
+
+        if (this.metrics.averageProcessingTime === 0) {
+            this.metrics.averageProcessingTime = timePerRecord;
+        } else {
+            this.metrics.averageProcessingTime =
+                (this.metrics.averageProcessingTime + timePerRecord) / 2;
+        }
+    }
+
+    // Format duration
+    formatDuration(milliseconds) {
+        const seconds = Math.floor(milliseconds / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+
+        if (hours > 0) {
+            return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+        } else if (minutes > 0) {
+            return `${minutes}m ${seconds % 60}s`;
+        } else {
+            return `${seconds}s`;
+        }
+    }
+
+    // Emit progress update (placeholder for WebSocket implementation)
+    emitProgress(batchOperation) {
+        // This would emit progress to WebSocket clients
+        // Implementation depends on your WebSocket setup
+        logger.debug(`Progress update for ${batchOperation.batchId}: ${batchOperation.progress}%`);
+    }
+}
+
+module.exports = new BatchOperationManager();
+module.exports.BatchOperationManager = BatchOperationManager;
