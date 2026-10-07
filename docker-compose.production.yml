@@ -33,7 +33,10 @@ services:
       timeout: 5s
       retries: 3
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_SUI_NETWORK: ${SUI_NETWORK:?Set SUI_NETWORK}
     restart: unless-stopped
     # Terminate HTTPS at the host ingress; the public API shares this origin.
     ports: ["127.0.0.1:3001:80"]
