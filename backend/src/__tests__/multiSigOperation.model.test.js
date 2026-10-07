@@ -197,15 +197,15 @@ describe('MultiSigOperation Model', () => {
 
             await MultiSigOperation.create([
                 {
-                    operationType: 'CREATE_VOUCHER_BATCH',
+                    operationType: 'mint_large_batch',
                     operationData: {},
-                    initiatedBy: adminId,
+                    createdBy: adminId,
                     requiredSignatures: 2,
                     status: 'pending',
                     expiresAt: new Date(now.getTime() + 86400000)
                 },
                 {
-                    operationType: 'BULK_TRANSFER',
+                    operationType: 'bulk_transfer',
                     operationData: {},
                     initiatedBy: adminId,
                     requiredSignatures: 2,
