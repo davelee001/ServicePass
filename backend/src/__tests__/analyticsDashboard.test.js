@@ -295,7 +295,7 @@ describe('Analytics Dashboard', () => {
 
         test('should filter financial summary by voucher type', async () => {
             const summary = await analyticsDashboard.getFinancialSummary({}, { voucherType: '1' });
-            
+
             expect(summary.vouchersMinted).toBe(1);
         });
     });
@@ -304,12 +304,12 @@ describe('Analytics Dashboard', () => {
         test('should return daily trend data by default', async () => {
             const trends = await analyticsDashboard.getTrendData();
 
-            expect(trends).toHaveProperty('vouchers');
-            expect(trends).toHaveProperty('redemptions');
+            expect(trends).toHaveProperty('mintingTrend');
+            expect(trends).toHaveProperty('redemptionTrend');
             expect(trends).toHaveProperty('period');
 
-            expect(Array.isArray(trends.vouchers)).toBe(true);
-            expect(Array.isArray(trends.redemptions)).toBe(true);
+            expect(Array.isArray(trends.mintingTrend)).toBe(true);
+            expect(Array.isArray(trends.redemptionTrend)).toBe(true);
             expect(trends.period).toBe('daily');
         });
 
@@ -317,8 +317,8 @@ describe('Analytics Dashboard', () => {
             const trends = await analyticsDashboard.getTrendData({}, {}, 'weekly');
 
             expect(trends.period).toBe('weekly');
-            expect(Array.isArray(trends.vouchers)).toBe(true);
-            expect(Array.isArray(trends.redemptions)).toBe(true);
+            expect(Array.isArray(trends.mintingTrend)).toBe(true);
+            expect(Array.isArray(trends.redemptionTrend)).toBe(true);
         });
 
         test('should handle empty data gracefully', async () => {
