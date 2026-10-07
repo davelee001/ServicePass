@@ -97,6 +97,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_SUI_NETWORK: ${SUI_NETWORK:-testnet}
     container_name: servicepass-frontend
     restart: unless-stopped
     ports:
@@ -121,6 +123,7 @@ services:
       - "5173:5173"
     environment:
       VITE_API_URL: /api
+      VITE_SUI_NETWORK: ${SUI_NETWORK:-testnet}
       VITE_PROXY_TARGET: http://backend:3000
     volumes:
       - ./frontend:/app
