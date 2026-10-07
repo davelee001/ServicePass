@@ -1,3 +1,10 @@
+// Isolated test-only configuration; production validation remains enabled.
+Object.assign(process.env, {
+    NODE_ENV: 'test', PORT: '3000', MONGODB_URI: 'mongodb://127.0.0.1:27017/servicepass-test',
+    JWT_SECRET: 'test-secret', QR_SIGNING_SECRET: 'test-qr-secret',
+    ADMIN_PRIVATE_KEY: Buffer.alloc(32, 1).toString('base64'),
+    PACKAGE_ID: '0x1', ADMIN_CAP_ID: '0x2', REGISTRY_ID: '0x3', SUI_NETWORK: 'testnet',
+});
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
 
@@ -10,6 +17,7 @@ beforeAll(async () => {
     // Suites that reconnect must use the same isolated test database.
     process.env.MONGODB_URI = mongoUri;
     await mongoose.connect(mongoUri);
+    await Promise.all(Object.values(mongoose.models).map(model => model.createIndexes()));
 }, 120000);
 
 // Cleanup after each test
