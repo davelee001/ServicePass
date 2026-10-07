@@ -334,7 +334,7 @@ router.post('/bulk-mint',
                 for (let i = 0; i < createdObjects.length && i < vouchers.length; i++) {
                     const voucher = vouchers[i];
                     const createdObject = createdObjects[i];
-                    
+
                     try {
                         await notificationManager.sendNotification(voucher.recipient, 'voucher_received', {
                             voucherId: createdObject.objectId,
@@ -362,9 +362,9 @@ router.post('/bulk-mint',
 );
 
 // Enhanced bulk mint vouchers with progress tracking
-router.post('/bulk-mint-enhanced', 
-    verifyToken, 
-    adminOnly, 
+router.post('/bulk-mint-enhanced',
+    verifyToken,
+    adminOnly,
     writeLimiter,
     [
         body('vouchers').isArray().notEmpty().withMessage('Vouchers array is required'),
@@ -380,9 +380,9 @@ router.post('/bulk-mint-enhanced',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
@@ -410,9 +410,9 @@ router.post('/bulk-mint-enhanced',
             });
         } catch (error) {
             logger.error('Error starting enhanced bulk minting:', error);
-            res.status(500).json({ 
-                error: 'Failed to start enhanced bulk minting', 
-                details: error.message 
+            res.status(500).json({
+                error: 'Failed to start enhanced bulk minting',
+                details: error.message
             });
         }
     }
