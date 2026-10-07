@@ -22,20 +22,20 @@ router.post('/create',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
             const { operationType, data, batchSize, priority, parallelProcessing } = req.body;
             const userId = req.user.userId;
-            
+
             // Check permissions for admin-only operations
             if (['bulk_mint_vouchers', 'batch_register_merchants'].includes(operationType) && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Admin privileges required for this operation' });
             }
-            
+
             const result = await batchOperationManager.createBatchOperation(operationType, data, {
                 batchSize,
                 priority,
