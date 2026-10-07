@@ -18,7 +18,8 @@ RUN npm ci && \
 COPY . .
 
 # The browser uses the same-origin Nginx API proxy. Vite reads this at build time.
-ENV VITE_API_URL=/api
+ARG VITE_SUI_NETWORK=testnet
+ENV VITE_API_URL=/api VITE_SUI_NETWORK=$VITE_SUI_NETWORK
 
 # Build the application
 RUN npm run build
