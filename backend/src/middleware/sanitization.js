@@ -81,13 +81,15 @@ const customSanitize = (req, res, next) => {
     };
 
     if (req.body) {
-        req.body = sanitizeValue(req.body);
+        for (const key of Object.keys(req.body)) {
+            if (!isSignedBodyField(req, key)) req.body[key] = sanitizeValue(req.body[key]);
+        }
     }
-    
+
     if (req.query) {
         req.query = sanitizeValue(req.query);
     }
-    
+
     if (req.params) {
         req.params = sanitizeValue(req.params);
     }
