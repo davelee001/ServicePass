@@ -9,9 +9,9 @@ require('./setup');
 jest.mock('../utils/notificationService', () => ({
     sendEmail: jest.fn().mockResolvedValue({ messageId: 'test-email-123' }),
     sendSMS: jest.fn().mockResolvedValue({ sid: 'test-sms-123' }),
-    sendBulkPushNotifications: jest.fn().mockResolvedValue({ 
-        successCount: 1, 
-        failureCount: 0 
+    sendBulkPushNotifications: jest.fn().mockResolvedValue({
+        successCount: 1,
+        failureCount: 0
     })
 }));
 
@@ -24,12 +24,22 @@ describe('Notification Manager', () => {
         await NotificationHistory.deleteMany({});
         await User.deleteMany({});
         await Voucher.deleteMany({});
-        
+
         // Reset mocks
         jest.clearAllMocks();
     });
 
     describe('sendNotification', () => {
+        it('finds existing accounts without a stored notification userId', async () => {
+            const user = await User.create({ email: 'legacy@example.com', password: 'test-password', name: 'Legacy User' });
+            await User.collection.updateOne({ _id: user._id }, { $unset: { userId: '' } });
+            await notificationManager.sendNotification(user._id.toString(), 'voucher_received', {
+                voucherId: 'legacy-voucher', voucherType: 'Education', amount: 100,
+                merchantName: 'School', expiryDate: '2027-01-01',
+            });
+            expect(notificationService.sendEmail).toHaveBeenCalled();
+        });
+
         it('should send email notification when preferences allow', async () => {
             // Create test user
             await User.create({
