@@ -301,14 +301,10 @@ class NotificationManager {
 
             for (let i = 0; i < userIds.length; i += batchSize) {
                 const batch = userIds.slice(i, i + batchSize);
-                
+
                 const batchResults = await Promise.allSettled(
                     batch.map(async (userId) => {
-                        try {
-                            return await this.sendNotification(userId, type, data, options);
-                        } catch (error) {
-                            return { userId, error: error.message };
-                        }
+                        return await this.sendNotification(userId, type, data, options);
                     })
                 );
 
@@ -344,7 +340,7 @@ class NotificationManager {
     async scheduleNotification(userId, type, data, scheduleTime, options = {}) {
         try {
             const ScheduledNotification = require('../models/ScheduledNotification');
-            
+
             const scheduledNotification = new ScheduledNotification({
                 userId,
                 type,
