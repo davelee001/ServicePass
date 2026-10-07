@@ -98,15 +98,15 @@ describe('Analytics Dashboard', () => {
             const dashboard = await analyticsDashboard.getDashboardOverview();
 
             expect(dashboard).toHaveProperty('summary');
-            expect(dashboard).toHaveProperty('recentMetrics');
-            expect(dashboard).toHaveProperty('topMerchants');
-            expect(dashboard).toHaveProperty('voucherTypeDistribution');
-            expect(dashboard).toHaveProperty('expiryAlerts');
+            expect(dashboard).toHaveProperty('trendData');
+            expect(dashboard.merchantStats).toHaveProperty('topPerformers');
+            expect(dashboard).toHaveProperty('typeDistribution');
+            expect(dashboard).toHaveProperty('expiryStats');
             expect(dashboard).toHaveProperty('financialSummary');
 
-            expect(dashboard.summary.totalVouchers).toBeGreaterThan(0);
-            expect(dashboard.summary.totalRedemptions).toBeGreaterThan(0);
-            expect(dashboard.summary.activeMerchants).toBeGreaterThan(0);
+            expect(dashboard.summary.totalVouchersMinted).toBeGreaterThan(0);
+            expect(dashboard.summary.totalVouchersRedeemed).toBeGreaterThan(0);
+            expect(dashboard.merchantStats.activeMerchants).toBeGreaterThan(0);
         });
 
         test('should filter by date range', async () => {
@@ -122,7 +122,7 @@ describe('Analytics Dashboard', () => {
         });
 
         test('should filter by merchant', async () => {
-            const filters = { merchantId: testMerchant.address };
+            const filters = { merchantId: testMerchant.merchantId };
             const dashboard = await analyticsDashboard.getDashboardOverview(filters);
             
             expect(dashboard.summary).toBeDefined();
