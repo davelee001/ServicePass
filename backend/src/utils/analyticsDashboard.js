@@ -329,16 +329,16 @@ class AnalyticsDashboard {
                         _id: '$voucherType',
                         totalMinted: { $sum: 1 },
                         totalValue: { $sum: '$amount' },
-                        redeemed: { $sum: { $cond: ['$isRedeemed', 1, 0] } },
-                        redeemedValue: { $sum: { $cond: ['$isRedeemed', '$amount', 0] } },
+                        redeemed: { $sum: { $cond: [{ $eq: ['$status', 'fully_redeemed'] }, 1, 0] } },
+                        redeemedValue: { $sum: { $cond: [{ $eq: ['$status', 'fully_redeemed'] }, '$amount', 0] } },
                         expired: {
                             $sum: {
                                 $cond: [
                                     {
                                         $and: [
-                                            { $ne: ['$expiryTimestamp', null] },
-                                            { $lt: ['$expiryTimestamp', Date.now()] },
-                                            { $eq: ['$isRedeemed', false] }
+                                            { $gt: ['$expiryTimestamp', 0] },
+                                            { $lte: ['$expiryTimestamp', Date.now()] },
+                                            { $in: ['$status', ['active', 'partially_redeemed', 'expired']] }
                                         ]
                                     },
                                     1,
@@ -391,7 +391,7 @@ class AnalyticsDashboard {
     async getExpiryStats(dateFilter = {}, filters = {}) {
         try {
             const matchStage = { ...dateFilter };
-            
+
             if (filters.merchantId) {
                 matchStage.merchantId = filters.merchantId;
             }
