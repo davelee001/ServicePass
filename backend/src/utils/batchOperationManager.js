@@ -7,10 +7,10 @@ class BatchOperationManager {
         this.activeOperations = new Map();
         this.pausedOperations = new Map();
         this.operationQueues = new Map();
-        
+
         // Start the batch processor
-        this.startBatchProcessor();
-        
+        this.processorTimer = null;
+
         // Performance metrics
         this.metrics = {
             totalOperations: 0,
@@ -19,7 +19,7 @@ class BatchOperationManager {
             averageProcessingTime: 0
         };
     }
-    
+
     // Create a new batch operation
     async createBatchOperation(operationType, data, options = {}) {
         try {
