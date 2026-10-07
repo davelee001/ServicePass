@@ -242,8 +242,8 @@ describe('Analytics Routes', () => {
                 .expect(200);
 
             expect(response.body.expiryStats).toBeDefined();
-            expect(response.body.expiryStats.expiringIn7Days).toBeDefined();
-            expect(response.body.expiryStats.expiringIn30Days).toBeDefined();
+            expect(response.body.expiryStats.expiringThisWeek).toBeDefined();
+            expect(response.body.expiryStats.expiringThisMonth).toBeDefined();
         });
     });
 
@@ -266,8 +266,8 @@ describe('Analytics Routes', () => {
                 .expect(200);
 
             expect(response.body.trendData).toBeDefined();
-            expect(response.body.trendData.vouchers).toBeDefined();
-            expect(response.body.trendData.redemptions).toBeDefined();
+            expect(response.body.trendData.mintingTrend).toBeDefined();
+            expect(response.body.trendData.redemptionTrend).toBeDefined();
         });
 
         test('should validate period parameter', async () => {
@@ -357,7 +357,7 @@ describe('Analytics Routes', () => {
 
             const response = await request(testApp)
                 .get('/api/analytics/vouchers')
-                .query({ merchantId: testMerchant.address })
+                .query({ merchantId: testMerchant.merchantId })
                 .expect(403);
 
             expect(response.body.error).toBe('Access denied to merchant data');
