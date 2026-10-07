@@ -22,7 +22,7 @@ const notificationPreferencesSchema = new mongoose.Schema({
     },
     push: {
         enabled: { type: Boolean, default: true },
-        tokens: [{ 
+        tokens: [{
             token: String,
             deviceInfo: String,
             addedAt: { type: Date, default: Date.now }
@@ -36,6 +36,6 @@ const notificationPreferencesSchema = new mongoose.Schema({
 });
 
 // Index for efficient queries
-notificationPreferencesSchema.index({ userId: 1 });
+
 
 module.exports = mongoose.model('NotificationPreferences', notificationPreferencesSchema);
