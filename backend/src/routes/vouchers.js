@@ -275,7 +275,7 @@ router.get('/:voucherId/qrcode',
 
     } catch (error) {
         logger.error(`Error fetching QR code: ${error.message}`, { voucherId: req.params.voucherId });
-        res.status(500).json({ 
+        res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to fetch QR code'
         });
@@ -283,9 +283,9 @@ router.get('/:voucherId/qrcode',
 });
 
 // Bulk mint vouchers
-router.post('/bulk-mint', 
-    verifyToken, 
-    adminOnly, 
+router.post('/bulk-mint',
+    verifyToken,
+    adminOnly,
     writeLimiter,
     async (req, res) => {
         try {
@@ -310,6 +310,7 @@ router.post('/bulk-mint',
                         tx.pure.vector('u8', Array.from(Buffer.from(merchantId))),
                         tx.pure.u64(expiryTimestamp ?? 0),
                         tx.pure.vector('u8', Array.from(Buffer.from(metadata || ''))),
+                        tx.object(SUI_CLOCK_OBJECT_ID),
                     ],
                 });
             });
