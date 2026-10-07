@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, param, validationResult } = require('express-validator');
 const { Transaction } = require('@mysten/sui/transactions');
+const { SUI_CLOCK_OBJECT_ID } = require('@mysten/sui/utils');
 const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID, REGISTRY_ID } = require('../config/sui');
 const { logger } = require('../utils/logger');
 const { verifyToken, adminOnly, optionalAuth } = require('../middleware/auth');
@@ -16,12 +17,12 @@ const { executeTransactionWithRetry, queryObjectsWithRetry, BlockchainError } = 
 const QR_SIGNING_SECRET = process.env.QR_SIGNING_SECRET || 'default-secret';
 
 // Mint a new voucher
-router.post('/mint', 
-    verifyToken, 
-    adminOnly, 
+router.post('/mint',
+    verifyToken,
+    adminOnly,
     writeLimiter,
     [
-        body('voucherType').isString().trim().notEmpty().withMessage('Voucher type is required'),
+        body('voucherType').isInt({ min: 1, max: 4 }).withMessage('Voucher type must be between 1 and 4'),
         body('amount').isInt({ min: 1 }).withMessage('Amount must be a positive integer'),
         body('recipient').isString().trim().notEmpty().matches(/^0x[a-fA-F0-9]{64}$/).withMessage('Invalid recipient address format'),
         body('merchantId').isString().trim().notEmpty().withMessage('Merchant ID is required'),
