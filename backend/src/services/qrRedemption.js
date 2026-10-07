@@ -41,11 +41,14 @@ function createQrRedemptionService({ client, store, packageId, registryId, secre
             !onChainMerchant.owner?.Shared || text(onChainMerchant.content.fields.merchant_id) !== merchant.merchantId) {
             fail(409, 'Merchant on-chain object is not configured correctly');
         }
+        const clock = clockResult.data;
+        if (!clock?.owner?.Shared || clock.content?.type !== '0x2::clock::Clock') fail(503, 'Unable to read the Sui system clock');
+        const chainTime = BigInt(clock.content.fields.timestamp_ms);
         const fields = voucher.content.fields;
         const owner = voucher.owner?.AddressOwner;
         if (!owner) fail(409, 'Voucher must be held by an address owner');
         if (text(fields.merchant_id) !== merchant.merchantId) fail(403, 'On-chain voucher belongs to another merchant');
-        if (fields.is_redeemed || BigInt(fields.expiry_timestamp) <= BigInt(now())) fail(409, 'Voucher is redeemed or expired');
+        if (fields.is_redeemed || (BigInt(fields.expiry_timestamp) !== 0n && BigInt(fields.expiry_timestamp) <= chainTime)) fail(409, 'Voucher is redeemed or expired');
         const amount = Number(fields.amount);
         const voucherType = Number(fields.voucher_type);
         if (!Number.isSafeInteger(amount) || amount <= 0 || ![1, 2, 3, 4].includes(voucherType)) fail(409, 'Invalid voucher value');
@@ -65,11 +68,12 @@ function createQrRedemptionService({ client, store, packageId, registryId, secre
         transaction.setGasPayment([{ objectId: gasCoin.coinObjectId, version: gasCoin.version, digest: gasCoin.digest }]);
         transaction.moveCall({
             target: `${packageId}::voucher_system::redeem_voucher`,
-            // TxContext is implicit. All three explicit arguments are objects.
+            // TxContext is implicit. All four explicit arguments are objects; the system clock is read-only.
             arguments: [
                 transaction.sharedObjectRef({ objectId: objectId(registryId), initialSharedVersion: registry.owner.Shared.initial_shared_version, mutable: true }),
                 transaction.sharedObjectRef({ objectId: merchantObjectId, initialSharedVersion: onChainMerchant.owner.Shared.initial_shared_version, mutable: true }),
                 transaction.objectRef({ objectId: voucherId, version: voucher.version, digest: voucher.digest }),
+                transaction.sharedObjectRef({ objectId: SUI_CLOCK_OBJECT_ID, initialSharedVersion: clock.owner.Shared.initial_shared_version, mutable: false }),
             ],
         });
         const bytes = await transaction.build({ client });
