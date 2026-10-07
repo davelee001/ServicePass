@@ -31,8 +31,9 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/servicepass-move"
           cp Move.toml "$RUNNER_TEMP/servicepass-move/Move.toml"
+          cp Move.lock "$RUNNER_TEMP/servicepass-move/Move.lock"
           cp -R move/sources "$RUNNER_TEMP/servicepass-move/sources"
       - name: Build smart contracts
-        run: sui move build --path "$RUNNER_TEMP/servicepass-move"
+        run: sui move build --build-env testnet --path "$RUNNER_TEMP/servicepass-move"
       - name: Test smart contracts
-        run: sui move test --path "$RUNNER_TEMP/servicepass-move"
+        run: sui move test --build-env testnet --path "$RUNNER_TEMP/servicepass-move"
