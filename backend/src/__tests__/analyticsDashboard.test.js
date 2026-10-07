@@ -266,14 +266,14 @@ describe('Analytics Dashboard', () => {
             expect(stats).toHaveProperty('alreadyExpired');
             expect(stats).toHaveProperty('totalActive');
 
-            expect(stats.expired).toBe(1); // One expired voucher
-            expect(stats.expiringIn7Days).toBeGreaterThanOrEqual(1); // Healthcare voucher expires in 7 days
+            expect(stats.alreadyExpired).toBe(1); // One expired voucher
+            expect(stats.expiringThisWeek).toBe(0); // The healthcare voucher has already been redeemed.
         });
 
         test('should filter expiry stats by voucher type', async () => {
             const stats = await analyticsDashboard.getExpiryStats({}, { voucherType: '2' });
-            
-            expect(stats.expiringIn7Days).toBe(1); // Healthcare voucher
+
+            expect(stats.expiringThisWeek).toBe(0); // Redeemed vouchers are excluded.
         });
     });
 
@@ -290,7 +290,7 @@ describe('Analytics Dashboard', () => {
 
             expect(summary.totalValue).toBe(350); // Total value of all vouchers
             expect(summary.totalRedeemed).toBe(350); // Total redeemed value
-            expect(summary.utilizationRate).toBeGreaterThan(0);
+            expect(Number(summary.utilizationRate)).toBeGreaterThan(0);
         });
 
         test('should filter financial summary by voucher type', async () => {
