@@ -212,7 +212,7 @@ describe('VoucherTransfer Model', () => {
 
             await VoucherTransfer.create([
                 {
-                    voucherId,
+                    voucherId, amount: 100,
                     fromAddress: '0x' + '1'.repeat(64),
                     toAddress: '0x' + '2'.repeat(64),
                     transferType: 'full',
@@ -220,7 +220,7 @@ describe('VoucherTransfer Model', () => {
                     status: 'pending'
                 },
                 {
-                    voucherId,
+                    voucherId, amount: 100,
                     fromAddress: '0x' + '2'.repeat(64),
                     toAddress: '0x' + '3'.repeat(64),
                     transferType: 'full',
@@ -247,7 +247,7 @@ describe('VoucherTransfer Model', () => {
 
         test('should sort history by date descending', async () => {
             const history = await VoucherTransfer.getVoucherHistory('voucher_123');
-            
+
             for (let i = 1; i < history.length; i++) {
                 expect(history[i - 1].createdAt >= history[i].createdAt).toBe(true);
             }
