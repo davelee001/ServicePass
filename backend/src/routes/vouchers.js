@@ -238,8 +238,8 @@ router.get('/owner/:address',
 });
 
 // Get QR code for a voucher
-router.get('/:voucherId/qrcode', 
-    verifyToken, 
+router.get('/:voucherId/qrcode',
+    verifyToken,
     readLimiter,
     [
         param('voucherId').isString().trim().notEmpty().withMessage('Voucher ID is required'),
@@ -248,8 +248,8 @@ router.get('/:voucherId/qrcode',
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ 
-                error: 'Validation failed', 
+            return res.status(400).json({
+                error: 'Validation failed',
                 details: errors.array().map(e => ({ field: e.path, message: e.msg }))
             });
         }
@@ -258,7 +258,7 @@ router.get('/:voucherId/qrcode',
         const voucher = await Voucher.findOne({ voucherId });
 
         if (!voucher) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 error: 'Voucher not found',
                 message: 'No voucher exists with the specified ID'
             });
