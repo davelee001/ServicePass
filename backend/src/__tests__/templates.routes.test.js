@@ -284,7 +284,7 @@ describe('Template Routes', () => {
         beforeEach(async () => {
             template = await VoucherTemplate.create({
                 name: 'Original Template',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'education',
                 voucherType: 1,
                 defaultValue: 500,
                 metadata: { program: 'Test Program' }
@@ -310,7 +310,7 @@ describe('Template Routes', () => {
         beforeEach(async () => {
             template = await VoucherTemplate.create({
                 name: 'Stats Template',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'education',
                 voucherType: 1,
                 defaultValue: 500,
                 usageCount: 10
@@ -333,7 +333,7 @@ describe('Template Routes', () => {
             await VoucherTemplate.create([
                 {
                     name: 'Popular 1',
-                    category: 'education',
+                    createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'education',
                     voucherType: 1,
                     defaultValue: 100,
                     usageCount: 50
