@@ -298,7 +298,7 @@ router.get('/user/:walletAddress',
         });
     } catch (error) {
         logger.error(`Error fetching user redemptions: ${error.message}`, { walletAddress: req.params.walletAddress });
-        res.status(500).json({ 
+        res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to fetch user redemptions'
         });
@@ -306,10 +306,10 @@ router.get('/user/:walletAddress',
 });
 
 // Import recipients via CSV
-router.post('/import-recipients', 
-    verifyToken, 
-    adminOrMerchant, 
-    upload.single('file'), 
+router.post('/import-recipients',
+    verifyToken,
+    adminOrMerchant,
+    upload.single('file'),
     async (req, res) => {
         try {
             if (!req.file) {
@@ -334,6 +334,7 @@ router.post('/import-recipients',
                         tx.pure.vector('u8', Array.from(Buffer.from(merchantId))),
                         tx.pure.u64(expiryTimestamp ?? 0),
                         tx.pure.vector('u8', Array.from(Buffer.from(metadata || ''))),
+                        tx.object(SUI_CLOCK_OBJECT_ID),
                     ],
                 });
             });
@@ -355,6 +356,8 @@ router.post('/import-recipients',
         } catch (error) {
             logger.error('Error during CSV import:', error);
             res.status(500).json({ error: 'CSV import failed', details: error.message });
+        } finally {
+            if (req.file) await require('node:fs/promises').unlink(req.file.path).catch(() => logger.warn('Unable to remove temporary CSV upload'));
         }
     }
 );
