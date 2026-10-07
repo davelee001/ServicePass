@@ -132,12 +132,12 @@ router.post('/redeem-partial',
         });
 
     } catch (error) {
-        logger.error(`Partial redemption error: ${error.message}`, { 
+        logger.error(`Partial redemption error: ${error.message}`, {
             stack: error.stack,
             merchantId: req.merchant?.merchantId
         });
-        
-        res.status(500).json({ 
+
+        res.status(500).json({
             error: 'Partial redemption failed',
             message: error.message || 'An error occurred during partial redemption.'
         });
@@ -145,7 +145,7 @@ router.post('/redeem-partial',
 });
 
 // Record a redemption (webhook from blockchain event listener or merchant API)
-router.post('/', 
+router.post('/',
     redemptionLimiter,
     [
         body('voucherObjectId').isString().trim().notEmpty().withMessage('Voucher object ID is required'),
