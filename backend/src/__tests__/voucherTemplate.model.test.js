@@ -134,8 +134,8 @@ describe('VoucherTemplate Model', () => {
                     isActive: true
                 },
                 {
-                    name: 'Inactive Template',
-                    category: 'education',
+                    createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, name: 'Inactive Template',
+                    metadata: { category: 'education' },
                     voucherType: 1,
                     defaultValue: 150,
                     isActive: false
@@ -150,9 +150,9 @@ describe('VoucherTemplate Model', () => {
         });
 
         test('should find templates by category', async () => {
-            const eduTemplates = await VoucherTemplate.findByCategory('education');
+            const eduTemplates = await VoucherTemplate.find({ 'metadata.category': 'education' });
             expect(eduTemplates).toHaveLength(2);
-            expect(eduTemplates.every(t => t.category === 'education')).toBe(true);
+            expect(eduTemplates.every(t => t.metadata.category === 'education')).toBe(true);
         });
     });
 
