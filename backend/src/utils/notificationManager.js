@@ -17,14 +17,14 @@ class NotificationManager {
             channelStats: { email: 0, sms: 0, push: 0 },
             deliveryRates: { email: 0, sms: 0, push: 0 }
         };
-        
-        // Start retry processor
+
+        this.processorTimers = [];
+    }
+
+    startProcessors() {
+        if (this.processorTimers.length) return;
         this.startRetryProcessor();
-        
-        // Start batch processor
         this.startBatchProcessor();
-        
-        // Start scheduled notification processor
         this.startScheduledProcessor();
     }
 
