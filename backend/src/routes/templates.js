@@ -236,6 +236,7 @@ router.get('/:templateId/stats',
 // Get popular templates
 router.get('/analytics/popular',
     verifyToken,
+    adminOnly,
     readLimiter,
     [
         query('limit').optional().isInt({ min: 1, max: 50 })
