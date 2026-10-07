@@ -1,9 +1,10 @@
-const { SuiClient, getFullnodeUrl } = require('@mysten/sui.js/client');
-const { Ed25519Keypair } = require('@mysten/sui.js/keypairs/ed25519');
+const { SuiJsonRpcClient, getJsonRpcFullnodeUrl } = require('@mysten/sui/jsonRpc');
+const { Ed25519Keypair } = require('@mysten/sui/keypairs/ed25519');
 
 // Initialize SUI client
-const suiClient = new SuiClient({ 
-    url: getFullnodeUrl(process.env.SUI_NETWORK || 'testnet') 
+const suiClient = new SuiJsonRpcClient({
+    url: getJsonRpcFullnodeUrl(process.env.SUI_NETWORK || 'testnet'),
+    network: process.env.SUI_NETWORK || 'testnet'
 });
 
 // Admin keypair (load from environment variable)
