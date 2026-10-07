@@ -18,10 +18,12 @@ const voucherSchema = new mongoose.Schema({
     },
     originalAmount: {
         type: Number, // Original value when created
+        default: function() { return this.amount; },
         required: true
     },
     remainingAmount: {
         type: Number, // Remaining value after partial redemptions
+        default: function() { return this.amount; },
         required: true
     },
     recipient: {
