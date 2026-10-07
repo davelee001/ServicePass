@@ -78,11 +78,11 @@ class AnalyticsDashboard {
                 }
             }
             const matchStage = { ...dateFilter };
-            
+
             if (filters.merchantId) {
                 matchStage.merchantId = filters.merchantId;
             }
-            
+
             if (filters.voucherType) {
                 matchStage.voucherType = filters.voucherType;
             }
@@ -94,10 +94,10 @@ class AnalyticsDashboard {
                         _id: null,
                         total: { $sum: 1 },
                         totalValue: { $sum: '$amount' },
-                        active: { 
-                            $sum: { 
+                        active: {
+                            $sum: {
                                 $cond: [
-                                    { 
+                                    {
                                         $and: [
                                             { $eq: ['$isRedeemed', false] },
                                             { 
