@@ -91,16 +91,16 @@ class BatchOperationManager {
     sortQueuesByPriority() {
         const priorities = ['high', 'medium', 'low'];
         const sortedQueues = new Map();
-        
+
         priorities.forEach(priority => {
             if (this.operationQueues.has(priority)) {
                 sortedQueues.set(priority, this.operationQueues.get(priority));
             }
         });
-        
+
         this.operationQueues = sortedQueues;
     }
-    
+
     // Generate unique batch ID
     generateBatchId() {
         const timestamp = Date.now().toString(36);
