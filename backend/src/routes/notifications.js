@@ -94,8 +94,8 @@ router.post('/push-token',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
+                return res.status(400).json({
+                    error: 'Validation failed',
                     details: errors.array().map(e => ({ field: e.path, message: e.msg }))
                 });
             }
@@ -103,18 +103,10 @@ router.post('/push-token',
             const userId = req.user.userId;
             const { token, deviceInfo } = req.body;
 
-            await NotificationPreferences.findOneAndUpdate(
-                { userId },
-                {
-                    $addToSet: {
-                        'push.tokens': {
-                            token,
-                            deviceInfo: deviceInfo || 'Unknown device',
-                            addedAt: new Date()
-                        }
-                    }
-                },
-                { upsert: true }
+            await NotificationPreferences.updateOne({ userId }, { $setOnInsert: { userId } }, { upsert: true });
+            await NotificationPreferences.updateOne(
+                { userId, 'push.tokens.token': { $ne: token } },
+                { $push: { 'push.tokens': { token, deviceInfo: deviceInfo || 'Unknown device', addedAt: new Date() } } }
             );
 
             res.json({ message: 'Push token registered successfully' });
@@ -169,8 +161,8 @@ router.post('/test',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
+                return res.status(400).json({
+                    error: 'Validation failed',
                     details: errors.array().map(e => ({ field: e.path, message: e.msg }))
                 });
             }
@@ -187,8 +179,8 @@ router.post('/test',
                 daysLeft: 7
             };
 
-            const template = NotificationTemplates[type === 'voucher_received' ? 'voucherReceived' : 
-                                                   type === 'voucher_expiring' ? 'voucherExpiringSoon' : 
+            const template = NotificationTemplates[type === 'voucher_received' ? 'voucherReceived' :
+                                                   type === 'voucher_expiring' ? 'voucherExpiringSoon' :
                                                    'redemptionConfirmation'](testData);
 
             const preferences = await NotificationPreferences.findOne({ userId });
