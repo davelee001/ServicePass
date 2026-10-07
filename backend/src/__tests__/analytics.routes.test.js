@@ -76,13 +76,13 @@ describe('Analytics Routes', () => {
         });
 
         testVoucher = await Voucher.create({
-            voucherId: 'V123456789',
-            merchantId: testMerchant.address,
+            voucherId: 'V123456789', recipient: '0xowner', transactionDigest: 'mint-V123456789',
+            merchantId: testMerchant.merchantId,
             merchantName: testMerchant.name,
-            value: 100,
+            amount: 100,
             voucherType: 2,
             description: 'Test voucher',
-            expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+            expiryTimestamp: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
             status: 'active'
         });
 
