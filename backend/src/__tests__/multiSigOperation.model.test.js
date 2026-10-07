@@ -111,16 +111,16 @@ describe('MultiSigOperation Model', () => {
 
         test('should add signature', async () => {
             await operation.addSignature(adminId2, 'Approved - looks good');
-            
+
             expect(operation.signatures).toHaveLength(1);
-            expect(operation.signatures[0].signedBy.toString()).toBe(adminId2.toString());
-            expect(operation.signatures[0].comment).toBe('Approved - looks good');
+            expect(operation.signatures[0].adminId.toString()).toBe(adminId2.toString());
+            expect(operation.signatures[0].adminEmail).toBe('Approved - looks good');
             expect(operation.signatures[0].signedAt).toBeDefined();
         });
 
         test('should prevent duplicate signature from same admin', async () => {
             await operation.addSignature(adminId2);
-            
+
             await expect(operation.addSignature(adminId2)).rejects.toThrow('already signed');
         });
 
