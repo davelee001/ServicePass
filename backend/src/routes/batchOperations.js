@@ -305,13 +305,13 @@ router.get('/results/:batchId',
             if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Access denied' });
             }
-            
+
             const skip = (page - 1) * limit;
             const results = operation.results.slice(skip, skip + limit);
             const totalResults = operation.results.length;
             const totalPages = Math.ceil(totalResults / limit);
-            
-            res.json({ 
+
+            res.json({
                 results,
                 pagination: {
                     currentPage: page,
@@ -335,7 +335,7 @@ router.get('/metrics',
     async (req, res) => {
         try {
             const metrics = batchOperationManager.getMetrics();
-            
+
             // Get additional database metrics
             const dbMetrics = await BatchOperation.aggregate([
                 {
@@ -345,7 +345,7 @@ router.get('/metrics',
                     }
                 }
             ]);
-            
+
             const statusCounts = {};
             dbMetrics.forEach(metric => {
                 statusCounts[metric._id] = metric.count;
