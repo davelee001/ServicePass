@@ -159,8 +159,8 @@ describe('VoucherTemplate Model', () => {
     describe('Transfer Restrictions', () => {
         test('should store transfer restrictions', async () => {
             const template = new VoucherTemplate({
-                name: 'Restricted Template',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, name: 'Restricted Template',
+                metadata: { category: 'education' },
                 voucherType: 1,
                 defaultValue: 100,
                 transferRestrictions: {
@@ -180,21 +180,19 @@ describe('VoucherTemplate Model', () => {
     describe('Metadata', () => {
         test('should store custom metadata', async () => {
             const template = new VoucherTemplate({
-                name: 'Template with Metadata',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, name: 'Template with Metadata',
+
                 voucherType: 1,
                 defaultValue: 100,
                 metadata: {
-                    program: 'Student Support',
-                    semester: 'Spring 2026',
-                    customField: 'value'
+                    customFields: { program: 'Student Support', semester: 'Spring 2026', customField: 'value' }
                 }
             });
 
             const saved = await template.save();
-            expect(saved.metadata.program).toBe('Student Support');
-            expect(saved.metadata.semester).toBe('Spring 2026');
-            expect(saved.metadata.customField).toBe('value');
+            expect(saved.metadata.customFields.program).toBe('Student Support');
+            expect(saved.metadata.customFields.semester).toBe('Spring 2026');
+            expect(saved.metadata.customFields.customField).toBe('value');
         });
     });
 });
