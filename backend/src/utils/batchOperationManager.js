@@ -55,11 +55,11 @@ class BatchOperationManager {
 
             // Add to processing queue
             this.addToQueue(batchOperation);
-            
+
             this.metrics.totalOperations++;
-            
+
             logger.info(`Batch operation ${batchId} created for ${operationType}`);
-            
+
             return {
                 batchId,
                 status: 'queued',
