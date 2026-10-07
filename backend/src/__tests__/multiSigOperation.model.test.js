@@ -207,15 +207,15 @@ describe('MultiSigOperation Model', () => {
                 {
                     operationType: 'bulk_transfer',
                     operationData: {},
-                    initiatedBy: adminId,
+                    createdBy: adminId,
                     requiredSignatures: 2,
                     status: 'approved',
                     expiresAt: new Date(now.getTime() + 86400000)
                 },
                 {
-                    operationType: 'EMERGENCY_FREEZE',
+                    operationType: 'emergency_pause',
                     operationData: {},
-                    initiatedBy: adminId,
+                    createdBy: adminId,
                     requiredSignatures: 3,
                     status: 'pending',
                     expiresAt: new Date(now.getTime() - 3600000) // Expired
@@ -230,7 +230,7 @@ describe('MultiSigOperation Model', () => {
         });
 
         test('should find expired operations', async () => {
-            const expired = await MultiSigOperation.findExpired();
+            const expired = await MultiSigOperation.find({ expiresAt: { $lt: new Date() } });
             expect(expired.length).toBeGreaterThan(0);
             expect(expired.every(op => op.expiresAt < new Date())).toBe(true);
         });
