@@ -391,18 +391,18 @@ router.post('/retry/:batchId',
 
             const { batchId } = req.params;
             const { failedItemsOnly = true } = req.body;
-            
+
             const operation = await BatchOperation.findOne({ batchId });
-            
+
             if (!operation) {
                 return res.status(404).json({ error: 'Operation not found' });
             }
-            
+
             // Check if user can retry this operation
             if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Access denied' });
             }
-            
+
             if (operation.status !== 'completed' && operation.status !== 'failed') {
                 return res.status(400).json({ error: 'Operation must be completed or failed to retry' });
             }
