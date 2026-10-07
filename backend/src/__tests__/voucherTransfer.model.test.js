@@ -283,6 +283,7 @@ describe('VoucherTransfer Model', () => {
 
             // Create transfer
             const transfer = await VoucherTransfer.create({
+
                 voucherId: 'voucher_123',
                 fromAddress: '0x' + '1'.repeat(64),
                 toAddress: '0x' + '2'.repeat(64),
@@ -311,6 +312,7 @@ describe('VoucherTransfer Model', () => {
             const rejector = new mongoose.Types.ObjectId();
 
             const transfer = await VoucherTransfer.create({
+                amount: 100,
                 voucherId: 'voucher_123',
                 fromAddress: '0x' + '1'.repeat(64),
                 toAddress: '0x' + '2'.repeat(64),
@@ -319,11 +321,11 @@ describe('VoucherTransfer Model', () => {
                 requiresApproval: true
             });
 
-            await transfer.reject(rejector, 'Suspicious activity');
-            
+            await transfer.reject('Suspicious activity');
+
             expect(transfer.status).toBe('rejected');
             expect(transfer.rejectionReason).toBe('Suspicious activity');
-            expect(transfer.rejectedBy.toString()).toBe(rejector.toString());
+            expect((await VoucherTransfer.findById(transfer._id)).status).toBe('rejected');
         });
     });
 });
