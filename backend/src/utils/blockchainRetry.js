@@ -105,7 +105,7 @@ function isRetryableError(error) {
 async function executeTransactionWithRetry(suiClient, txParams) {
     return retryBlockchainOperation(
         async () => {
-            return await suiClient.signAndExecuteTransactionBlock(txParams);
+            return await suiClient.signAndExecuteTransaction(txParams);
         },
         {
             maxRetries: 3,
