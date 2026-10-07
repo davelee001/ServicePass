@@ -52,7 +52,7 @@ Work is tracked in [TODO.md](TODO.md).
 
 - **Item 4: Dependency triage:** Completed and checked off. Fresh online audits report zero known vulnerabilities in both full dependency trees, including development packages. Frontend build, API proxy checks, 32 configuration tests, and one coverage-loader compatibility test passed. Backend Sui SDK migration was completed with item 5. See [Dependency triage](docs/DEPENDENCY_TRIAGE.md) for upgrade decisions and test limitations.
 
-- **Item 5: Owner-approved QR redemption:** Implemented owner-funded wallet approval with exact contract arguments, verified signatures, confirmation events, and retry recovery. Merchant registration stores actual object IDs. Focused HTTP/signature tests pass with an injected ledger; live contract/browser validation belongs to item 7. See [QR redemption](docs/QR_REDEMPTION.md).
+- **Item 5: Owner-approved QR redemption:** Implemented owner-funded wallet approval with exact contract arguments, verified signatures, confirmation events, and retry recovery. Merchant registration stores actual object IDs. All nine focused HTTP/signature tests and the SDK/Jest compatibility test passed; the frontend production build passed. The HTTP tests use an injected ledger and storage, so live contract/browser validation belongs to item 7. See [QR redemption](docs/QR_REDEMPTION.md).
 
 **5 TODO items remain open:** 1, 3, 6, 7, and 8. Item 6 (on-chain expiry and merchant enforcement) is next.
 
@@ -63,6 +63,22 @@ Work is tracked in [TODO.md](TODO.md).
 | Compose Nginx | `http://localhost:3001` | `http://backend:3000` through Nginx |
 
 Browser API paths retain the `/api` prefix. Production readiness depends on resolving and validating the remaining checklist items.
+
+## Owner-Approved QR Redemption
+
+Merchants open `/merchant/redeem`, enter their API key and signed voucher QR data, and share the resulting approval link. The current voucher owner opens `/user/redeem?intent=<requestId>`, reviews the request, and signs through a compatible Wallet Standard Sui wallet. The owner pays gas; the backend submits the signed bytes and records redemption after successful chain effects and the expected event.
+
+This flow redeems the entire voucher. The owner needs a single SUI coin with at least 0.02 SUI for the prepared gas budget. Frontend `VITE_SUI_NETWORK` must match backend `SUI_NETWORK`. Requests permit new submissions for ten minutes; retrying confirmation reuses the same bytes and digest. Merchant records created by older registration code must contain the actual shared Merchant object ID, rather than a transaction digest.
+
+`POST /api/redemptions/redeem-qr` now prepares a request; existing clients must follow the owner-signing and submission steps instead of treating this response as completed redemption. See [QR redemption setup, API flow, and recovery](docs/QR_REDEMPTION.md).
+
+```bash
+# From the repository root, after installing backend dependencies
+npm run test:redemption
+npm --prefix backend run test:sdk
+```
+
+Verified on October 7, 2026: nine redemption tests, one SDK/Jest test, 32 configuration tests, and one dependency compatibility test passed; the frontend production build passed. The full backend regression suite still fails on existing missing dependencies, model/test issues, and startup configuration. Move execution, actual wallet interaction, and testnet verification remain pending. On-chain expiry and merchant enforcement are the next implementation task.
 
 ## Dependency Validation
 
@@ -127,7 +143,7 @@ npm run build
 - **Real-time Event Listener**: Monitors blockchain events in real-time using Sui's WebSocket subscription.
 - **Reliable Event Processing**: Uses a BullMQ queue system with Redis to ensure every blockchain event is processed reliably, even in case of failures. Handles blockchain reorgs and failures gracefully.
 - **Blockchain Retry Logic**: Automatic retry with exponential backoff for failed blockchain operations
-- **Secure QR Code System**: Generates signed QR codes for vouchers, enabling secure, offline redemption at merchant points of sale.
+- **Secure QR Code System**: Generates signed QR codes for vouchers, with owner wallet approval and online chain confirmation at merchant points of sale.
 - **Web Application**: User and merchant portals
 - **Analytics Dashboard**: Real-time reporting and insights
 
@@ -671,7 +687,7 @@ Configuration, dependency compatibility, QR redemption, and SDK/Jest checks run 
 ### Core Capabilities
 - **Blockchain-Powered**: Built on SUI for security and transparency  
 - **Type-Specific Vouchers**: Four categories (Education, Healthcare, Transport, Agriculture)  
-- **QR Code Redemption**: Secure, signed QR codes for offline redemption at merchant points  
+- **QR Code Redemption**: Signed QR codes with owner wallet approval and online chain confirmation at merchant points
 - **Secure Authentication**: JWT-based authentication with role-based access control
 - **API Key Management**: Merchants can generate and manage API keys securely
 - **Real-Time Event Processing**: BullMQ queue system ensures reliable blockchain event handling  
