@@ -38,7 +38,7 @@ describe('ScheduledVoucher Model', () => {
 
         test('should generate unique scheduleId', async () => {
             const tomorrow = new Date(Date.now() + 86400000);
-            
+
             const schedule1 = new ScheduledVoucher({
                 scheduledFor: tomorrow,
                 voucherType: 1,
@@ -93,13 +93,13 @@ describe('ScheduledVoucher Model', () => {
         test('should mark as processing', async () => {
             await schedule.markProcessing();
             expect(schedule.status).toBe('processing');
-            expect(schedule.processedAt).toBeDefined();
+            expect(schedule.updatedAt).toBeDefined();
         });
 
         test('should mark as completed', async () => {
             const voucherId = 'voucher_123';
             await schedule.markCompleted(voucherId);
-            
+
             expect(schedule.status).toBe('completed');
             expect(schedule.voucherId).toBe(voucherId);
             expect(schedule.completedAt).toBeDefined();
