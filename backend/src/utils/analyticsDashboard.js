@@ -99,16 +99,17 @@ class AnalyticsDashboard {
                                 $cond: [
                                     {
                                         $and: [
-                                            { $eq: ['$isRedeemed', false] },
-                                            { 
+                                            { $in: ['$status', ['active', 'partially_redeemed']] },
+                                            {
                                                 $or: [
                                                     { $eq: ['$expiryTimestamp', null] },
+                                                    { $eq: ['$expiryTimestamp', 0] },
                                                     { $gt: ['$expiryTimestamp', Date.now()] }
                                                 ]
                                             }
                                         ]
-                                    }, 
-                                    1, 
+                                    },
+                                    1,
                                     0
                                 ]
                             }
