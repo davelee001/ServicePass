@@ -277,13 +277,13 @@ describe('Notification Manager', () => {
 
             // Create redeemed voucher
             await Voucher.create({
-                voucherObjectId: 'voucher-123',
-                owner: 'user-123',
+                voucherId: 'voucher-123', transactionDigest: 'mint-123',
+                recipient: 'user-123',
                 voucherType: 'Education',
                 amount: 100,
                 merchantId: 'school-1',
                 expiryTimestamp: threeDaysFromNow.getTime(),
-                isRedeemed: true
+                status: 'fully_redeemed'
             });
 
             const count = await notificationManager.checkExpiringVouchers();
@@ -297,8 +297,8 @@ describe('Notification Manager', () => {
         it('should send notifications to multiple users', async () => {
             // Create multiple users
             await User.insertMany([
-                { userId: 'user-1', email: 'user1@example.com', name: 'User 1' },
-                { userId: 'user-2', email: 'user2@example.com', name: 'User 2' }
+                { userId: 'user-1', email: 'user1@example.com', name: 'User 1', password: 'test-password' },
+                { userId: 'user-2', email: 'user2@example.com', name: 'User 2', password: 'test-password' }
             ]);
 
             await NotificationPreferences.insertMany([
