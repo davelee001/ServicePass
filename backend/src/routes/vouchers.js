@@ -26,7 +26,13 @@ router.post('/mint',
         body('amount').isInt({ min: 1 }).withMessage('Amount must be a positive integer'),
         body('recipient').isString().trim().notEmpty().matches(/^0x[a-fA-F0-9]{64}$/).withMessage('Invalid recipient address format'),
         body('merchantId').isString().trim().notEmpty().withMessage('Merchant ID is required'),
-        body('expiryTimestamp').optional().isInt({ min: Date.now() }).withMessage('Expiry must be a future timestamp'),
+        body('expiryTimestamp').optional().isInt({ min: 0 }).bail().custom(value => {
+            const expiry = Number(value);
+            if (!Number.isSafeInteger(expiry) || (expiry !== 0 && expiry <= Date.now())) {
+                throw new Error('Expiry must be zero or a future Unix timestamp in milliseconds');
+            }
+            return true;
+        }),
         body('metadata').optional().isString().trim(),
     ],
     async (req, res) => {
@@ -34,19 +40,19 @@ router.post('/mint',
         // Check validation errors
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ 
-                error: 'Validation failed', 
+            return res.status(400).json({
+                error: 'Validation failed',
                 details: errors.array().map(e => ({ field: e.path, message: e.msg }))
             });
         }
 
-        const { 
-            voucherType, 
-            amount, 
-            recipient, 
-            merchantId, 
-            expiryTimestamp, 
-            metadata 
+        const {
+            voucherType,
+            amount,
+            recipient,
+            merchantId,
+            expiryTimestamp,
+            metadata
         } = req.body;
 
         const adminKeypair = getAdminKeypair();
