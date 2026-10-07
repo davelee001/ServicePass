@@ -13,8 +13,8 @@ const app = express();
 app.use(express.json());
 
 // Mock middleware
-const mockAuth = (req, res, next) => {
-    req.user = {
+function mockAuth(req, res, next) {
+    req.user = req.user || {
         _id: new mongoose.Types.ObjectId(),
         role: 'admin',
         merchantId: null
@@ -22,7 +22,7 @@ const mockAuth = (req, res, next) => {
     next();
 };
 
-const mockRateLimit = (req, res, next) => {
+function mockRateLimit(req, res, next) {
     next();
 };
 
@@ -68,7 +68,7 @@ describe('Analytics Routes', () => {
 
         // Create test data
         testMerchant = await Merchant.create({
-            address: '0x123456789abcdef',
+            merchantId: 'clinic', walletAddress: '0x123456789abcdef',
             name: 'Test Merchant',
             email: 'test@merchant.com',
             category: 'Healthcare',
