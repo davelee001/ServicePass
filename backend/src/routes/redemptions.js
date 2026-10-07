@@ -214,8 +214,8 @@ router.post('/',
                 message: error.message
             });
         }
-        
-        res.status(500).json({ 
+
+        res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to record redemption'
         });
@@ -223,9 +223,9 @@ router.post('/',
 });
 
 // Get redemptions for a merchant
-router.get('/merchant/:merchantId', 
-    verifyToken, 
-    adminOrMerchant, 
+router.get('/merchant/:merchantId',
+    verifyToken,
+    adminOrMerchant,
     readLimiter,
     [
         param('merchantId').isString().trim().notEmpty().withMessage('Merchant ID is required'),
@@ -236,8 +236,8 @@ router.get('/merchant/:merchantId',
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ 
-                error: 'Validation failed', 
+            return res.status(400).json({
+                error: 'Validation failed',
                 details: errors.array().map(e => ({ field: e.path, message: e.msg }))
             });
         }
