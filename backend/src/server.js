@@ -44,9 +44,9 @@ app.use(hppMiddleware);
 
 // Metrics middleware
 app.use((req, res, next) => {
-    const end = httpRequestDurationMicroseconds.labels(req.method, req.route?.path || req.path).startTimer();
+    const end = httpRequestDurationMicroseconds.startTimer();
     res.on('finish', () => {
-        end();
+        end({ method: req.method, route: req.route?.path || 'unmatched', code: String(res.statusCode) });
     });
     next();
 });
@@ -70,10 +70,7 @@ app.get('/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Status monitoring
-if (process.env.NODE_ENV !== 'production') {
-    app.use(require('express-status-monitor')());
-}
+// Error handlers
 
 // Error handlers
 app.use(Sentry.Handlers.errorHandler());
