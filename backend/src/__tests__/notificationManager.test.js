@@ -45,7 +45,7 @@ describe('Notification Manager', () => {
             await User.create({
                 userId: 'user-123',
                 email: 'test@example.com',
-                name: 'Test User'
+                password: 'test-password-123', name: 'Test User'
             });
 
             // Create preferences
@@ -81,11 +81,12 @@ describe('Notification Manager', () => {
             await User.create({
                 userId: 'user-123',
                 email: 'test@example.com',
-                name: 'Test User'
+                password: 'test-password-123', name: 'Test User'
             });
 
             await NotificationPreferences.create({
                 userId: 'user-123',
+                email: { enabled: false },
                 sms: {
                     enabled: true,
                     phoneNumber: '+1234567890',
@@ -117,7 +118,7 @@ describe('Notification Manager', () => {
             await User.create({
                 userId: 'user-123',
                 email: 'test@example.com',
-                name: 'Test User'
+                password: 'test-password-123', name: 'Test User'
             });
 
             await NotificationPreferences.create({
