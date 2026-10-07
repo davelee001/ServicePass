@@ -167,20 +167,24 @@ describe('MultiSigOperation Model', () => {
 
         test('should mark as rejected', async () => {
             const reason = 'Security concerns';
-            await operation.markRejected(reason);
-            
+            await operation.reject('test-admin', reason);
+
             expect(operation.status).toBe('rejected');
-            expect(operation.rejectionReason).toBe(reason);
+            expect(operation.notes).toContain(reason);
         });
 
         test('should mark as expired', async () => {
-            await operation.markExpired();
+            operation.expiresAt = new Date(Date.now() - 1);
+            await operation.save();
+            await MultiSigOperation.expireOldOperations();
+            operation = await MultiSigOperation.findById(operation._id);
             expect(operation.status).toBe('expired');
         });
 
         test('should not allow state changes after execution', async () => {
-            await operation.markExecuted({ success: true });
-            
+            operation.status = 'approved';
+            await operation.execute('test-admin', { success: true });
+
             await expect(operation.addSignature(new mongoose.Types.ObjectId()))
                 .rejects.toThrow();
         });
