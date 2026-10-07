@@ -26,7 +26,7 @@ describe('Analytics Dashboard', () => {
 
         // Create test merchant
         testMerchant = await Merchant.create({
-            address: '0x123456789abcdef',
+            merchantId: 'clinic', walletAddress: '0x123456789abcdef',
             name: 'Test Merchant',
             email: 'test@merchant.com',
             category: 'Healthcare',
@@ -36,10 +36,10 @@ describe('Analytics Dashboard', () => {
         // Create test vouchers
         testVouchers = await Voucher.insertMany([
             {
-                voucherId: 'V123456789',
-                merchantId: testMerchant.address,
+                voucherId: 'V123456789', recipient: '0xowner', transactionDigest: 'mint-V123456789',
+                merchantId: testMerchant.merchantId,
                 merchantName: testMerchant.name,
-                value: 100,
+                amount: 100,
                 voucherType: 1,
                 description: 'Education voucher',
                 expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
