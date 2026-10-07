@@ -123,6 +123,7 @@ describe('Notification Manager', () => {
 
             await NotificationPreferences.create({
                 userId: 'user-123',
+                email: { enabled: false },
                 push: {
                     enabled: true,
                     voucherReceived: true,
@@ -160,7 +161,7 @@ describe('Notification Manager', () => {
             await User.create({
                 userId: 'user-123',
                 email: 'test@example.com',
-                name: 'Test User'
+                password: 'test-password-123', name: 'Test User'
             });
 
             await NotificationPreferences.create({
@@ -193,7 +194,7 @@ describe('Notification Manager', () => {
             await User.create({
                 userId: 'user-123',
                 email: 'test@example.com',
-                name: 'Test User'
+                password: 'test-password-123', name: 'Test User'
             });
 
             const result = await notificationManager.sendNotification('user-123', 'voucher_received', {
