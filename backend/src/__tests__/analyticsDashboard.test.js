@@ -56,13 +56,13 @@ describe('Analytics Dashboard', () => {
                 status: 'fully_redeemed'
             },
             {
-                voucherId: 'V555555555',
-                merchantId: testMerchant.address,
+                voucherId: 'V555555555', recipient: '0xowner', transactionDigest: 'mint-V555555555',
+                merchantId: testMerchant.merchantId,
                 merchantName: testMerchant.name,
-                value: 50,
+                amount: 50,
                 voucherType: 3,
                 description: 'Transport voucher',
-                expiryDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // Expired
+                expiryTimestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // Expired
                 status: 'expired'
             }
         ]);
