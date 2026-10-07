@@ -1,5 +1,5 @@
 const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
+const xss = require('xss');
 const hpp = require('hpp');
 
 /**
@@ -22,7 +22,29 @@ const mongoSanitizeMiddleware = mongoSanitize({
  * Configure XSS protection
  * Sanitizes user input to prevent XSS attacks
  */
-const xssMiddleware = xss();
+const isSignedBodyField = (req, field) =>
+    /^\/api\/redemptions\/(redeem-qr|qr-intents\/[^/]+\/submit)\/?$/.test(req.originalUrl.split('?')[0])
+    && ['qrPayload', 'transactionBytes', 'signature'].includes(field);
+
+const xssMiddleware = (req, res, next) => {
+    const clean = value => {
+        if (typeof value === 'string') return xss(value);
+        if (Array.isArray(value)) return value.map(clean);
+        if (value && typeof value === 'object') {
+            for (const key of Object.keys(value)) value[key] = clean(value[key]);
+        }
+        return value;
+    };
+    for (const field of ['body', 'query', 'params']) {
+        if (!req[field]) continue;
+        for (const key of Object.keys(req[field])) {
+            // Authentication requires the exact signed bytes; service validation checks these fields.
+            if (field === 'body' && isSignedBodyField(req, key)) continue;
+            req[field][key] = clean(req[field][key]);
+        }
+    }
+    next();
+};
 
 /**
  * Configure HTTP parameter pollution protection
