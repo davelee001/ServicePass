@@ -7,6 +7,7 @@ const { logger } = require('../utils/logger');
 const { verifyToken, verifyApiKey, adminOrMerchant } = require('../middleware/auth');
 const { redemptionLimiter, readLimiter, apiKeyLimiter } = require('../middleware/rateLimiter');
 const { Transaction } = require('@mysten/sui/transactions');
+const { SUI_CLOCK_OBJECT_ID } = require('@mysten/sui/utils');
 const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID, REGISTRY_ID } = require('../config/sui');
 const { executeTransactionWithRetry } = require('../utils/blockchainRetry');
 const { parseCSV } = require('../utils/csvParser');
@@ -18,8 +19,8 @@ const notificationManager = require('../utils/notificationManager');
 router.use(require('./qrRedemptions').defaultRouter());
 
 // Partial redemption of voucher
-router.post('/redeem-partial', 
-    verifyApiKey, 
+router.post('/redeem-partial',
+    verifyApiKey,
     redemptionLimiter,
     [
         body('voucherId').isString().notEmpty().withMessage('Voucher ID is required'),
@@ -29,8 +30,8 @@ router.post('/redeem-partial',
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ 
-                error: 'Validation failed', 
+            return res.status(400).json({
+                error: 'Validation failed',
                 details: errors.array().map(e => ({ field: e.path, message: e.msg }))
             });
         }
