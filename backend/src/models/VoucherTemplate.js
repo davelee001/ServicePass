@@ -1,8 +1,10 @@
+const { randomUUID } = require('node:crypto');
 const mongoose = require('mongoose');
 
 const voucherTemplateSchema = new mongoose.Schema({
     templateId: {
         type: String,
+        default: () => 'TPL_' + randomUUID(),
         required: true,
         unique: true,
         index: true
