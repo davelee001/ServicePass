@@ -121,14 +121,16 @@ const startServer = async () => {
         await connectDB();
 
         // Start blockchain listener
-        await startListening();
-        
+        await require('./services/blockchainListener').startListening();
+        require('./utils/notificationManager').startProcessors();
+        batchOperationManager.startProcessor();
+
         // Start notification scheduler
         notificationScheduler.startJobs();
-        
+
         // Start scheduled voucher processor
         scheduledVoucherProcessor.start();
-        
+
         // Start express server
         server = app.listen(PORT, () => {
             logger.info(`Server running on port ${PORT}`);
@@ -143,6 +145,8 @@ const startServer = async () => {
 };
 
 if (require.main === module) {
+    process.on('SIGTERM', gracefulShutdown);
+    process.on('SIGINT', gracefulShutdown);
     startServer();
 }
 
