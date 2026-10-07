@@ -47,7 +47,7 @@ describe('Template Routes', () => {
             const templateData = {
                 name: 'Student Stipend',
                 description: 'Monthly student support',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'education',
                 voucherType: 1,
                 defaultValue: 500,
                 defaultExpiryDays: 30,
@@ -68,7 +68,7 @@ describe('Template Routes', () => {
         test('should reject non-admin users', async () => {
             const templateData = {
                 name: 'Test Template',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'education',
                 voucherType: 1,
                 defaultValue: 100
             };
@@ -99,7 +99,7 @@ describe('Template Routes', () => {
                 .set('Authorization', `Bearer ${adminToken}`)
                 .send({
                     name: 'Invalid Template',
-                    category: 'education',
+                    createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'education',
                     voucherType: 10, // Invalid
                     defaultValue: 100
                 })
