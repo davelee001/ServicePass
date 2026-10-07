@@ -72,15 +72,14 @@ app.get('/health', (req, res) => {
 
 // Error handlers
 
-// Error handlers
-app.use(Sentry.Handlers.errorHandler());
 app.use((req, res) => {
     res.status(404).json({ error: 'Route not found' });
 });
 
 app.use((err, req, res, next) => {
+    if (process.env.SENTRY_DSN) require('@sentry/node').captureException(err);
     logger.error('Unhandled error:', err);
-    res.status(500).json({ 
+    res.status(500).json({
         error: 'Internal server error',
         ...(process.env.NODE_ENV !== 'production' && { details: err.message })
     });
