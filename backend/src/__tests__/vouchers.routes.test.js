@@ -63,9 +63,9 @@ describe('Vouchers Routes - QR Code Functionality', () => {
             const response = await request(app)
                 .post('/api/vouchers/mint')
                 .send({
-                    voucherType: 'EDU',
+                    voucherType: '1',
                     amount: 1000,
-                    recipient: '0xrecipient123',
+                    recipient: '0x1111111111111111111111111111111111111111111111111111111111111111',
                     merchantId: 'merchant-001',
                     expiryTimestamp: Date.now() + 86400000,
                     metadata: 'Test voucher',
@@ -80,7 +80,7 @@ describe('Vouchers Routes - QR Code Functionality', () => {
             // Verify voucher saved to database
             const savedVoucher = await Voucher.findOne({ voucherId: mockObjectId });
             expect(savedVoucher).toBeDefined();
-            expect(savedVoucher.voucherType).toBe('EDU');
+            expect(savedVoucher.voucherType).toBe('1');
             expect(savedVoucher.amount).toBe(1000);
             expect(savedVoucher.qrCodeData).toBeDefined();
             expect(savedVoucher.signature).toBeDefined();
