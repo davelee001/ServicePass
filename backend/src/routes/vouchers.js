@@ -70,6 +70,7 @@ router.post('/mint',
                 tx.pure.vector('u8', Array.from(Buffer.from(merchantId))),
                 tx.pure.u64(expiryTimestamp ?? 0),
                 tx.pure.vector('u8', Array.from(Buffer.from(metadata || ''))),
+                tx.object(SUI_CLOCK_OBJECT_ID),
             ],
         });
 
@@ -106,8 +107,8 @@ router.post('/mint',
 
         if (!createdObject) {
             logger.error('Voucher object not found in transaction result', { digest: result.digest });
-            return res.status(500).json({ 
-                error: 'Voucher creation failed', 
+            return res.status(500).json({
+                error: 'Voucher creation failed',
                 message: 'Voucher was not created on blockchain',
                 transactionDigest: result.digest
             });
@@ -157,9 +158,9 @@ router.post('/mint',
             qrCodeData,
         });
     } catch (error) {
-        logger.error(`Error minting voucher: ${error.message}`, { 
+        logger.error(`Error minting voucher: ${error.message}`, {
             stack: error.stack,
-            isBlockchainError: error.isBlockchainError 
+            isBlockchainError: error.isBlockchainError
         });
         
         if (error.isBlockchainError) {
