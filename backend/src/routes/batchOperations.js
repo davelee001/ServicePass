@@ -170,9 +170,9 @@ router.post('/pause/:batchId',
             if (!['queued', 'processing'].includes(operation.status)) {
                 return res.status(400).json({ error: 'Operation cannot be paused in current status' });
             }
-            
+
             await batchOperationManager.pauseOperation(operation);
-            
+
             res.json({ message: 'Batch operation paused successfully' });
         } catch (error) {
             logger.error('Error pausing batch operation:', error);
@@ -192,14 +192,14 @@ router.post('/resume/:batchId',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
             const { batchId } = req.params;
-            
+
             // Check if user can resume this operation
             const operation = await BatchOperation.findOne({ batchId });
             if (!operation) {
