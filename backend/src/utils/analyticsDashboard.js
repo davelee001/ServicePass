@@ -445,8 +445,8 @@ class AnalyticsDashboard {
                                 $cond: [
                                     {
                                         $and: [
-                                            { $ne: ['$expiryTimestamp', null] },
-                                            { $gte: ['$expiryTimestamp', now] },
+                                            { $gt: ['$expiryTimestamp', 0] },
+                                            { $gt: ['$expiryTimestamp', now] },
                                             { $lt: ['$expiryTimestamp', oneWeekFromNow] }
                                         ]
                                     },
@@ -460,8 +460,8 @@ class AnalyticsDashboard {
                                 $cond: [
                                     {
                                         $and: [
-                                            { $ne: ['$expiryTimestamp', null] },
-                                            { $gte: ['$expiryTimestamp', now] },
+                                            { $gt: ['$expiryTimestamp', 0] },
+                                            { $gt: ['$expiryTimestamp', now] },
                                             { $lt: ['$expiryTimestamp', oneMonthFromNow] }
                                         ]
                                     },
@@ -475,8 +475,8 @@ class AnalyticsDashboard {
                                 $cond: [
                                     {
                                         $and: [
-                                            { $ne: ['$expiryTimestamp', null] },
-                                            { $lt: ['$expiryTimestamp', now] }
+                                            { $gt: ['$expiryTimestamp', 0] },
+                                            { $lte: ['$expiryTimestamp', now] }
                                         ]
                                     },
                                     '$amount',
@@ -493,8 +493,8 @@ class AnalyticsDashboard {
                 {
                     $match: {
                         ...matchStage,
-                        isRedeemed: false,
-                        expiryTimestamp: { $ne: null, $gte: now, $lt: oneMonthFromNow }
+                        status: { $in: ['active', 'partially_redeemed'] },
+                        expiryTimestamp: { $gt: now, $lt: oneMonthFromNow }
                     }
                 },
                 {
