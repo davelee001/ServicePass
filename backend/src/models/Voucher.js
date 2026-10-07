@@ -89,11 +89,10 @@ voucherSchema.index({ merchantId: 1, createdAt: -1 });
 voucherSchema.index({ voucherType: 1, createdAt: -1 });
 voucherSchema.index({ transactionDigest: 1 }, { unique: true });
 voucherSchema.index({ status: 1, expiryTimestamp: 1 });
-voucherSchema.index({ templateId: 1 });
 
 // Virtual to check if voucher is expired
 voucherSchema.virtual('isExpired').get(function() {
-    return this.expiryTimestamp && Date.now() > this.expiryTimestamp * 1000;
+    return this.expiryTimestamp != null && this.expiryTimestamp !== 0 && Date.now() >= this.expiryTimestamp;
 });
 
 // Virtual to check if partially redeemed
@@ -136,7 +135,7 @@ voucherSchema.methods.redeemPartially = async function(amount, merchantId, trans
 // Method to check transfer restrictions
 voucherSchema.methods.canTransfer = function() {
     const restrictions = this.transferRestrictions;
-    
+
     if (restrictions.maxTransfers === -1) {
         return { allowed: true };
     }
