@@ -37,14 +37,14 @@ describe('MultiSigOperation Model', () => {
             const op1 = new MultiSigOperation({
                 operationType: 'mint_large_batch',
                 operationData: { count: 100 },
-                initiatedBy: new mongoose.Types.ObjectId(),
+                createdBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 2
             });
 
             const op2 = new MultiSigOperation({
-                operationType: 'BULK_TRANSFER',
+                operationType: 'bulk_transfer',
                 operationData: { count: 50 },
-                initiatedBy: new mongoose.Types.ObjectId(),
+                createdBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 3
             });
 
@@ -58,7 +58,7 @@ describe('MultiSigOperation Model', () => {
             const operation = new MultiSigOperation({
                 operationType: 'INVALID_TYPE',
                 operationData: {},
-                initiatedBy: new mongoose.Types.ObjectId(),
+                createdBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 2
             });
 
