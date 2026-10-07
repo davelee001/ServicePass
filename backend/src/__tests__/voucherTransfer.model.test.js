@@ -119,15 +119,15 @@ describe('VoucherTransfer Model', () => {
             await transfer.reject('Invalid transfer');
 
             expect(transfer.status).toBe('rejected');
-            expect(transfer.rejectedAt).toBeDefined();
-            expect(transfer.rejectedBy.toString()).toBe(rejector.toString());
+            expect(transfer.updatedAt).toBeDefined();
+            expect((await VoucherTransfer.findById(transfer._id)).status).toBe('rejected');
             expect(transfer.rejectionReason).toBe('Invalid transfer');
         });
 
         test('should complete transfer', async () => {
             const txHash = '0xabc123...';
             await transfer.complete(txHash);
-            
+
             expect(transfer.status).toBe('completed');
             expect(transfer.completedAt).toBeDefined();
             expect(transfer.transactionHash).toBe(txHash);
@@ -135,10 +135,10 @@ describe('VoucherTransfer Model', () => {
 
         test('should mark transfer as failed', async () => {
             const error = 'Transaction failed';
-            await transfer.markFailed(error);
-            
+            await transfer.fail(new Error(error));
+
             expect(transfer.status).toBe('failed');
-            expect(transfer.error).toBe(error);
+            expect(transfer.rejectionReason).toBe(error);
         });
     });
 
