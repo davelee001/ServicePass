@@ -114,7 +114,7 @@ describe('Vouchers Routes - QR Code Functionality', () => {
             const voucherData = {
                 voucherType: '2',
                 amount: 2000,
-                recipient: '0xrecipient456',
+                recipient: '0x2222222222222222222222222222222222222222222222222222222222222222',
                 merchantId: 'merchant-002',
                 expiryTimestamp: Date.now() + 86400000,
             };
@@ -124,7 +124,7 @@ describe('Vouchers Routes - QR Code Functionality', () => {
                 .send(voucherData);
 
             const savedVoucher = await Voucher.findOne({ voucherId: mockObjectId });
-            
+
             // Verify signature
             const payload = {
                 voucherId: mockObjectId,
@@ -150,7 +150,7 @@ describe('Vouchers Routes - QR Code Functionality', () => {
 
             await Voucher.create({
                 voucherId,
-                voucherType: 'TRANSPORT',
+                voucherType: '3',
                 amount: 500,
                 recipient: '0xrecipient789',
                 merchantId: 'merchant-003',
