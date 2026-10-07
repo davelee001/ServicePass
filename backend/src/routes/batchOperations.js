@@ -406,18 +406,125 @@ router.post('/retry/:batchId',
             if (operation.status !== 'completed' && operation.status !== 'failed') {
                 return res.status(400).json({ error: 'Operation must be completed or failed to retry' });
             }
-            
+
             // Get failed items
             const failedResults = operation.results.filter(result => result.status === 'failed');
-            
+
             if (failedResults.length === 0) {
                 return res.status(400).json({ error: 'No failed items to retry' });
             }
-            
+
             // Create new batch operation with failed items
             const retryData = failedResults.map(result => {
                 const originalIndex = result.recordIndex;
                 return operation.parameters.data[originalIndex];
             });
-            
-            const retryResult = await batchOperationManager.createBatchOperation(\n                operation.operationType,\n                retryData,\n                {\n                    batchSize: operation.batchSize,\n                    priority: 'high',\n                    userId: req.user.userId,\n                    originalBatchId: batchId\n                }\n            );\n            \n            res.json({ \n                message: 'Retry batch operation created successfully',\n                retryBatchId: retryResult.batchId,\n                itemsToRetry: failedResults.length\n            });\n        } catch (error) {\n            logger.error('Error retrying batch operation:', error);\n            res.status(500).json({ error: 'Failed to retry batch operation' });\n        }\n    }\n);\n\n// Export batch operation results\nrouter.get('/export/:batchId',\n    verifyToken,\n    readLimiter,\n    [\n        param('batchId').notEmpty().withMessage('Batch ID is required'),\n        query('format').optional().isIn(['json', 'csv']).withMessage('Format must be json or csv')\n    ],\n    async (req, res) => {\n        try {\n            const errors = validationResult(req);\n            if (!errors.isEmpty()) {\n                return res.status(400).json({ \n                    error: 'Validation failed', \n                    details: errors.array() \n                });\n            }\n\n            const { batchId } = req.params;\n            const { format = 'json' } = req.query;\n            \n            const operation = await BatchOperation.findOne({ batchId });\n            \n            if (!operation) {\n                return res.status(404).json({ error: 'Operation not found' });\n            }\n            \n            // Check if user can access this operation\n            if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {\n                return res.status(403).json({ error: 'Access denied' });\n            }\n            \n            const exportData = {\n                batchId: operation.batchId,\n                operationType: operation.operationType,\n                status: operation.status,\n                totalRecords: operation.totalRecords,\n                successfulRecords: operation.successfulRecords,\n                failedRecords: operation.failedRecords,\n                startTime: operation.startTime,\n                endTime: operation.endTime,\n                results: operation.results\n            };\n            \n            if (format === 'csv') {\n                const csvData = convertToCSV(exportData);\n                res.setHeader('Content-Type', 'text/csv');\n                res.setHeader('Content-Disposition', `attachment; filename=${batchId}_results.csv`);\n                res.send(csvData);\n            } else {\n                res.setHeader('Content-Type', 'application/json');\n                res.setHeader('Content-Disposition', `attachment; filename=${batchId}_results.json`);\n                res.json(exportData);\n            }\n        } catch (error) {\n            logger.error('Error exporting batch operation results:', error);\n            res.status(500).json({ error: 'Failed to export batch operation results' });\n        }\n    }\n);\n\n// Helper function to convert data to CSV\nfunction convertToCSV(data) {\n    const results = data.results;\n    if (!results || results.length === 0) {\n        return 'No results to export';\n    }\n    \n    const headers = ['recordIndex', 'status', 'processedAt', 'error'];\n    const csvRows = [headers.join(',')];\n    \n    results.forEach(result => {\n        const row = [\n            result.recordIndex,\n            result.status,\n            result.processedAt,\n            result.error || ''\n        ].map(field => `\"${field || ''}\"`); // Escape commas and quotes\n        csvRows.push(row.join(','));\n    });\n    \n    return csvRows.join('\\n');\n}\n\nmodule.exports = router;
+
+            const retryResult = await batchOperationManager.createBatchOperation(
+                operation.operationType,
+                retryData,
+                {
+                    batchSize: operation.batchSize,
+                    priority: 'high',
+                    userId: req.user.userId,
+                    originalBatchId: batchId
+                }
+            );
+
+            res.json({
+                message: 'Retry batch operation created successfully',
+                retryBatchId: retryResult.batchId,
+                itemsToRetry: failedResults.length
+            });
+        } catch (error) {
+            logger.error('Error retrying batch operation:', error);
+            res.status(500).json({ error: 'Failed to retry batch operation' });
+        }
+    }
+);
+
+// Export batch operation results
+router.get('/export/:batchId',
+    verifyToken,
+    readLimiter,
+    [
+        param('batchId').notEmpty().withMessage('Batch ID is required'),
+        query('format').optional().isIn(['json', 'csv']).withMessage('Format must be json or csv')
+    ],
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
+                });
+            }
+
+            const { batchId } = req.params;
+            const { format = 'json' } = req.query;
+
+            const operation = await BatchOperation.findOne({ batchId });
+
+            if (!operation) {
+                return res.status(404).json({ error: 'Operation not found' });
+            }
+
+            // Check if user can access this operation
+            if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {
+                return res.status(403).json({ error: 'Access denied' });
+            }
+
+            const exportData = {
+                batchId: operation.batchId,
+                operationType: operation.operationType,
+                status: operation.status,
+                totalRecords: operation.totalRecords,
+                successfulRecords: operation.successfulRecords,
+                failedRecords: operation.failedRecords,
+                startTime: operation.startTime,
+                endTime: operation.endTime,
+                results: operation.results
+            };
+
+            if (format === 'csv') {
+                const csvData = convertToCSV(exportData);
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', `attachment; filename=${batchId}_results.csv`);
+                res.send(csvData);
+            } else {
+                res.setHeader('Content-Type', 'application/json');
+                res.setHeader('Content-Disposition', `attachment; filename=${batchId}_results.json`);
+                res.json(exportData);
+            }
+        } catch (error) {
+            logger.error('Error exporting batch operation results:', error);
+            res.status(500).json({ error: 'Failed to export batch operation results' });
+        }
+    }
+);
+
+// Helper function to convert data to CSV
+function convertToCSV(data) {
+    const results = data.results;
+    if (!results || results.length === 0) {
+        return 'No results to export';
+    }
+
+    const headers = ['recordIndex', 'status', 'processedAt', 'error'];
+    const csvRows = [headers.join(',')];
+
+    results.forEach(result => {
+        const row = [
+            result.recordIndex,
+            result.status,
+            result.processedAt,
+            result.error || ''
+        ].map(field => `\"${field || ''}\"`); // Escape commas and quotes
+        csvRows.push(row.join(','));
+    });
+
+    return csvRows.join('\\n');
+}
+
+module.exports = router;
