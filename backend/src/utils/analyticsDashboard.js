@@ -538,11 +538,11 @@ class AnalyticsDashboard {
     async getFinancialSummary(dateFilter = {}, filters = {}) {
         try {
             const matchStage = { ...dateFilter };
-            
+
             if (filters.merchantId) {
                 matchStage.merchantId = filters.merchantId;
             }
-            
+
             if (filters.voucherType) {
                 matchStage.voucherType = filters.voucherType;
             }
@@ -611,8 +611,8 @@ class AnalyticsDashboard {
                         voucherType: '$_id',
                         totalMinted: 1,
                         countMinted: 1,
-                        totalRedeemed: { 
-                            $ifNull: [{ $arrayElemAt: ['$redemptions.totalRedeemed', 0] }, 0] 
+                        totalRedeemed: {
+                            $ifNull: [{ $arrayElemAt: ['$redemptions.totalRedeemed', 0] }, 0]
                         },
                         countRedeemed: { 
                             $ifNull: [{ $arrayElemAt: ['$redemptions.countRedeemed', 0] }, 0] 
