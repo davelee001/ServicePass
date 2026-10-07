@@ -1,8 +1,10 @@
+const { randomUUID } = require('node:crypto');
 const mongoose = require('mongoose');
 
 const voucherTransferSchema = new mongoose.Schema({
     transferId: {
         type: String,
+        default: () => 'TRF_' + randomUUID(),
         required: true,
         unique: true,
         index: true
