@@ -603,21 +603,21 @@ router.post('/schedule',
             }
 
             const { userId, type, data, scheduleTime, priority = 'medium' } = req.body;
-            
+
             // Check if user can schedule notifications for other users
             if (userId !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Insufficient permissions to schedule notifications for other users' });
             }
-            
+
             const scheduleResult = await notificationManager.scheduleNotification(
-                userId, 
-                type, 
-                data, 
-                scheduleTime, 
+                userId,
+                type,
+                data,
+                scheduleTime,
                 { priority }
             );
-            
-            res.json({ 
+
+            res.json({
                 message: 'Notification scheduled successfully',
                 scheduleId: scheduleResult.scheduleId,
                 scheduleTime: scheduleResult.scheduleTime,
