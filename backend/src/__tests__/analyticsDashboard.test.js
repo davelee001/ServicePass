@@ -379,13 +379,14 @@ describe('Analytics Dashboard', () => {
             // Create many test vouchers
             const manyVouchers = Array.from({ length: 100 }, (_, i) => ({
                 voucherId: `V${i.toString().padStart(8, '0')}`,
-                merchantId: testMerchant.address,
+                merchantId: testMerchant.merchantId,
                 merchantName: testMerchant.name,
-                value: 100,
+                amount: 100,
                 voucherType: (i % 4) + 1,
                 description: `Test voucher ${i}`,
-                expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-                status: i % 3 === 0 ? 'redeemed' : 'active'
+                expiryTimestamp: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                recipient: '0x' + '1'.repeat(64), transactionDigest: `batch-${i}`,
+                status: i % 3 === 0 ? 'fully_redeemed' : 'active'
             }));
 
             await Voucher.insertMany(manyVouchers);
