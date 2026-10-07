@@ -43,7 +43,7 @@ router.post('/redeem-partial',
         const voucher = await Voucher.findOne({ voucherId });
 
         if (!voucher) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 error: 'Voucher not found',
                 message: 'The specified voucher does not exist.'
             });
@@ -51,7 +51,7 @@ router.post('/redeem-partial',
 
         // Check if voucher allows partial redemption
         if (!voucher.allowPartialRedemption) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 error: 'Partial redemption not allowed',
                 message: 'This voucher must be redeemed in full.'
             });
@@ -59,7 +59,7 @@ router.post('/redeem-partial',
 
         // Check if voucher is fully redeemed
         if (voucher.status === 'redeemed') {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 error: 'Voucher fully redeemed',
                 message: 'This voucher has been completely used.',
                 remainingAmount: 0
