@@ -637,13 +637,13 @@ router.delete('/schedule/:scheduleId',
     async (req, res) => {
         try {
             const { scheduleId } = req.params;
-            
+
             const result = await notificationManager.cancelScheduledNotification(scheduleId);
-            
+
             if (!result.success) {
                 return res.status(404).json({ error: result.message });
             }
-            
+
             res.json({ message: result.message });
         } catch (error) {
             logger.error('Error cancelling scheduled notification:', error);
