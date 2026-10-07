@@ -6,8 +6,7 @@ const Merchant = require('../models/Merchant');
 const { logger } = require('../utils/logger');
 const { verifyToken, verifyApiKey, adminOrMerchant } = require('../middleware/auth');
 const { redemptionLimiter, readLimiter, apiKeyLimiter } = require('../middleware/rateLimiter');
-const crypto = require('crypto');
-const { TransactionBlock } = require('@mysten/sui.js/transactions');
+const { Transaction } = require('@mysten/sui/transactions');
 const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID, REGISTRY_ID } = require('../config/sui');
 const { executeTransactionWithRetry } = require('../utils/blockchainRetry');
 const { parseCSV } = require('../utils/csvParser');
@@ -15,154 +14,8 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const notificationManager = require('../utils/notificationManager');
 
-const QR_SIGNING_SECRET = process.env.QR_SIGNING_SECRET || 'default-secret';
-
-// Redeem voucher via QR code
-router.post('/redeem-qr', 
-    verifyApiKey, 
-    redemptionLimiter,
-    [
-        body('qrPayload').isString().notEmpty().withMessage('QR payload is required'),
-    ],
-    async (req, res) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ 
-                error: 'Validation failed', 
-                details: errors.array().map(e => ({ field: e.path, message: e.msg }))
-            });
-        }
-
-        const { qrPayload } = req.body;
-        const merchantId = req.merchant.merchantId; // From verifyApiKey middleware
-
-        let payload, signature;
-        try {
-            const parsed = JSON.parse(qrPayload);
-            signature = parsed.signature;
-            payload = { ...parsed };
-            delete payload.signature;
-        } catch (parseError) {
-            return res.status(400).json({ 
-                error: 'Invalid QR payload',
-                message: 'QR code data is malformed or corrupted'
-            });
-        }
-
-        // 1. Verify signature
-        const expectedSignature = crypto.createHmac('sha256', QR_SIGNING_SECRET)
-            .update(JSON.stringify(payload))
-            .digest('hex');
-
-        if (signature !== expectedSignature) {
-            logger.warn('Invalid QR signature attempt', { merchantId, voucherId: payload.voucherId });
-            return res.status(400).json({ 
-                error: 'Invalid QR code signature',
-                message: 'QR code signature verification failed. This may indicate tampering.'
-            });
-        }
-
-        // 2. Check if voucher is valid for this merchant
-        if (payload.merchantId !== merchantId) {
-            logger.warn('Merchant mismatch for redemption', { 
-                expectedMerchant: payload.merchantId, 
-                actualMerchant: merchantId 
-            });
-            return res.status(403).json({ 
-                error: 'Voucher not valid for this merchant',
-                message: 'This voucher can only be redeemed at the designated merchant.'
-            });
-        }
-
-        // 3. Check for existing redemption
-        const existingRedemption = await Redemption.findOne({ voucherObjectId: payload.voucherId });
-        if (existingRedemption) {
-            logger.warn('Attempted double redemption', { voucherId: payload.voucherId, merchantId });
-            return res.status(400).json({ 
-                error: 'Voucher already redeemed',
-                message: 'This voucher has already been used.',
-                redemptionDate: existingRedemption.redeemedAt
-            });
-        }
-
-        // 4. Execute on-chain redemption
-        const merchantKeypair = getAdminKeypair(); // Placeholder for merchant's keypair
-        const tx = new TransactionBlock();
-        tx.moveCall({
-            target: `${PACKAGE_ID}::voucher_system::redeem_voucher`,
-            arguments: [
-                tx.object(REGISTRY_ID),
-                tx.object(payload.voucherId),
-                tx.pure(Array.from(Buffer.from(merchantId))),
-            ],
-        });
-
-        const result = await executeTransactionWithRetry(suiClient, {
-            signer: merchantKeypair,
-            transactionBlock: tx,
-        });
-
-        // 5. Create redemption record
-        const redemption = new Redemption({
-            voucherObjectId: payload.voucherId,
-            transactionDigest: result.digest,
-            merchantId,
-            voucherType: payload.voucherType,
-            amount: payload.amount,
-            redeemedBy: payload.recipient,
-        });
-        await redemption.save();
-
-        // 6. Update merchant stats
-        await Merchant.findOneAndUpdate(
-            { merchantId },
-            { $inc: { totalRedemptions: 1 } }
-        );
-
-        // 7. Send redemption confirmation notification
-        try {
-            await notificationManager.sendNotification(payload.recipient, 'redemption_confirmation', {
-                voucherId: payload.voucherId,
-                voucherType: payload.voucherType,
-                amount: payload.amount,
-                merchantName: merchantId,
-                redemptionDate: new Date().toLocaleDateString(),
-                transactionId: result.digest
-            });
-        } catch (notificationError) {
-            logger.error('Failed to send redemption notification:', notificationError);
-            // Don't fail the transaction for notification errors
-        }
-
-        logger.info(`Voucher redeemed via QR: ${payload.voucherId}`, { merchantId, transactionDigest: result.digest });
-        res.json({ 
-            success: true, 
-            transactionDigest: result.digest,
-            message: 'Voucher successfully redeemed'
-        });
-
-    } catch (error) {
-        logger.error(`QR Redemption Error: ${error.message}`, { 
-            stack: error.stack,
-            merchantId: req.merchant?.merchantId,
-            isBlockchainError: error.isBlockchainError
-        });
-        
-        if (error.isBlockchainError) {
-            return res.status(503).json({ 
-                error: 'Blockchain operation failed',
-                message: 'Unable to process redemption on blockchain. Please try again.',
-                retryable: true
-            });
-        }
-        
-        res.status(500).json({ 
-            error: 'Redemption failed',
-            message: 'An error occurred during redemption. Please contact support.'
-        });
-    }
-});
+// Merchant prepares; voucher owner signs; only confirmed chain effects are recorded.
+router.use(require('./qrRedemptions').defaultRouter());
 
 // Partial redemption of voucher
 router.post('/redeem-partial', 
@@ -466,7 +319,7 @@ router.post('/import-recipients',
 
             // Process recipients (example: create vouchers for each recipient)
             const adminKeypair = getAdminKeypair();
-            const tx = new TransactionBlock();
+            const tx = new Transaction();
 
             recipients.forEach(({ voucherType, amount, recipient, merchantId, expiryTimestamp, metadata }) => {
                 tx.moveCall({
@@ -474,19 +327,19 @@ router.post('/import-recipients',
                     arguments: [
                         tx.object(ADMIN_CAP_ID),
                         tx.object(REGISTRY_ID),
-                        tx.pure(voucherType),
-                        tx.pure(amount),
-                        tx.pure(recipient),
-                        tx.pure(Array.from(Buffer.from(merchantId))),
-                        tx.pure(expiryTimestamp || null),
-                        tx.pure(Array.from(Buffer.from(metadata || ''))),
+                        tx.pure.u8(Number(voucherType)),
+                        tx.pure.u64(amount),
+                        tx.pure.address(recipient),
+                        tx.pure.vector('u8', Array.from(Buffer.from(merchantId))),
+                        tx.pure.u64(expiryTimestamp ?? 0),
+                        tx.pure.vector('u8', Array.from(Buffer.from(metadata || ''))),
                     ],
                 });
             });
 
             const result = await executeTransactionWithRetry(suiClient, {
                 signer: adminKeypair,
-                transactionBlock: tx,
+                transaction: tx,
                 options: {
                     showObjectChanges: true,
                 }
