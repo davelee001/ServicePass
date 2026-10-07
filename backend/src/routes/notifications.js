@@ -37,7 +37,7 @@ router.get('/preferences',
 );
 
 // Update user's notification preferences
-router.put('/preferences', 
+router.put('/preferences',
     verifyToken,
     writeLimiter,
     [
@@ -46,7 +46,7 @@ router.put('/preferences',
         body('email.voucherExpiring').optional().isBoolean(),
         body('email.redemptionConfirmation').optional().isBoolean(),
         body('sms.enabled').optional().isBoolean(),
-        body('sms.phoneNumber').optional().isMobilePhone(),
+        body('sms.phoneNumber').optional().matches(/^\+[1-9]\d{7,14}$/),
         body('sms.voucherReceived').optional().isBoolean(),
         body('sms.voucherExpiring').optional().isBoolean(),
         body('sms.redemptionConfirmation').optional().isBoolean(),
@@ -59,8 +59,8 @@ router.put('/preferences',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
+                return res.status(400).json({
+                    error: 'Validation failed',
                     details: errors.array().map(e => ({ field: e.path, message: e.msg }))
                 });
             }
