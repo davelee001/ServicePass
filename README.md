@@ -46,13 +46,15 @@ ServicePass is an **actively developed** voucher system with:
 
 Work is tracked in [TODO.md](TODO.md).
 
-- **Item 1: CI checks:** Root test commands run the backend Jest suite on Node.js 22 in CI. Move CI assembles the root `Move.toml` and `move/sources` for Sui build/tests. Both deployment workflows require these checks for the same revision. Item 1 remains open: the pre-upgrade baseline had 13 passing and 58 failing tests across 15 failed suites. The post-upgrade run still fails on existing application/test issues and stops at server-import configuration validation; Move execution also needs validation.
+- **Item 1: CI checks:** Root test commands run the backend Jest suite on Node.js 24 in CI. Move CI assembles the root `Move.toml` and `move/sources` for Sui build/tests. Both deployment workflows require these checks for the same revision. Item 1 remains open: the pre-upgrade baseline had 13 passing and 58 failing tests across 15 failed suites. The post-upgrade run still fails on existing application/test issues and stops at server-import configuration validation; Move execution also needs validation.
 - **Item 2: API routing:** Implemented and checked off. Both frontend modes use same-origin `/api` requests. Frontend build and development proxy checks passed, including query strings, POST bodies, authentication headers, and API error responses. Live production-container verification is pending because Docker Desktop was not running during validation.
 - **Item 3: Deployment configuration:** Added fail-closed production startup checks, exact HTTPS CORS origins, and secret-manager file inputs. The standalone production Compose file uses mounted secrets and managed MongoDB/Redis. See [Production configuration](docs/PRODUCTION_CONFIGURATION.md). All **32 focused configuration tests passed**, including actual server startup rejection, secret file handling, and CORS checks; both Compose definitions passed configuration parsing. Actual secret-manager provisioning and live production verification remain pending, so item 3 stays open. Dependency triage is documented in [Dependency triage](docs/DEPENDENCY_TRIAGE.md).
 
-- **Item 4: Dependency triage:** Completed and checked off. Fresh online audits report zero known vulnerabilities in both full dependency trees, including development packages. Frontend build, API proxy checks, 32 configuration tests, and one coverage-loader compatibility test passed. Backend Sui SDK migration is carried into item 5. See [Dependency triage](docs/DEPENDENCY_TRIAGE.md) for upgrade decisions and test limitations.
+- **Item 4: Dependency triage:** Completed and checked off. Fresh online audits report zero known vulnerabilities in both full dependency trees, including development packages. Frontend build, API proxy checks, 32 configuration tests, and one coverage-loader compatibility test passed. Backend Sui SDK migration was completed with item 5. See [Dependency triage](docs/DEPENDENCY_TRIAGE.md) for upgrade decisions and test limitations.
 
-**6 TODO items remain open:** 1 and 3 require remaining validation/provisioning; items 5-8 cover contract integration, on-chain enforcement, testnet verification, and production security/operations. Item 5 is the next implementation task.
+- **Item 5: Owner-approved QR redemption:** Implemented owner-funded wallet approval with exact contract arguments, verified signatures, confirmation events, and retry recovery. Merchant registration stores actual object IDs. Focused HTTP/signature tests pass with an injected ledger; live contract/browser validation belongs to item 7. See [QR redemption](docs/QR_REDEMPTION.md).
+
+**5 TODO items remain open:** 1, 3, 6, 7, and 8. Item 6 (on-chain expiry and merchant enforcement) is next.
 
 | Mode | Frontend URL | API upstream |
 |------|--------------|--------------|
@@ -71,7 +73,7 @@ Audit results from October 7, 2026:
 | Backend, including development packages | 30 high, 5 moderate | 0 findings |
 | Frontend, including development packages | 1 high, 3 moderate | 0 findings |
 
-The reviewed toolchain uses Jest 30.5.2, Vite 7.3.7, React plugin 5.2.0, and React Router 7.18.4 on Node.js 22.12 or later. Nodemon was replaced by Node's built-in watch mode; unused frontend Sui packages and the npm crypto shim were removed. Backend/frontend lockfiles are included for reproducible installs. A tested, scoped YAML-parser override removes the remaining Jest coverage dependency findings.
+The reviewed toolchain uses Jest 30.5.2, Vite 7.3.7, React plugin 5.2.0, and React Router 7.18.4 on Node.js 24.9 or later for the backend (frontend requires 22.12 or later). Nodemon was replaced by Node's built-in watch mode; unused frontend Sui packages and the npm crypto shim were removed. Backend/frontend lockfiles are included for reproducible installs. A tested, scoped YAML-parser override removes the remaining Jest coverage dependency findings.
 
 ```bash
 # From the repository root
@@ -83,7 +85,7 @@ npm run test:dependencies
 npm run build
 ```
 
-`npm run audit` explicitly fetches online advisories; offline audit results are not reliable evidence of a clean tree. The CI audit job checks both projects. The backend still uses deprecated `@mysten/sui.js`; its migration requires coordinated transaction and signer changes in item 5. Zero audit findings do not establish application or contract security, and the full backend regression suite is still failing.
+`npm run audit` explicitly fetches online advisories; offline audit results are not reliable evidence of a clean tree. The CI audit job checks both projects. The backend now uses `@mysten/sui` 2 with its JSON-RPC compatibility bridge; transport migration remains necessary. See [QR redemption](docs/QR_REDEMPTION.md). Zero audit findings do not establish application or contract security, and the full backend regression suite is still failing.
 
 ## Voucher Types
 
@@ -210,7 +212,7 @@ ServicePass/
 
 ### Prerequisites
 - [SUI CLI](https://docs.sui.io/build/install)
-- Node.js >= 22.12.0 (matches CI and the upgraded frontend/build dependencies)
+- Node.js >= 24.9.0 (backend SDK/Jest compatibility; CI and backend Docker use Node 24)
 - MongoDB
 - SUI Wallet with testnet/mainnet tokens
 
@@ -354,12 +356,12 @@ npm ci --prefix backend
 npm run test:config
 ```
 
-Configuration and dependency-compatibility checks run before the backend Jest suite in `npm run test:ci`. Their passing result does not resolve the existing backend suite failures.
+Configuration, dependency compatibility, QR redemption, and SDK/Jest checks run before the backend Jest suite in `npm run test:ci`. Their passing result does not resolve the existing backend suite failures.
 
 ### Current Integration Limitations
 
 - The shared `analyticsAPI.getDashboard()` helper used by AdminPanel does not yet attach a Bearer token. The backend dashboard route requires JWT authentication, so requests through this helper return 401 until token handling is added.
-- Backend CI uses Node.js 22 and runs the backend Jest suite. Both automatic and manual deployment workflows depend on backend tests and Move build/tests passing for the same revision. Production deployment still contains placeholder server settings that must be configured before use.
+- Backend CI uses Node.js 24 and runs the backend Jest suite. Both automatic and manual deployment workflows depend on backend tests and Move build/tests passing for the same revision. Production deployment still contains placeholder server settings that must be configured before use.
 
 ## Frontend Features
 
@@ -569,7 +571,9 @@ Configuration and dependency-compatibility checks run before the backend Jest su
 - `DELETE /api/merchants/:merchantId/api-key` - Revoke API key (Auth required)
 
 ### Redemptions
-- `POST /api/redemptions/redeem-qr` - Redeem voucher via QR code (Merchant API key required)
+- `POST /api/redemptions/redeem-qr` - Prepare owner-signed QR redemption (Merchant API key required)
+- `GET /api/redemptions/qr-intents/:intentId` - Review request and confirmation
+- `POST /api/redemptions/qr-intents/:intentId/submit` - Submit exact owner-signed bytes
 - `POST /api/redemptions/redeem-partial` - Redeem partial voucher amount (Merchant API key required)
 - `POST /api/redemptions` - Record redemption (API key or Auth required)
 - `POST /api/redemptions/import-recipients` - Import recipients via CSV for batch voucher creation (Auth required)
