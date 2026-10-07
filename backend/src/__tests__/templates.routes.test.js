@@ -114,21 +114,21 @@ describe('Template Routes', () => {
             await VoucherTemplate.create([
                 {
                     name: 'Template 1',
-                    category: 'education',
+                    createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'education',
                     voucherType: 1,
                     defaultValue: 100,
                     isActive: true
                 },
                 {
                     name: 'Template 2',
-                    category: 'healthcare',
+                    createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'healthcare',
                     voucherType: 2,
                     defaultValue: 200,
                     isActive: true
                 },
                 {
                     name: 'Inactive Template',
-                    category: 'education',
+                    createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, category: 'education',
                     voucherType: 1,
                     defaultValue: 150,
                     isActive: false
