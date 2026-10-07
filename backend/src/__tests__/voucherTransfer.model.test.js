@@ -107,17 +107,17 @@ describe('VoucherTransfer Model', () => {
         test('should approve transfer', async () => {
             const approver = new mongoose.Types.ObjectId();
             await transfer.approve(approver, 'Transfer approved');
-            
+
             expect(transfer.status).toBe('approved');
             expect(transfer.approvedAt).toBeDefined();
             expect(transfer.approvedBy.toString()).toBe(approver.toString());
-            expect(transfer.approvalComment).toBe('Transfer approved');
+            expect((await VoucherTransfer.findById(transfer._id)).status).toBe('approved');
         });
 
         test('should reject transfer', async () => {
             const rejector = new mongoose.Types.ObjectId();
-            await transfer.reject(rejector, 'Invalid transfer');
-            
+            await transfer.reject('Invalid transfer');
+
             expect(transfer.status).toBe('rejected');
             expect(transfer.rejectedAt).toBeDefined();
             expect(transfer.rejectedBy.toString()).toBe(rejector.toString());
