@@ -28,13 +28,20 @@ class NotificationManager {
         this.startScheduledProcessor();
     }
 
+    stopProcessors() {
+        for (const timer of this.processorTimers) clearInterval(timer);
+        this.processorTimers = [];
+    }
+
     async sendNotification(userId, type, data, options = {}) {
         try {
             // Set default priority if not provided
             const priority = options.priority || 'medium';
-            
+
             // Get user and preferences
-            const user = await User.findOne({ userId });
+            let user = await User.findOne({ userId });
+            // Existing accounts may predate the explicit notification identifier.
+            if (!user && require('mongoose').isValidObjectId(userId)) user = await User.findById(userId);
             const preferences = await NotificationPreferences.findOne({ userId });
 
             if (!user) {
@@ -89,7 +96,7 @@ class NotificationManager {
                     results.push({ channel: 'email', status: 'sent', result: emailResult });
                 } catch (error) {
                     logger.error(`Failed to send email notification to ${user.email}:`, error);
-                    
+
                     const historyRecord = new NotificationHistory({
                         userId,
                         type,
