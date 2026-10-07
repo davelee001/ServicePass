@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "npm --prefix backend test --",
-    "test:ci": "npm run test:config && npm run test:dependencies && npm --prefix backend test -- --ci --runInBand",
+    "test:ci": "npm run test:config && npm run test:dependencies && npm run test:redemption && npm --prefix backend run test:sdk && npm --prefix backend test -- --ci --runInBand",
     "build": "npm --prefix frontend run build",
     "test:config": "npm --prefix backend run test:config",
     "test:dependencies": "npm --prefix backend run test:dependencies",
-    "audit": "npm audit --prefix backend --offline=false && npm audit --prefix frontend --offline=false"
+    "audit": "npm audit --prefix backend --offline=false && npm audit --prefix frontend --offline=false",
+    "test:redemption": "npm --prefix backend run test:redemption"
   },
   "repository": {
     "type": "git",
