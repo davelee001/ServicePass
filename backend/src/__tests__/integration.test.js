@@ -43,23 +43,16 @@ describe('Authenticated batch integration through the actual app', () => {
         expect(response.status).toBe(200);
         expect(response.body.createdVouchers).toHaveLength(1);
     });
-
-    it('should handle batch merchant registration and return success', async () => {
-        const response = await request(app)
-            .post('/batch-register')
-            .send({
-                merchants: [
-                    {
-                        merchantId: 'merchant-2',
-                        name: 'Test Merchant',
-                        walletAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef',
-                        voucherTypesAccepted: ['discount'],
-                        contactEmail: 'test@merchant.com',
-                    },
-                ],
-            });
-
+    test('batch registration maps created Merchant object IDs into MongoDB', async () => {
+        const response = await request(app).post('/api/merchants/batch-register').set('Authorization', `Bearer ${token}`).send({
+            merchants: [{ merchantId: 'clinic', name: 'Clinic', walletAddress: owner, voucherTypesAccepted: [2], contactEmail: 'clinic@test.com' }],
+        });
         expect(response.status).toBe(200);
-        expect(response.body.message).toBe('Batch merchants registered successfully');
+        expect((await Merchant.findOne({ merchantId: 'clinic' })).onChainObjectId).toBe(merchantObjectId);
+    });
+    test('unauthenticated minting cannot submit a transaction', async () => {
+        const response = await request(app).post('/api/vouchers/bulk-mint').send({ vouchers: [] });
+        expect(response.status).toBe(401);
+        expect(suiClient.signAndExecuteTransaction).not.toHaveBeenCalled();
     });
 });
