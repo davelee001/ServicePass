@@ -508,8 +508,8 @@ router.post('/process-scheduled',
     async (req, res) => {
         try {
             const processed = await notificationManager.processScheduledNotifications();
-            
-            res.json({ 
+
+            res.json({
                 message: 'Scheduled notifications processed',
                 processed
             });
@@ -536,17 +536,17 @@ router.post('/bulk-send',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
             const { notifications, batchSize } = req.body;
-            
+
             const batchResult = await notificationManager.sendBulkNotifications(notifications, { batchSize });
-            
-            res.json({ 
+
+            res.json({
                 message: 'Bulk notifications queued successfully',
                 batchId: batchResult.batchId,
                 total: batchResult.total,
