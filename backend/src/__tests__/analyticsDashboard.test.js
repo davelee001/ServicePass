@@ -339,10 +339,9 @@ describe('Analytics Dashboard', () => {
             const calls = aggregate.mock.calls.length;
             expect(calls).toBeGreaterThan(0);
             const dashboard2 = await analyticsDashboard.getDashboardOverview();
-            const time2 = Date.now() - start2;
-
             expect(dashboard1).toEqual(dashboard2);
-            expect(time2).toBeLessThan(time1); // Cache should be faster
+            expect(aggregate).toHaveBeenCalledTimes(calls);
+            aggregate.mockRestore();
         });
 
         test('should clear cache when requested', () => {
@@ -355,13 +354,13 @@ describe('Analytics Dashboard', () => {
     describe('Error Handling', () => {
         test('should handle database errors gracefully', async () => {
             // Mock a database error
-            const originalFind = Voucher.find;
-            Voucher.find = jest.fn().mockRejectedValue(new Error('Database error'));
+            const originalFind = Voucher.aggregate;
+            Voucher.aggregate = jest.fn().mockRejectedValue(new Error('Database error'));
 
             await expect(analyticsDashboard.getVoucherStats()).rejects.toThrow('Database error');
 
             // Restore original method
-            Voucher.find = originalFind;
+            Voucher.aggregate = originalFind;
         });
 
         test('should handle invalid date filters', async () => {
