@@ -20,6 +20,8 @@ beforeAll(async () => {
     await Promise.all(Object.values(mongoose.models).map(model => model.createIndexes()));
 }, 120000);
 
+beforeEach(() => { jest.clearAllMocks(); });
+
 // Cleanup after each test
 afterEach(async () => {
     if (mongoose.connection.readyState !== 1) return;
@@ -34,3 +36,9 @@ afterAll(async () => {
     await mongoose.connection.close();
     if (mongoServer) await mongoServer.stop();
 });
+
+module.exports = {
+    clearDB: async () => {
+        for (const collection of Object.values(mongoose.connection.collections)) await collection.deleteMany({});
+    },
+};
