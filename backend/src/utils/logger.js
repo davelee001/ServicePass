@@ -19,9 +19,9 @@ const logger = winston.createLogger({
 
 // If Elasticsearch URL is provided, add it as a transport
 if (envConfig.elasticsearchUrl) {
-    logger.add(new winston.transports.Elasticsearch({
+    logger.add(new (require('./elasticsearchTransport').ElasticsearchTransport)({
         level: 'info',
-        clientOpts: { node: envConfig.elasticsearchUrl }
+        url: envConfig.elasticsearchUrl
     }));
 }
 
