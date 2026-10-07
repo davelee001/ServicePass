@@ -80,13 +80,13 @@ describe('MultiSigOperation Model', () => {
             const operation = new MultiSigOperation({
                 operationType: 'mint_large_batch',
                 operationData: {},
-                initiatedBy: new mongoose.Types.ObjectId(),
+                createdBy: new mongoose.Types.ObjectId(),
                 requiredSignatures: 2
             });
 
             const saved = await operation.save();
             const expectedExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
-            
+
             expect(saved.expiresAt).toBeDefined();
             expect(Math.abs(saved.expiresAt - expectedExpiry)).toBeLessThan(1000);
         });
@@ -102,9 +102,9 @@ describe('MultiSigOperation Model', () => {
             adminId3 = new mongoose.Types.ObjectId();
 
             operation = await MultiSigOperation.create({
-                operationType: 'CREATE_VOUCHER_BATCH',
+                operationType: 'mint_large_batch',
                 operationData: { count: 100 },
-                initiatedBy: adminId1,
+                createdBy: adminId1,
                 requiredSignatures: 2
             });
         });
