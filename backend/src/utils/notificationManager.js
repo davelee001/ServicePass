@@ -256,8 +256,8 @@ class NotificationManager {
     }
 
     shouldSendPush(preferences, type) {
-        return preferences.push.enabled && 
-               preferences.push.tokens.length > 0 && 
+        return preferences.push.enabled &&
+               preferences.push.tokens.length > 0 &&
                preferences.push[this.getPreferenceKey(type)];
     }
 
@@ -275,9 +275,9 @@ class NotificationManager {
     }
 
     // Bulk send notifications to multiple users
-    async sendBulkNotifications(userIds, type, dataCallback) {
+    async sendBulkWithCallback(userIds, type, dataCallback) {
         const results = [];
-        
+
         for (const userId of userIds) {
             try {
                 const data = await dataCallback(userId);
@@ -293,7 +293,7 @@ class NotificationManager {
     }
 
     // Bulk send notifications to multiple users
-    async sendBulkNotifications(userIds, type, data, options = {}) {
+    async sendBulkToUsers(userIds, type, data, options = {}) {
         try {
             const results = [];
             const batchSize = options.batchSize || 10; // Process in batches to avoid overwhelming the system
