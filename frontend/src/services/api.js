@@ -42,6 +42,18 @@ export const merchantAPI = {
 
 // Redemption APIs
 export const redemptionAPI = {
+  prepareQrRedemption: async (qrPayload, apiKey) => {
+    const response = await api.post('/redemptions/redeem-qr', { qrPayload }, { headers: { 'X-API-Key': apiKey } });
+    return response.data;
+  },
+  getQrIntent: async (intentId) => {
+    const response = await api.get(`/redemptions/qr-intents/${encodeURIComponent(intentId)}`);
+    return response.data;
+  },
+  submitQrIntent: async (intentId, signedTransaction) => {
+    const response = await api.post(`/redemptions/qr-intents/${encodeURIComponent(intentId)}/submit`, signedTransaction);
+    return response.data;
+  },
   recordRedemption: async (redemptionData) => {
     const response = await api.post('/redemptions', redemptionData);
     return response.data;
