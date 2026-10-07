@@ -352,7 +352,7 @@ class NotificationManager {
             });
 
             await scheduledNotification.save();
-            
+
             logger.info(`Notification scheduled for user ${userId} at ${scheduleTime}`);
             return scheduledNotification;
         } catch (error) {
@@ -388,7 +388,7 @@ class NotificationManager {
                     notification.status = 'failed';
                     notification.error = error.message;
                 }
-                
+
                 await notification.save();
                 processed++;
             }
@@ -402,12 +402,12 @@ class NotificationManager {
     }
 
     // Enhanced notification methods
-    
+
     // Retry failed notifications with exponential backoff
     async addToRetryQueue(notificationData, attempt = 1) {
         const maxRetries = 3;
-        const retryId = `${notificationData.userId}_${notificationData.type}_${Date.now()}`;
-        
+        const retryId = `${notificationData.userId}_${notificationData.type}_${require('crypto').randomUUID()}`;
+
         if (attempt > maxRetries) {
             logger.error(`Max retries exceeded for notification ${retryId}`);
             return false;
