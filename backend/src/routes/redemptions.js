@@ -253,16 +253,16 @@ router.get('/merchant/:merchantId',
         }
 
         const redemptions = await Redemption.find(query).sort({ redeemedAt: -1 });
-        
-        res.json({ 
-            merchantId, 
+
+        res.json({
+            merchantId,
             count: redemptions.length,
             redemptions,
             filters: { startDate, endDate }
         });
     } catch (error) {
         logger.error(`Error fetching redemptions: ${error.message}`, { merchantId: req.params.merchantId });
-        res.status(500).json({ 
+        res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to fetch redemptions'
         });
@@ -270,8 +270,8 @@ router.get('/merchant/:merchantId',
 });
 
 // Get redemptions by user wallet
-router.get('/user/:walletAddress', 
-    verifyToken, 
+router.get('/user/:walletAddress',
+    verifyToken,
     readLimiter,
     [
         param('walletAddress').isString().trim().notEmpty().withMessage('Wallet address is required'),
@@ -280,8 +280,8 @@ router.get('/user/:walletAddress',
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ 
-                error: 'Validation failed', 
+            return res.status(400).json({
+                error: 'Validation failed',
                 details: errors.array().map(e => ({ field: e.path, message: e.msg }))
             });
         }
