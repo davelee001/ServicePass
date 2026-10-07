@@ -1116,7 +1116,7 @@ curl -X POST http://localhost:3000/api/vouchers/bulk-mint \
         "amount": 5000,
         "recipient": "0x...",
         "merchantId": "SCHOOL_001",
-        "expiryTimestamp": 1735689600,
+        "expiryTimestamp": 1798761600000,
         "metadata": "Grade 10 School Fees"
       },
       {
@@ -1124,7 +1124,7 @@ curl -X POST http://localhost:3000/api/vouchers/bulk-mint \
         "amount": 3000,
         "recipient": "0x...",
         "merchantId": "CLINIC_001",
-        "expiryTimestamp": 1735689600,
+        "expiryTimestamp": 1798761600000,
         "metadata": "Healthcare voucher"
       }
     ]
@@ -1167,8 +1167,8 @@ curl -X POST http://localhost:3000/api/redemptions/import-recipients \
 
 # CSV format example:
 # voucherType,amount,recipient,merchantId,expiryTimestamp,metadata
-# 1,5000,0x1234...,SCHOOL_001,1735689600,Grade 10 School Fees
-# 2,3000,0x5678...,CLINIC_001,1735689600,Healthcare voucher
+# 1,5000,0x1234...,SCHOOL_001,1798761600000,Grade 10 School Fees
+# 2,3000,0x5678...,CLINIC_001,1798761600000,Healthcare voucher
 ```
 
 ### Notifications
