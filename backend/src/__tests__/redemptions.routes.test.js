@@ -55,8 +55,9 @@ describe('Redemptions Routes - QR Code Functionality', () => {
         // Create a test merchant
         await Merchant.create({
             merchantId: 'merchant-001',
+            walletAddress: '0x' + '1'.repeat(64),
             name: 'Test Merchant',
-            businessType: 'EDU',
+            businessType: '1',
             apiKey: 'test-api-key',
             totalRedemptions: 0,
         });
