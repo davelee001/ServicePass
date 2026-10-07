@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { body, param, validationResult } = require('express-validator');
-const { TransactionBlock } = require('@mysten/sui.js/transactions');
+const { Transaction } = require('@mysten/sui/transactions');
 const { suiClient, getAdminKeypair, PACKAGE_ID, ADMIN_CAP_ID, REGISTRY_ID } = require('../config/sui');
 const { logger } = require('../utils/logger');
 const { verifyToken, adminOnly, optionalAuth } = require('../middleware/auth');
@@ -49,7 +49,7 @@ router.post('/mint',
         } = req.body;
 
         const adminKeypair = getAdminKeypair();
-        const tx = new TransactionBlock();
+        const tx = new Transaction();
 
         // Call mint_voucher function
         tx.moveCall({
@@ -57,18 +57,18 @@ router.post('/mint',
             arguments: [
                 tx.object(ADMIN_CAP_ID),
                 tx.object(REGISTRY_ID),
-                tx.pure(voucherType),
-                tx.pure(amount),
-                tx.pure(recipient),
-                tx.pure(Array.from(Buffer.from(merchantId))),
-                tx.pure(expiryTimestamp),
-                tx.pure(Array.from(Buffer.from(metadata || ''))),
+                tx.pure.u8(Number(voucherType)),
+                tx.pure.u64(amount),
+                tx.pure.address(recipient),
+                tx.pure.vector('u8', Array.from(Buffer.from(merchantId))),
+                tx.pure.u64(expiryTimestamp ?? 0),
+                tx.pure.vector('u8', Array.from(Buffer.from(metadata || ''))),
             ],
         });
 
         const result = await executeTransactionWithRetry(suiClient, {
             signer: adminKeypair,
-            transactionBlock: tx,
+            transaction: tx,
             options: {
                 showObjectChanges: true,
             }
@@ -288,7 +288,7 @@ router.post('/bulk-mint',
             }
 
             const adminKeypair = getAdminKeypair();
-            const tx = new TransactionBlock();
+            const tx = new Transaction();
 
             vouchers.forEach(({ voucherType, amount, recipient, merchantId, expiryTimestamp, metadata }) => {
                 tx.moveCall({
@@ -296,19 +296,19 @@ router.post('/bulk-mint',
                     arguments: [
                         tx.object(ADMIN_CAP_ID),
                         tx.object(REGISTRY_ID),
-                        tx.pure(voucherType),
-                        tx.pure(amount),
-                        tx.pure(recipient),
-                        tx.pure(Array.from(Buffer.from(merchantId))),
-                        tx.pure(expiryTimestamp || null),
-                        tx.pure(Array.from(Buffer.from(metadata || ''))),
+                        tx.pure.u8(Number(voucherType)),
+                        tx.pure.u64(amount),
+                        tx.pure.address(recipient),
+                        tx.pure.vector('u8', Array.from(Buffer.from(merchantId))),
+                        tx.pure.u64(expiryTimestamp ?? 0),
+                        tx.pure.vector('u8', Array.from(Buffer.from(metadata || ''))),
                     ],
                 });
             });
 
             const result = await executeTransactionWithRetry(suiClient, {
                 signer: adminKeypair,
-                transactionBlock: tx,
+                transaction: tx,
                 options: {
                     showObjectChanges: true,
                 }
