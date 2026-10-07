@@ -350,14 +350,14 @@ router.get('/metrics',
             dbMetrics.forEach(metric => {
                 statusCounts[metric._id] = metric.count;
             });
-            
+
             const recentOperations = await BatchOperation.find()
                 .sort({ createdAt: -1 })
                 .limit(10)
                 .select('batchId operationType status createdAt')
                 .lean();
-            
-            res.json({ 
+
+            res.json({
                 metrics: {
                     ...metrics,
                     statusCounts,
@@ -383,9 +383,9 @@ router.post('/retry/:batchId',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
