@@ -31,7 +31,7 @@ class BatchOperationManager {
                 parallelProcessing = true,
                 maxRetries = 3
             } = options;
-            
+
             const batchOperation = new BatchOperation({
                 batchId,
                 operationType,
@@ -50,9 +50,9 @@ class BatchOperationManager {
                     retryCount: 0
                 }
             });
-            
+
             await batchOperation.save();
-            
+
             // Add to processing queue
             this.addToQueue(batchOperation);
             
