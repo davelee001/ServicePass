@@ -11,8 +11,6 @@ const connectDB = async () => {
         const socketTimeoutMS = parseInt(process.env.MONGODB_SOCKET_TIMEOUT_MS, 10) || 45000;
 
         const conn = await mongoose.connect(mongoUri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
             maxPoolSize,
             minPoolSize,
             serverSelectionTimeoutMS,
@@ -22,8 +20,8 @@ const connectDB = async () => {
         logger.info(`MongoDB Connected: ${conn.connection.host} (poolSize=${maxPoolSize})`);
     } catch (error) {
         logger.error(`Error connecting to MongoDB: ${error.message}`);
-        process.exit(1);
+        throw error;
     }
 };
 
-module.exports = connectDB;
+module.exports = { connectDB, connectToDatabase: connectDB, disconnectDB: () => mongoose.disconnect() };
