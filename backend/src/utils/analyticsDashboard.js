@@ -614,8 +614,8 @@ class AnalyticsDashboard {
                         totalRedeemed: {
                             $ifNull: [{ $arrayElemAt: ['$redemptions.totalRedeemed', 0] }, 0]
                         },
-                        countRedeemed: { 
-                            $ifNull: [{ $arrayElemAt: ['$redemptions.countRedeemed', 0] }, 0] 
+                        countRedeemed: {
+                            $ifNull: [{ $arrayElemAt: ['$redemptions.countRedeemed', 0] }, 0]
                         }
                     }
                 },
@@ -637,8 +637,8 @@ class AnalyticsDashboard {
                 totalValue: mintedStats.totalMinted,
                 totalRedeemed: redeemedStats.totalRedeemed,
                 remainingValue: mintedStats.totalMinted - redeemedStats.totalRedeemed,
-                utilizationRate: mintedStats.totalMinted > 0 
-                    ? ((redeemedStats.totalRedeemed / mintedStats.totalMinted) * 100).toFixed(2) 
+                utilizationRate: mintedStats.totalMinted > 0
+                    ? ((redeemedStats.totalRedeemed / mintedStats.totalMinted) * 100).toFixed(2)
                     : 0,
                 vouchersMinted: mintedStats.count,
                 vouchersRedeemed: redeemedStats.count,
@@ -655,11 +655,11 @@ class AnalyticsDashboard {
     async getTrendData(dateFilter = {}, filters = {}, period = 'daily') {
         try {
             const matchStage = { ...dateFilter };
-            
+
             if (filters.merchantId) {
                 matchStage.merchantId = filters.merchantId;
             }
-            
+
             if (filters.voucherType) {
                 matchStage.voucherType = filters.voucherType;
             }
