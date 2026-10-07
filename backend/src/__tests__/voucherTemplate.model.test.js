@@ -86,8 +86,8 @@ describe('VoucherTemplate Model', () => {
 
         test('should validate default value is positive', async () => {
             const template = new VoucherTemplate({
-                name: 'Negative Value',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, name: 'Negative Value',
+                metadata: { category: 'education' },
                 voucherType: 1,
                 defaultValue: -100
             });
@@ -99,8 +99,8 @@ describe('VoucherTemplate Model', () => {
     describe('Usage Tracking', () => {
         test('should increment usage count', async () => {
             const template = new VoucherTemplate({
-                name: 'Test Template',
-                category: 'education',
+                createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, name: 'Test Template',
+                metadata: { category: 'education' },
                 voucherType: 1,
                 defaultValue: 100
             });
@@ -120,15 +120,15 @@ describe('VoucherTemplate Model', () => {
         beforeEach(async () => {
             await VoucherTemplate.create([
                 {
-                    name: 'Active Template 1',
-                    category: 'education',
+                    createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, name: 'Active Template 1',
+                    metadata: { category: 'education' },
                     voucherType: 1,
                     defaultValue: 100,
                     isActive: true
                 },
                 {
-                    name: 'Active Template 2',
-                    category: 'healthcare',
+                    createdBy: 'test-admin', description: 'Test description', defaultExpiryDays: 30, name: 'Active Template 2',
+                    metadata: { category: 'healthcare' },
                     voucherType: 2,
                     defaultValue: 200,
                     isActive: true
