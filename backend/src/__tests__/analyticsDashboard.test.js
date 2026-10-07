@@ -42,18 +42,18 @@ describe('Analytics Dashboard', () => {
                 amount: 100,
                 voucherType: 1,
                 description: 'Education voucher',
-                expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                expiryTimestamp: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
                 status: 'active'
             },
             {
-                voucherId: 'V987654321',
-                merchantId: testMerchant.address,
+                voucherId: 'V987654321', recipient: '0xowner', transactionDigest: 'mint-V987654321',
+                merchantId: testMerchant.merchantId,
                 merchantName: testMerchant.name,
-                value: 200,
+                amount: 200,
                 voucherType: 2,
                 description: 'Healthcare voucher',
-                expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-                status: 'redeemed'
+                expiryTimestamp: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                status: 'fully_redeemed'
             },
             {
                 voucherId: 'V555555555',
