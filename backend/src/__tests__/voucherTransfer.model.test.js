@@ -37,8 +37,9 @@ describe('VoucherTransfer Model', () => {
 
         test('should generate unique transferId', async () => {
             const userId = new mongoose.Types.ObjectId();
-            
+
             const transfer1 = new VoucherTransfer({
+
                 voucherId: 'voucher_1',
                 fromAddress: '0x' + '1'.repeat(64),
                 toAddress: '0x' + '2'.repeat(64),
@@ -48,6 +49,7 @@ describe('VoucherTransfer Model', () => {
             });
 
             const transfer2 = new VoucherTransfer({
+
                 voucherId: 'voucher_2',
                 fromAddress: '0x' + '3'.repeat(64),
                 toAddress: '0x' + '4'.repeat(64),
