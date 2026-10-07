@@ -145,6 +145,7 @@ describe('VoucherTransfer Model', () => {
     describe('Approval Requirements', () => {
         test('should flag transfers requiring approval', async () => {
             const transfer = await VoucherTransfer.create({
+
                 voucherId: 'voucher_123',
                 fromAddress: '0x' + '1'.repeat(64),
                 toAddress: '0x' + '2'.repeat(64),
@@ -160,6 +161,7 @@ describe('VoucherTransfer Model', () => {
 
         test('should allow transfers without approval', async () => {
             const transfer = await VoucherTransfer.create({
+
                 voucherId: 'voucher_123',
                 fromAddress: '0x' + '1'.repeat(64),
                 toAddress: '0x' + '2'.repeat(64),
@@ -176,6 +178,7 @@ describe('VoucherTransfer Model', () => {
     describe('Partial Transfers', () => {
         test('should create partial transfer with amount', async () => {
             const transfer = await VoucherTransfer.create({
+
                 voucherId: 'voucher_123',
                 fromAddress: '0x' + '1'.repeat(64),
                 toAddress: '0x' + '2'.repeat(64),
