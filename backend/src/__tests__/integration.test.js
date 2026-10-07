@@ -31,16 +31,17 @@ describe('Authenticated batch integration through the actual app', () => {
             vouchers: [{ voucherType: 2, amount: 100, recipient: owner, merchantId: 'clinic', expiryTimestamp: Date.now() + 86400000 }],
         });
         expect(response.status).toBe(200);
-        expect(response.body.message).toBe('Bulk vouchers minted successfully');
+        expect(response.body.createdVouchers).toHaveLength(1);
+        expect(suiClient.signAndExecuteTransaction).toHaveBeenCalledTimes(1);
     });
-
-    it('should handle CSV import for recipients and return success', async () => {
-        const response = await request(app)
-            .post('/import-recipients')
-            .attach('file', '__tests__/test-files/recipients.csv');
-
+    test('CSV import parses real uploaded data and builds the current contract call', async () => {
+        const csv = `voucherType,amount,recipient,merchantId,expiryTimestamp,metadata
+2,100,${owner},clinic,0,Test voucher
+`;
+        const response = await request(app).post('/api/redemptions/import-recipients')
+            .set('Authorization', `Bearer ${token}`).attach('file', Buffer.from(csv), 'recipients.csv');
         expect(response.status).toBe(200);
-        expect(response.body.message).toBe('Recipients imported and vouchers created successfully');
+        expect(response.body.createdVouchers).toHaveLength(1);
     });
 
     it('should handle batch merchant registration and return success', async () => {
