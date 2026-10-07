@@ -205,18 +205,18 @@ router.post('/resume/:batchId',
             if (!operation) {
                 return res.status(404).json({ error: 'Operation not found' });
             }
-            
+
             if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Access denied' });
             }
-            
+
             if (operation.status !== 'paused') {
                 return res.status(400).json({ error: 'Operation is not paused' });
             }
-            
+
             const result = await batchOperationManager.resumeOperation(batchId);
-            
-            res.json({ 
+
+            res.json({
                 message: result.message,
                 success: result.success
             });
