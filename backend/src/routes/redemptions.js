@@ -160,19 +160,19 @@ router.post('/',
     // Accept either API key or admin token
     const hasApiKey = req.headers['x-api-key'];
     const hasToken = req.headers.authorization;
-    
+
     if (!hasApiKey && !hasToken) {
-        return res.status(401).json({ 
+        return res.status(401).json({
             error: 'Authentication required',
             message: 'Please provide API key or authentication token'
         });
     }
-    
+
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ 
-                error: 'Validation failed', 
+            return res.status(400).json({
+                error: 'Validation failed',
                 details: errors.array().map(e => ({ field: e.path, message: e.msg }))
             });
         }
