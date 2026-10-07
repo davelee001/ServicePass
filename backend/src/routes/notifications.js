@@ -444,7 +444,7 @@ router.get('/analytics',
                 const sent = item.statuses.find(s => s.status === 'sent')?.count || 0;
                 const failed = item.statuses.find(s => s.status === 'failed')?.count || 0;
                 const total = sent + failed;
-                
+
                 return {
                     type: item._id.type,
                     channel: item._id.channel,
@@ -460,10 +460,10 @@ router.get('/analytics',
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
             const dailyStats = await NotificationHistory.aggregate([
-                { 
-                    $match: { 
-                        sentAt: { $gte: thirtyDaysAgo } 
-                    } 
+                {
+                    $match: {
+                        sentAt: { $gte: thirtyDaysAgo }
+                    }
                 },
                 {
                     $group: {
@@ -488,7 +488,7 @@ router.get('/analytics',
                 { $sort: { _id: 1 } }
             ]);
 
-            res.json({ 
+            res.json({
                 successRates,
                 dailyStats,
                 totalNotifications: analytics.reduce((sum, item) => sum + item.total, 0)
