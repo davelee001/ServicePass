@@ -48,7 +48,9 @@ Work is tracked in [TODO.md](TODO.md).
 
 - **Item 1: CI checks:** Root test commands run the backend Jest suite on Node.js 22 in CI. Move CI assembles the root `Move.toml` and `move/sources` for Sui build/tests. Both deployment workflows require these checks for the same revision. Item 1 remains open: the last local backend run had 13 passing and 58 failing tests across 15 failed suites, and Move execution still needs validation.
 - **Item 2: API routing:** Implemented and checked off. Both frontend modes use same-origin `/api` requests. Frontend build and development proxy checks passed, including query strings, POST bodies, authentication headers, and API error responses. Live production-container verification is pending because Docker Desktop was not running during validation.
-- **Item 3: Deployment configuration:** Added fail-closed production startup checks, exact HTTPS CORS origins, and secret-manager file inputs. The standalone production Compose file uses mounted secrets and managed MongoDB/Redis. See [Production configuration](docs/PRODUCTION_CONFIGURATION.md). All **32 focused configuration tests passed**, including actual server startup rejection, secret file handling, and CORS checks; both Compose definitions passed configuration parsing. Actual secret-manager provisioning and live production verification remain pending, so item 3 stays open. Dependency triage is the next implementation item.
+- **Item 3: Deployment configuration:** Added fail-closed production startup checks, exact HTTPS CORS origins, and secret-manager file inputs. The standalone production Compose file uses mounted secrets and managed MongoDB/Redis. See [Production configuration](docs/PRODUCTION_CONFIGURATION.md). All **32 focused configuration tests passed**, including actual server startup rejection, secret file handling, and CORS checks; both Compose definitions passed configuration parsing. Actual secret-manager provisioning and live production verification remain pending, so item 3 stays open. Dependency triage is documented in [Dependency triage](docs/DEPENDENCY_TRIAGE.md).
+
+**Item 4: Dependency triage:** Fresh backend and frontend audits report zero known vulnerabilities after reviewed upgrades. See [Dependency triage](docs/DEPENDENCY_TRIAGE.md) for validation and the backend SDK migration carried into item 5. Six checklist items remain open: 1, 3, and 5-8.
 
 | Mode | Frontend URL | API upstream |
 |------|--------------|--------------|
@@ -183,7 +185,7 @@ ServicePass/
 
 ### Prerequisites
 - [SUI CLI](https://docs.sui.io/build/install)
-- Node.js >= 20.19.0 (required by `mongodb-memory-server` 11.x for backend tests)
+- Node.js >= 22.12.0 (matches CI and the upgraded frontend/build dependencies)
 - MongoDB
 - SUI Wallet with testnet/mainnet tokens
 
@@ -1563,7 +1565,7 @@ npm test -- --watch
 npm test voucher.model.test.js
 
 # Run all advanced feature tests
-npm test -- --testPathPattern="(voucherTemplate|scheduledVoucher|multiSig|voucherTransfer|templates).*.test.js"
+npm test -- --testPathPatterns="(voucherTemplate|scheduledVoucher|multiSig|voucherTransfer|templates).*.test.js"
 ```
 
 Run `npm ci --prefix backend` followed by `npm test` from the repository root, or run tests directly from `backend/`. The root `npm run test:ci` command runs Jest in CI mode with a single worker. Jest loads `src/__tests__/setup.js`, starts MongoDB Memory Server, clears collections after each test, and stops the database after each suite. The first run may download a MongoDB binary and requires network access. Supertest exercises HTTP routes.
@@ -1803,7 +1805,7 @@ For questions, issues, or support:
 ## Project Status
 
 **Status**: ✅ Active Development  
-**Last Updated**: October 6, 2026<br>
+**Last Updated**: October 7, 2026<br>
 **Version**: 1.0.0  
 **Test Validation**: Last local backend run: 13 passed, 58 failed; fixes pending.<br>
 **Documentation**: Complete with enhanced API docs, user guides, merchant onboarding, audit reports, deployment runbooks, Docker & Kubernetes guides (includes diagrams, quick starts, and performance tips)  

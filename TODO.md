@@ -15,11 +15,15 @@
 
   Progress (October 6, 2026): Removed development Compose secret defaults and added a standalone production definition using secret-manager file inputs and authenticated TLS MongoDB/Redis connections. Startup loads secrets and validates production settings before application imports; CORS requires exact HTTPS origins. All 32 focused tests passed, including real server startup rejection, and production Compose parsing passed. Operator secret-manager provisioning and live production verification remain pending; keep this item open until those deployment steps are verified.
 
-- [ ] **4. Triage dependency vulnerabilities — P1 · Small to medium**
+- [x] **4. Triage dependency vulnerabilities — P1 · Small to medium**
   npm reported **30 high-severity advisories** in the backend tree and **4 advisories** in the frontend tree. Review the audit details, update or replace affected dependencies, and rerun tests. In particular, the Sui SDK packages are deprecated; avoid unreviewed `--force` upgrades.
+
+  Completed triage (October 7, 2026): Reviewed upgrades and a tested, scoped coverage-loader override reduced fresh backend and frontend npm audits to zero findings. Removed unused frontend Sui packages, Nodemon, and the npm crypto shim; upgraded Jest/Vite/React Router; aligned Docker with Node 22 and enabled committed lockfiles. Frontend build, proxy checks, 32 configuration tests, and coverage-loader compatibility checks passed. The existing backend regression suite still fails. Backend Sui SDK migration is explicitly carried into item 5; see docs/DEPENDENCY_TRIAGE.md.
 
 - [ ] **5. Make QR redemption match the contract — P0 · Large**
   The backend call’s arguments do not match the Move function signature, and the route uses the admin keypair as a placeholder signer. A voucher is an owner-held object, so the backend admin cannot simply consume a user’s voucher. Decide whether the user signs or the app sponsors transactions, then align the API, signer flow, and contract and cover the full path with a test. See `redemptions.js` and `voucher_system.move`.
+
+  Additional scope from dependency triage: migrate the backend from deprecated `@mysten/sui.js` to the supported SDK while aligning transaction builders, typed Move arguments, execution methods, and the chosen signer flow.
 
 - [ ] **6. Correct on-chain expiry and merchant enforcement — P0 · Large**
   The contract compares `expiry_timestamp` with the Sui epoch number, while the app/tests use millisecond timestamps. Pick a consistent on-chain time source/unit. Also enforce voucher-to-merchant restrictions on-chain rather than trusting only QR payload checks.
