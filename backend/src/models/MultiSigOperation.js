@@ -32,6 +32,7 @@ const multiSigOperationSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: 2,
+        max: 10,
         default: 2
     },
     signatures: [{
@@ -59,6 +60,7 @@ const multiSigOperationSchema = new mongoose.Schema({
     },
     expiresAt: {
         type: Date,
+        default: () => new Date(Date.now() + 86400000),
         required: true,
         index: true
     },
@@ -104,7 +106,7 @@ multiSigOperationSchema.virtual('isExpired').get(function() {
 // Method to add signature
 multiSigOperationSchema.methods.addSignature = async function(adminId, adminEmail, ipAddress) {
     // Check if admin already signed
-    const existingSignature = this.signatures.find(s => s.adminId === adminId);
+    const existingSignature = this.signatures.find(s => s.adminId === String(adminId));
     if (existingSignature) {
         throw new Error('Admin has already signed this operation');
     }
