@@ -698,7 +698,7 @@ router.post('/test-retry',
             }
 
             const { userId, type, data } = req.body;
-            
+
             // Simulate a failure to test retry mechanism
             const result = await notificationManager.addToRetryQueue({
                 userId,
@@ -706,8 +706,8 @@ router.post('/test-retry',
                 data,
                 options: { priority: 'high' }
             });
-            
-            res.json({ 
+
+            res.json({
                 message: 'Notification added to retry queue for testing',
                 success: result
             });
@@ -725,12 +725,12 @@ router.get('/rate-limits/:userId',
     async (req, res) => {
         try {
             const { userId } = req.params;
-            
+
             // Check if user can view rate limits for other users
             if (userId !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Insufficient permissions' });
             }
-            
+
             const rateLimitsStatus = await notificationManager.getRateLimitStatus(userId);
             
             res.json({ rateLimits: rateLimitsStatus });
