@@ -257,6 +257,7 @@ describe('VoucherTransfer Model', () => {
     describe('Metadata', () => {
         test('should store transfer metadata', async () => {
             const transfer = await VoucherTransfer.create({
+                amount: 100,
                 voucherId: 'voucher_123',
                 fromAddress: '0x' + '1'.repeat(64),
                 toAddress: '0x' + '2'.repeat(64),
@@ -265,13 +266,13 @@ describe('VoucherTransfer Model', () => {
                 metadata: {
                     reason: 'Gift',
                     notes: 'Birthday present',
-                    customField: 'value'
+                    customData: { customField: 'value' }
                 }
             });
 
             expect(transfer.metadata.reason).toBe('Gift');
             expect(transfer.metadata.notes).toBe('Birthday present');
-            expect(transfer.metadata.customField).toBe('value');
+            expect(transfer.metadata.customData.customField).toBe('value');
         });
     });
 
