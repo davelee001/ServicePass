@@ -8,10 +8,11 @@
     "dev": "node --watch src/server.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "create-admin": "node ../scripts/createAdmin.js",
-    "test:config": "node --test test/productionConfig.test.js",
+    "test:config": "node --test test/productionConfig.test.js test/sanitization.test.js",
     "test:dependencies": "node --test test/dependencyCompatibility.test.js",
     "test:redemption": "node --test test/qrRedemption.test.js",
-    "test:sdk": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.sdk.config.cjs --runInBand"
+    "test:sdk": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.sdk.config.cjs --runInBand",
+    "test:expiry": "node --test test/voucherExpiry.test.js"
   },
   "keywords": [
     "blockchain",
