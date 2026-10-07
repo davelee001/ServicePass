@@ -255,14 +255,14 @@ router.delete('/cancel/:batchId',
             if (operation.initiatedBy !== req.user.userId && req.user.role !== 'admin') {
                 return res.status(403).json({ error: 'Access denied' });
             }
-            
+
             if (['completed', 'failed', 'cancelled'].includes(operation.status)) {
                 return res.status(400).json({ error: 'Operation cannot be cancelled in current status' });
             }
-            
+
             const result = await batchOperationManager.cancelOperation(batchId);
-            
-            res.json({ 
+
+            res.json({
                 message: result.message,
                 success: result.success
             });
@@ -286,9 +286,9 @@ router.get('/results/:batchId',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    error: 'Validation failed', 
-                    details: errors.array() 
+                return res.status(400).json({
+                    error: 'Validation failed',
+                    details: errors.array()
                 });
             }
 
