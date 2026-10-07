@@ -315,8 +315,8 @@ describe('Notification Manager', () => {
             });
 
             const results = await notificationManager.sendBulkNotifications(
-                ['user-1', 'user-2'], 
-                'voucher_received', 
+                ['user-1', 'user-2'],
+                'voucher_received',
                 dataCallback
             );
 
@@ -328,8 +328,8 @@ describe('Notification Manager', () => {
 
         it('should handle individual failures in bulk operations', async () => {
             await User.insertMany([
-                { userId: 'user-1', email: 'user1@example.com', name: 'User 1' },
-                { userId: 'user-2', email: 'user2@example.com', name: 'User 2' }
+                { userId: 'user-1', email: 'user1@example.com', name: 'User 1', password: 'test-password' },
+                { userId: 'user-2', email: 'user2@example.com', name: 'User 2', password: 'test-password' }
             ]);
 
             await NotificationPreferences.create({
@@ -353,8 +353,8 @@ describe('Notification Manager', () => {
             };
 
             const results = await notificationManager.sendBulkNotifications(
-                ['user-1', 'user-2'], 
-                'voucher_received', 
+                ['user-1', 'user-2'],
+                'voucher_received',
                 dataCallback
             );
 
