@@ -178,7 +178,7 @@ describe('Vouchers Routes - QR Code Functionality', () => {
 
     describe('GET /api/vouchers/owner/:address', () => {
         it('should retrieve vouchers owned by an address', async () => {
-            const mockAddress = '0xowner123';
+            const mockAddress = '0x8888888888888888888888888888888888888888888888888888888888888888';
             suiClient.getOwnedObjects.mockResolvedValue({
                 data: [
                     { objectId: 'voucher1', type: 'voucher' },
@@ -198,11 +198,11 @@ describe('Vouchers Routes - QR Code Functionality', () => {
     describe('POST /bulk-mint', () => {
         it('should mint vouchers in bulk with valid input', async () => {
             const response = await request(app)
-                .post('/bulk-mint')
+                .post('/api/vouchers/bulk-mint')
                 .send({
                     vouchers: [
                         {
-                            voucherType: 'discount',
+                            voucherType: '1',
                             amount: 10,
                             recipient: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
                             merchantId: 'merchant-1',
@@ -219,7 +219,7 @@ describe('Vouchers Routes - QR Code Functionality', () => {
 
         it('should return 400 for invalid input', async () => {
             const response = await request(app)
-                .post('/bulk-mint')
+                .post('/api/vouchers/bulk-mint')
                 .send({ vouchers: [] });
 
             expect(response.status).toBe(400);
