@@ -395,7 +395,7 @@ class AnalyticsDashboard {
             if (filters.merchantId) {
                 matchStage.merchantId = filters.merchantId;
             }
-            
+
             if (filters.voucherType) {
                 matchStage.voucherType = filters.voucherType;
             }
@@ -406,7 +406,7 @@ class AnalyticsDashboard {
             const oneMonthFromNow = now + (30 * 24 * 60 * 60 * 1000);
 
             const expiryStats = await Voucher.aggregate([
-                { $match: { ...matchStage, isRedeemed: false } },
+                { $match: { ...matchStage, status: { $in: ['active', 'partially_redeemed', 'expired'] } } },
                 {
                     $group: {
                         _id: null,
@@ -416,8 +416,8 @@ class AnalyticsDashboard {
                                 $cond: [
                                     {
                                         $and: [
-                                            { $ne: ['$expiryTimestamp', null] },
-                                            { $lt: ['$expiryTimestamp', now] }
+                                            { $gt: ['$expiryTimestamp', 0] },
+                                            { $lte: ['$expiryTimestamp', now] }
                                         ]
                                     },
                                     1,
@@ -430,8 +430,8 @@ class AnalyticsDashboard {
                                 $cond: [
                                     {
                                         $and: [
-                                            { $ne: ['$expiryTimestamp', null] },
-                                            { $gte: ['$expiryTimestamp', now] },
+                                            { $gt: ['$expiryTimestamp', 0] },
+                                            { $gt: ['$expiryTimestamp', now] },
                                             { $lt: ['$expiryTimestamp', oneDayFromNow] }
                                         ]
                                     },
