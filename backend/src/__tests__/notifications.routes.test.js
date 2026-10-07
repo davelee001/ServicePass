@@ -225,7 +225,7 @@ describe('Notification System Tests', () => {
 
         it('should not send notification when disabled', async () => {
             const notificationService = require('../utils/notificationService');
-            
+
             // Create user preferences with email disabled
             await NotificationPreferences.create({
                 userId: 'test-user-123',
@@ -274,7 +274,7 @@ describe('Notification System Tests', () => {
                 voucherId: 'test-123',
                 voucherType: 'Education',
                 amount: 100,
-                merchantName: 'Test School', 
+                merchantName: 'Test School',
                 expiryDate: '2024-12-31'
             });
 
