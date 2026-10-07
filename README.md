@@ -77,10 +77,21 @@ This flow redeems the entire voucher. The owner needs a single SUI coin with at 
 ```bash
 # From the repository root, after installing backend dependencies
 npm run test:redemption
+npm run test:expiry
 npm --prefix backend run test:sdk
 ```
 
-Verified on October 7, 2026: nine redemption tests, one SDK/Jest test, 32 configuration tests, and one dependency compatibility test passed; the frontend production build passed. The full backend regression suite still fails on existing missing dependencies, model/test issues, and startup configuration. Move execution, actual wallet interaction, and testnet verification remain pending. On-chain expiry and merchant enforcement are the next implementation task.
+Verified on October 7, 2026: all 219 backend regression tests, 34 configuration/sanitization checks, three dependency compatibility checks, eleven redemption tests, a model/frontend expiry check, and one SDK/Jest test passed. The frontend production build passed. Contract build and all 11 Move tests passed locally with Sui CLI 1.80.1. Actual wallet interaction and testnet verification remain pending. Minting/redemption require the read-only clock at `0x6`; signatures changed and a fresh coordinated testnet deployment is required.
+
+## Contract CLI Checks
+
+Install Sui CLI 1.80.1 on PATH, or set `SUI_BIN` to its executable path, then run:
+
+```sh
+npm run test:move
+```
+
+The command builds and tests an isolated package assembled from the committed manifest, lockfile and sources. It submits no transactions. See [CI validation](docs/CI_VALIDATION.md).
 
 ## Dependency Validation
 
@@ -91,7 +102,7 @@ Audit results from October 7, 2026:
 | Backend, including development packages | 30 high, 5 moderate | 0 findings |
 | Frontend, including development packages | 1 high, 3 moderate | 0 findings |
 
-The reviewed toolchain uses Jest 30.5.2, Vite 7.3.7, React plugin 5.2.0, and React Router 7.18.4 on Node.js 24.9 or later for the backend (frontend requires 22.12 or later). Nodemon was replaced by Node's built-in watch mode; unused frontend Sui packages and the npm crypto shim were removed. Backend/frontend lockfiles are included for reproducible installs. A tested, scoped YAML-parser override removes the remaining Jest coverage dependency findings.
+The reviewed toolchain uses Jest 30.5.2, Vite 7.3.7, React plugin 5.2.0, and React Router 7.18.4 on Node.js 24.9 or later for the backend (frontend requires 22.12 or later). Nodemon was replaced by Node's built-in watch mode; unused frontend Sui packages and the npm crypto shim were removed. Backend/frontend lockfiles are included for reproducible installs. Tested, scoped YAML and UUID overrides remove compatibility dependency findings; a native-fetch transport replaces the legacy Elasticsearch adapter.
 
 ```bash
 # From the repository root
