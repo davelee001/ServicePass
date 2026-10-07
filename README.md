@@ -1297,7 +1297,7 @@ curl -X POST http://localhost:3000/api/batch/create \
         "amount": 5000,
         "recipient": "0x...",
         "merchantId": "SCHOOL_001",
-        "expiryTimestamp": 1735689600,
+        "expiryTimestamp": 1798761600000,
         "metadata": "Grade 10 School Fees"
       }
     ],
@@ -1354,7 +1354,7 @@ curl -X POST http://localhost:3000/api/vouchers/bulk-mint-enhanced \
         "amount": 5000,
         "recipient": "0x...",
         "merchantId": "SCHOOL_001",
-        "expiryTimestamp": 1735689600,
+        "expiryTimestamp": 1798761600000,
         "metadata": "Grade 10 School Fees"
       }
     ],
@@ -1865,7 +1865,7 @@ For questions, issues, or support:
 **Status**: ✅ Active Development  
 **Last Updated**: October 7, 2026<br>
 **Version**: 1.0.0  
-**Test Validation**: 33 focused checks pass; full backend regression suite still fails.<br>
+**Test Validation**: 50 focused checks, 219 backend regression tests, and 11 Move tests pass.<br>
 **Documentation**: Complete with enhanced API docs, user guides, merchant onboarding, audit reports, deployment runbooks, Docker & Kubernetes guides (includes diagrams, quick starts, and performance tips)  
 **Frontend**: Complete UI with 16+ React pages including Admin Panel, Template Gallery, Scheduled Vouchers, Transfer Management, Multi-Sig Operations  
 **Admin Panel**: Web-based control panel for voucher minting, merchant management, analytics, and system configuration  
