@@ -87,12 +87,12 @@ describe('Analytics Routes', () => {
         });
 
         testRedemption = await Redemption.create({
-            voucherId: testVoucher.voucherId,
-            userAddress: '0xuser123',
-            merchantAddress: testMerchant.address,
+            voucherObjectId: testVoucher.voucherId, transactionDigest: 'redemption-1',
+            redeemedBy: '0xuser123',
+            merchantId: testMerchant.merchantId,
             voucherType: 2,
-            value: 100,
-            timestamp: new Date(),
+            amount: 100,
+            redeemedAt: new Date(),
             status: 'completed',
             metadata: {
                 location: 'Test Location',
@@ -103,7 +103,7 @@ describe('Analytics Routes', () => {
         // Update voucher status to redeemed
         await Voucher.findOneAndUpdate(
             { voucherId: testVoucher.voucherId },
-            { status: 'redeemed' }
+            { status: 'fully_redeemed' }
         );
     });
 
