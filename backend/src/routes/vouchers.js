@@ -162,15 +162,15 @@ router.post('/mint',
             stack: error.stack,
             isBlockchainError: error.isBlockchainError
         });
-        
+
         if (error.isBlockchainError) {
-            return res.status(503).json({ 
-                error: 'Blockchain operation failed', 
+            return res.status(503).json({
+                error: 'Blockchain operation failed',
                 message: 'Unable to mint voucher on blockchain. Please try again later.',
                 retryable: true
             });
         }
-        
+
         if (error.name === 'ValidationError') {
             return res.status(400).json({ 
                 error: 'Invalid data', 
