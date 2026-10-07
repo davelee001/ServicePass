@@ -1,8 +1,10 @@
+const { randomUUID } = require('node:crypto');
 const mongoose = require('mongoose');
 
 const multiSigOperationSchema = new mongoose.Schema({
     operationId: {
         type: String,
+        default: () => 'MSIG_' + randomUUID(),
         required: true,
         unique: true,
         index: true
