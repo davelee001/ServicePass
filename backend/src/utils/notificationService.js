@@ -132,9 +132,9 @@ class NotificationService {
             };
 
             const result = await admin.messaging().sendMulticast(message);
-            logger.info(`Bulk push notifications sent`, { 
+            logger.info(`Bulk push notifications sent`, {
                 successCount: result.successCount,
-                failureCount: result.failureCount 
+                failureCount: result.failureCount
             });
             return result;
         } catch (error) {
