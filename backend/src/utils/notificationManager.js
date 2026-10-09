@@ -487,7 +487,7 @@ class NotificationManager {
                 if (batchData.status === 'queued') {
                     batchData.status = 'processing';
                     batchData.startTime = Date.now();
-                    
+
                     try {
                         await this.processBatch(batchId, batchData);
                     } catch (error) {
@@ -497,13 +497,13 @@ class NotificationManager {
                     }
                 }
             }
-        }, 1000); // Check every second
+        }, 1000)); // Check every second
     }
-    
+
     async processBatch(batchId, batchData) {
         const { notifications, batchSize } = batchData;
         const chunks = [];
-        
+
         // Split into chunks
         for (let i = 0; i < notifications.length; i += batchSize) {
             chunks.push(notifications.slice(i, i + batchSize));
