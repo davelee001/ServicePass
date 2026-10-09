@@ -508,14 +508,14 @@ class NotificationManager {
         for (let i = 0; i < notifications.length; i += batchSize) {
             chunks.push(notifications.slice(i, i + batchSize));
         }
-        
+
         for (const chunk of chunks) {
             const chunkResults = await Promise.allSettled(
-                chunk.map(notification => 
+                chunk.map(notification =>
                     this.sendNotification(
-                        notification.userId, 
-                        notification.type, 
-                        notification.data, 
+                        notification.userId,
+                        notification.type,
+                        notification.data,
                         notification.options
                     )
                 )
