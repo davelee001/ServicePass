@@ -62,20 +62,20 @@ function VoucherList({ walletAddress }) {
       </div>
 
       <div className="filter-bar">
-        <button 
-          className={filter === 'all' ? 'active' : ''} 
+        <button
+          className={filter === 'all' ? 'active' : ''}
           onClick={() => setFilter('all')}
         >
           All ({vouchers.length})
         </button>
-        <button 
-          className={filter === 'active' ? 'active' : ''} 
+        <button
+          className={filter === 'active' ? 'active' : ''}
           onClick={() => setFilter('active')}
         >
           Active ({vouchers.filter(v => !isVoucherExpired(v.data?.content?.fields?.expiry_timestamp)).length})
         </button>
-        <button 
-          className={filter === 'expired' ? 'active' : ''} 
+        <button
+          className={filter === 'expired' ? 'active' : ''}
           onClick={() => setFilter('expired')}
         >
           Expired ({vouchers.filter(v => isVoucherExpired(v.data?.content?.fields?.expiry_timestamp)).length})
@@ -89,7 +89,7 @@ function VoucherList({ walletAddress }) {
           const balance = fields.balance || 0;
           const originalAmount = fields.original_amount || balance;
           const expiry = fields.expiry_timestamp;
-          const expired = expiry && isVoucherExpired(expiry);
+          const expired = isVoucherExpired(expiry);
           const objectId = voucher.data?.objectId;
           const allowPartialRedemption = fields.allow_partial_redemption !== false;
           const partiallyRedeemed = balance < originalAmount;
