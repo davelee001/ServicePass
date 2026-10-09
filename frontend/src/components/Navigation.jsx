@@ -1,10 +1,36 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { FaWallet, FaStore, FaTicketAlt, FaHistory, FaChartBar, FaChartPie, FaClock, FaExchangeAlt, FaUsers, FaBell, FaLayerGroup, FaShieldAlt } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { 
+  FaWallet, 
+  FaStore, 
+  FaTicketAlt, 
+  FaHistory, 
+  FaChartBar, 
+  FaChartPie, 
+  FaClock, 
+  FaExchangeAlt, 
+  FaUsers, 
+  FaBell, 
+  FaLayerGroup, 
+  FaShieldAlt,
+  FaChevronDown,
+  FaBars,
+  FaTimes,
+  FaQrcode,
+  FaArrowRight,
+  FaPowerOff
+} from 'react-icons/fa';
 import { shortenAddress } from '../utils/helpers';
 import './Navigation.css';
 
-function Navigation({ userType, setUserType, walletAddress, setWalletAddress, merchantId, setMerchantId }) {
+function Navigation({ 
+  userType, 
+  setUserType, 
+  walletAddress, 
+  setWalletAddress, 
+  merchantId, 
+  setMerchantId 
+}) {
   const location = useLocation();
   
   const handleWalletConnect = () => {
