@@ -520,18 +520,18 @@ class NotificationManager {
                     )
                 )
             );
-            
+
             batchData.results.push(...chunkResults);
             batchData.processed += chunk.length;
         }
-        
+
         batchData.status = 'completed';
         batchData.endTime = Date.now();
-        
+
         // Update analytics
         const successful = batchData.results.filter(r => r.status === 'fulfilled').length;
         const failed = batchData.results.filter(r => r.status === 'rejected').length;
-        
+
         this.analytics.totalSent += successful;
         this.analytics.totalFailed += failed;
         
