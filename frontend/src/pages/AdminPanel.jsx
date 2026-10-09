@@ -9,7 +9,7 @@ import { voucherAPI, merchantAPI, analyticsAPI } from '../services/api';
 function AdminPanel() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('mint');
-  
+
   // State for minting vouchers
   const [mintForm, setMintForm] = useState({
     voucherType: '1',
@@ -46,7 +46,7 @@ function AdminPanel() {
 
   // Mint voucher mutation
   const mintMutation = useMutation({
-    mutationFn: (data) => voucherAPI.mint(data),
+    mutationFn: (data) => voucherAPI.mintVoucher(data),
     onSuccess: () => {
       queryClient.invalidateQueries(['vouchers']);
       queryClient.invalidateQueries(['analytics']);
