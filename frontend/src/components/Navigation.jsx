@@ -406,10 +406,10 @@ function Navigation({
               <Link to="/user/templates" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaLayerGroup /> Voucher Templates
               </Link>
-              <Link to="/user/scheduled" className={isActive('/user/scheduled') ? 'active' : ''}>
-                <FaClock /> Scheduled
+              <Link to="/user/scheduled" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaClock /> Scheduled Disbursements
               </Link>
-              <Link to="/user/transfers" className={isActive('/user/transfers') ? 'active' : ''}>
+              <Link to="/user/transfers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaExchangeAlt /> Transfers
               </Link>
               <Link to="/user/multisig" className={isActive('/user/multisig') ? 'active' : ''}>
