@@ -412,21 +412,21 @@ class NotificationManager {
             logger.error(`Max retries exceeded for notification ${retryId}`);
             return false;
         }
-        
+
         const retryDelay = Math.pow(2, attempt) * 1000; // Exponential backoff
         const retryTime = Date.now() + retryDelay;
-        
+
         this.retryQueue.set(retryId, {
             ...notificationData,
             attempt,
             retryTime,
             retryId
         });
-        
+
         logger.info(`Added notification ${retryId} to retry queue (attempt ${attempt})`);
         return true;
     }
-    
+
     // Process retry queue
     startRetryProcessor() {
         setInterval(async () => {
