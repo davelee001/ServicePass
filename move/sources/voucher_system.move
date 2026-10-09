@@ -115,9 +115,12 @@ module servicepass::voucher_system {
         merchant_id: vector<u8>,
         expiry_timestamp: u64,
         metadata: vector<u8>,
+        clock: &Clock,
         ctx: &mut TxContext
     ) {
         assert!(is_valid_voucher_type(voucher_type), EInvalidVoucherType);
+        let current_time = clock::timestamp_ms(clock);
+        assert!(expiry_timestamp == 0 || expiry_timestamp > current_time, EVoucherExpired);
 
         let voucher = Voucher {
             id: object::new(ctx),
@@ -141,7 +144,7 @@ module servicepass::voucher_system {
             voucher_type,
             amount,
             recipient,
-            timestamp: tx_context::epoch(ctx),
+            timestamp: current_time,
         });
 
         // Transfer voucher to recipient
@@ -182,7 +185,8 @@ module servicepass::voucher_system {
         registry: &mut VoucherRegistry,
         merchant: &mut Merchant,
         voucher: Voucher,
-        ctx: &mut TxContext
+        clock: &Clock,
+        _ctx: &mut TxContext
     ) {
         let current_time = tx_context::epoch(ctx);
         
