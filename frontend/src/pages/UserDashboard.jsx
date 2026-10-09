@@ -1,9 +1,9 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { voucherAPI, redemptionAPI } from '../services/api';
-import { 
-  calculateTotalBalance, 
-  groupVouchersByType, 
+import {
+  calculateTotalBalance,
+  groupVouchersByType,
   getVoucherTypeName,
   getVoucherTypeColor,
   getVoucherTypeIcon,
@@ -48,7 +48,7 @@ function UserDashboard({ walletAddress }) {
   const redemptions = redemptionsData?.redemptions || [];
   const totalBalance = calculateTotalBalance(vouchers);
   const groupedVouchers = groupVouchersByType(vouchers);
-  
+
   const activeVouchers = vouchers.filter(v => {
     const expiry = v.data?.content?.fields?.expiry_timestamp;
     return expiry && !isVoucherExpired(expiry);
