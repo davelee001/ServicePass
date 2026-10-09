@@ -145,16 +145,19 @@
   gap: 0.5rem;
 }
 
-.brand-icon {
-  font-size: 1.8rem;
+.nav-menu-btn {
+  background: transparent;
+  color: #475569;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
-.nav-toggle {
-  display: flex;
-  gap: 0.5rem;
-  background: var(--bg-primary);
-  padding: 0.25rem;
-  border-radius: 4px;
+.nav-menu-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
 .nav-toggle button {
