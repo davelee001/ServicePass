@@ -412,11 +412,13 @@ function Navigation({
               <Link to="/user/transfers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaExchangeAlt /> Transfers
               </Link>
-              <Link to="/user/multisig" className={isActive('/user/multisig') ? 'active' : ''}>
-                <FaUsers /> Multi-Sig
+              <Link to="/user/multisig" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaUsers /> Multi-Sig Approvals
               </Link>
-              <Link to="/user/history" className={isActive('/user/history') ? 'active' : ''}>
-                <FaHistory /> History
+
+              <div className="drawer-section-title">Merchant Point-of-Sale</div>
+              <Link to="/merchant/dashboard" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaStore /> Merchant Dashboard
               </Link>
               <Link to="/user/notifications" className={isActive('/user/notifications') ? 'active' : ''}>
                 <FaBell /> Notifications
