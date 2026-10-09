@@ -472,17 +472,17 @@ class NotificationManager {
             endTime: null,
             results: []
         });
-        
+
         return {
             batchId,
             total: notifications.length,
             status: 'queued'
         };
     }
-    
+
     // Process batch queue
     startBatchProcessor() {
-        setInterval(async () => {
+        this.processorTimers.push(setInterval(async () => {
             for (const [batchId, batchData] of this.batchQueue.entries()) {
                 if (batchData.status === 'queued') {
                     batchData.status = 'processing';
