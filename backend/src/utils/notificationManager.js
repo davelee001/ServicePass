@@ -714,16 +714,16 @@ class NotificationManager {
         if (!this.rateLimits) {
             this.rateLimits = new Map();
         }
-        
+
         const userLimits = this.rateLimits.get(rateLimitKey) || [];
-        
+
         // Remove expired entries
         const validRequests = userLimits.filter(time => now - time < windowMs);
-        
+
         if (validRequests.length >= maxRequests) {
             return false;
         }
-        
+
         validRequests.push(now);
         this.rateLimits.set(rateLimitKey, validRequests);
         
