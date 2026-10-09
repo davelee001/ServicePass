@@ -160,35 +160,12 @@
   color: #0f172a;
 }
 
-.nav-toggle button {
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-
-.nav-toggle button.active {
-  background: var(--primary-color);
-  color: white;
-}
-
-.nav-links {
-  display: flex;
-  gap: 1.5rem;
-  flex: 1;
-  margin-left: 1rem;
-}
-
-.nav-links a {
+/* App In-Depth Navigation */
+.app-nav-menu {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  color: var(--text-primary);
-  text-decoration: none;
-  border-radius: 4px;
-  transition: all 0.2s;
+  flex: 1;
 }
 
 .nav-links a:hover {
