@@ -434,36 +434,10 @@ function Navigation({
               <Link to="/admin" className="mobile-link admin-highlight" onClick={() => setMobileMenuOpen(false)}>
                 <FaShieldAlt /> Admin Control Studio
               </Link>
-              <Link to="/merchant/redeem" className={isActive('/merchant/redeem') ? 'active' : ''}>
-                <FaTicketAlt /> Request Redemption
+              <Link to="/analytics" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaChartPie /> Protocol Analytics
               </Link>
-              <Link to="/merchant/redemptions" className={isActive('/merchant/redemptions') ? 'active' : ''}>
-                <FaTicketAlt /> Redemptions
-              </Link>
-              <Link to="/merchant/templates" className={isActive('/merchant/templates') ? 'active' : ''}>
-                <FaLayerGroup /> Templates
-              </Link>
-              <Link to="/merchant/scheduled" className={isActive('/merchant/scheduled') ? 'active' : ''}>
-                <FaClock /> Scheduled
-              </Link>
-              <Link to="/merchant/transfers" className={isActive('/merchant/transfers') ? 'active' : ''}>
-                <FaExchangeAlt /> Transfers
-              </Link>
-              <Link to="/merchant/multisig" className={isActive('/merchant/multisig') ? 'active' : ''}>
-                <FaUsers /> Multi-Sig
-              </Link>
-              <Link to="/merchant/reports" className={isActive('/merchant/reports') ? 'active' : ''}>
-                <FaHistory /> Reports
-              </Link>
-              <Link to="/merchant/analytics" className={isActive('/merchant/analytics') ? 'active' : ''}>
-                <FaChartPie /> Analytics
-              </Link>
-              <Link to="/admin" className={isActive('/admin') ? 'active admin-link' : 'admin-link'}>
-                <FaShieldAlt /> Admin Panel
-              </Link>
-            </>
-          )}
-        </div>
+            </div>
 
         <div className="nav-wallet">
           {userType === 'user' ? (
