@@ -426,14 +426,13 @@ function Navigation({
               <Link to="/merchant/redemptions" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaTicketAlt /> Settlement Logs
               </Link>
-              <Link to="/admin" className={isActive('/admin') ? 'active admin-link' : 'admin-link'}>
-                <FaShieldAlt /> Admin Panel
+              <Link to="/merchant/reports" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaHistory /> Financial Reports
               </Link>
-            </>
-          ) : (
-            <>
-              <Link to="/merchant/dashboard" className={isActive('/merchant/dashboard') ? 'active' : ''}>
-                <FaChartBar /> Dashboard
+
+              <div className="drawer-section-title">Platform Governance</div>
+              <Link to="/admin" className="mobile-link admin-highlight" onClick={() => setMobileMenuOpen(false)}>
+                <FaShieldAlt /> Admin Control Studio
               </Link>
               <Link to="/merchant/redeem" className={isActive('/merchant/redeem') ? 'active' : ''}>
                 <FaTicketAlt /> Request Redemption
