@@ -531,10 +531,7 @@
     gap: 0.85rem;
   }
   .nav-links {
+    order: 4;
     width: 100%;
-    order: 3;
-    margin-left: 0;
-    margin-top: 1rem;
-    justify-content: center;
   }
 }
