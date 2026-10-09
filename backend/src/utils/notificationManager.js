@@ -739,16 +739,16 @@ class NotificationManager {
         templateData.systemName = 'ServicePass';
         templateData.supportEmail = process.env.SUPPORT_EMAIL || 'support@servicepass.com';
         templateData.frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-        
+
         // Priority-based styling
         const priorityStyles = {
             high: { color: '#F44336', urgency: 'URGENT' },
             medium: { color: '#FF9800', urgency: 'Important' },
             low: { color: '#4CAF50', urgency: 'Information' }
         };
-        
+
         templateData.priorityStyle = priorityStyles[priority] || priorityStyles.medium;
-        
+
         switch (type) {
             case 'voucher_received':
                 return NotificationTemplates.voucherReceived(templateData);
@@ -783,7 +783,7 @@ class NotificationManager {
                     $gte: oneDayFromNow.getTime(),
                     $lte: threeDaysFromNow.getTime()
                 },
-                isRedeemed: false
+                status: { $in: ['active', 'partially_redeemed'] }
             });
 
             for (const voucher of expiringVouchers) {
