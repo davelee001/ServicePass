@@ -30,26 +30,26 @@ module servicepass::voucher_system {
     }
 
     /// Main voucher registry
-    struct VoucherRegistry has key {
+    public struct VoucherRegistry has key {
         id: UID,
         total_minted: u64,
         total_redeemed: u64,
     }
 
     /// Individual voucher token
-    struct Voucher has key, store {
+    public struct Voucher has key, store {
         id: UID,
         voucher_type: u8,
         amount: u64,          // Amount in smallest unit (e.g., cents)
         issued_to: address,
         merchant_id: String,
-        expiry_timestamp: u64,
+        expiry_timestamp: u64, // Unix milliseconds; zero means no expiry.
         is_redeemed: bool,
         metadata: String,
     }
 
     /// Merchant registration
-    struct Merchant has key {
+    public struct Merchant has key {
         id: UID,
         merchant_id: String,
         name: String,
