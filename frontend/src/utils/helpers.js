@@ -48,7 +48,7 @@ export const formatDateTime = (date) => {
 
 // Check if voucher is expired
 export const isVoucherExpired = (expiryTimestamp) => {
-  return Date.now() > expiryTimestamp;
+  return expiryTimestamp != null && Number(expiryTimestamp) !== 0 && Date.now() >= Number(expiryTimestamp);
 };
 
 // Shorten wallet address
