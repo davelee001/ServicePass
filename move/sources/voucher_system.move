@@ -5,9 +5,7 @@ module servicepass::voucher_system {
     use sui::object::{Self, UID};
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
-    use sui::coin::{Self, Coin};
-    use sui::balance::{Self, Balance};
-    use sui::sui::SUI;
+    use sui::clock::{Self, Clock};
     use sui::event;
     use std::string::{Self, String};
 
@@ -16,6 +14,7 @@ module servicepass::voucher_system {
     const EInvalidVoucherType: u64 = 2;
     const ENotAuthorized: u64 = 3;
     const EVoucherExpired: u64 = 4;
+    const EWrongMerchant: u64 = 5;
 
     // ===== Voucher Types =====
     const EDUCATION: u8 = 1;
@@ -26,7 +25,7 @@ module servicepass::voucher_system {
     // ===== Core Structures =====
 
     /// Admin capability for minting vouchers
-    struct AdminCap has key, store {
+    public struct AdminCap has key, store {
         id: UID,
     }
 
