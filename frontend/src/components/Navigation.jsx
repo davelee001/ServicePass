@@ -61,15 +61,43 @@ function Navigation({
   const handleWalletConnect = () => {
     const mockAddress = '0x' + Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16)).join('');
     setWalletAddress(mockAddress);
-  };
-  
-  const handleMerchantLogin = () => {
-    // Simplified merchant login
-    const mockMerchantId = 'MERCHANT_' + Math.random().toString(36).substr(2, 9).toUpperCase();
-    setMerchantId(mockMerchantId);
+    setUserType('user');
+    if (isLanding) {
+      navigate('/user/dashboard');
+    }
   };
 
-  const isActive = (path) => location.pathname === path;
+  const handleMerchantLogin = () => {
+    const mockId = 'MERCHANT_' + Math.random().toString(36).substr(2, 7).toUpperCase();
+    setMerchantId(mockId);
+    setUserType('merchant');
+    if (isLanding) {
+      navigate('/merchant/dashboard');
+    }
+  };
+
+  const handleDisconnect = () => {
+    if (userType === 'user') {
+      setWalletAddress('');
+    } else {
+      setMerchantId('');
+    }
+  };
+
+  const toggleDropdown = (name) => {
+    setDropdownOpen(dropdownOpen === name ? null : name);
+  };
+
+  const scrollToSection = (id) => {
+    if (!isLanding) {
+      navigate('/#' + id);
+      return;
+    }
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <nav className="navigation">
