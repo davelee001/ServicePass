@@ -553,17 +553,17 @@ class NotificationManager {
         });
 
         logger.info(`Notification scheduled for ${new Date(scheduleTime)} with ID ${scheduleId}`);
-        
+
         return {
             scheduleId,
             scheduleTime: new Date(scheduleTime),
             status: 'scheduled'
         };
     }
-    
+
     // Process scheduled notifications
     startScheduledProcessor() {
-        setInterval(async () => {
+        this.processorTimers.push(setInterval(async () => {
             const now = Date.now();
             const toSend = [];
             
