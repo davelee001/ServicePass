@@ -46,10 +46,12 @@ function fixture() {
             assert.equal(data.sender, owner.toSuiAddress());
             assert.equal(data.commands.length, 1);
             assert.equal(data.commands[0].MoveCall.function, 'redeem_voucher');
-            assert.deepEqual(data.commands[0].MoveCall.arguments.map(arg => arg.Input), [0, 1, 2]);
+            assert.deepEqual(data.commands[0].MoveCall.arguments.map(arg => arg.Input), [0, 1, 2, 3]);
             assert.equal(data.inputs[0].Object.SharedObject.objectId, registryId);
             assert.equal(data.inputs[1].Object.SharedObject.objectId, merchantId);
             assert.equal(data.inputs[2].Object.ImmOrOwnedObject.objectId, voucherId);
+            assert.equal(data.inputs[3].Object.SharedObject.objectId, SUI_CLOCK_OBJECT_ID);
+            assert.equal(data.inputs[3].Object.SharedObject.mutable, false);
             submitted.push(transactionBlock);
             const result = { digest: await tx.getDigest(), effects: { status: { status: effectsStatus } }, events: [{
                 type: `${packageId}::voucher_system::VoucherRedeemed`, parsedJson: { voucher_id: voucherId, merchant_id: wrongEvent ? 'other' : 'clinic', amount: '100', voucher_type: 2 },
@@ -78,7 +80,7 @@ function fixture() {
     }));
     const payload = { voucherId, merchantId: 'clinic', amount: 999999, recipient: id('99') };
     const qr = () => JSON.stringify({ ...payload, signature: crypto.createHmac('sha256', secret).update(JSON.stringify(payload)).digest('hex') });
-    return { app, qr, payload, fields, merchant, objects, intents, service,
+    return { app, qr, payload, fields, clockFields, merchant, objects, intents, service,
         state: () => ({ recorded, executions, submitted }), expire: () => time += 700000,
         uncertain: () => uncertain = true, failEffects: () => effectsStatus = 'failure', failStorage: () => storageFailure = true,
         wrongEvent: () => wrongEvent = true };
@@ -164,4 +166,21 @@ test('successful effects with a mismatched merchant event are never recorded', a
     const f = fixture(), intent = await prepare(f); f.wrongEvent();
     assert.equal((await request(f.app).post(`/api/redemptions/qr-intents/${intent.intentId}/submit`).send(await signed(intent))).status, 409);
     assert.equal(f.state().recorded, 0);
+});
+
+test('expiry uses chain milliseconds: before boundary succeeds, equal and later reject', async () => {
+    const f = fixture();
+    f.fields.expiry_timestamp = '1700000000000';
+    f.clockFields.timestamp_ms = '1699999999999'; // Host date is deliberately much later.
+    assert.equal((await prepare(f)).amount, 100);
+    for (const timestamp of ['1700000000000', '1700000000001']) {
+        f.clockFields.timestamp_ms = timestamp;
+        await assert.rejects(f.service.prepare(f.qr(), f.merchant), error => error.status === 409);
+    }
+});
+test('zero expiry permits redemption and unreadable system clock fails closed', async () => {
+    const f = fixture(); f.fields.expiry_timestamp = '0';
+    assert.equal((await prepare(f)).amount, 100);
+    delete f.objects[SUI_CLOCK_OBJECT_ID];
+    await assert.rejects(f.service.prepare(f.qr(), f.merchant), error => error.status === 503);
 });
