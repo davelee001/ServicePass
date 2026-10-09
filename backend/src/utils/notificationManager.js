@@ -429,17 +429,17 @@ class NotificationManager {
 
     // Process retry queue
     startRetryProcessor() {
-        setInterval(async () => {
+        this.processorTimers.push(setInterval(async () => {
             const now = Date.now();
             const toRetry = [];
-            
+
             for (const [retryId, data] of this.retryQueue.entries()) {
                 if (data.retryTime <= now) {
                     toRetry.push(data);
                     this.retryQueue.delete(retryId);
                 }
             }
-            
+
             for (const data of toRetry) {
                 try {
                     await this.sendNotification(data.userId, data.type, data.data, data.options);
