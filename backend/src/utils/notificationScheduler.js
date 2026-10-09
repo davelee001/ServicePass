@@ -116,7 +116,7 @@ class NotificationScheduler {
 
                 // You can implement admin email notification here
                 // with the daily summary if needed
-                
+
             } catch (error) {
                 logger.error('Error in daily notification summary:', error);
             }
@@ -126,6 +126,7 @@ class NotificationScheduler {
     }
 
     startJobs() {
+        if (!Object.keys(this.jobs).length) this.initializeJobs();
         Object.values(this.jobs).forEach(job => {
             if (!job.running) {
                 job.start();
@@ -136,9 +137,7 @@ class NotificationScheduler {
 
     stopJobs() {
         Object.values(this.jobs).forEach(job => {
-            if (job.running) {
-                job.stop();
-            }
+            job.stop();
         });
         logger.info('Notification scheduler jobs stopped');
     }
