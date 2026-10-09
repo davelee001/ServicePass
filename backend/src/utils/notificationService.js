@@ -14,7 +14,7 @@ class NotificationService {
     initializeServices() {
         // Initialize email service
         if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-            this.emailTransporter = nodemailer.createTransporter({
+            this.emailTransporter = nodemailer.createTransport({
                 host: process.env.EMAIL_HOST,
                 port: process.env.EMAIL_PORT || 587,
                 secure: false,
@@ -29,7 +29,7 @@ class NotificationService {
         // Initialize Twilio SMS service
         if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
             this.twilioClient = twilio(
-                process.env.TWILIO_ACCOUNT_SID, 
+                process.env.TWILIO_ACCOUNT_SID,
                 process.env.TWILIO_AUTH_TOKEN
             );
             logger.info('Twilio SMS service initialized');
