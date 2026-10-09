@@ -5,12 +5,11 @@ const { logger } = require('./logger');
 class NotificationScheduler {
     constructor() {
         this.jobs = {};
-        this.initializeJobs();
     }
 
     initializeJobs() {
         // Check for expiring vouchers every day at 9:00 AM
-        this.jobs.expiryCheck = cron.schedule('0 9 * * *', async () => {
+        this.jobs.expiryCheck = cron.createTask('0 9 * * *', async () => {
             try {
                 logger.info('Starting scheduled expiry notification check...');
                 const count = await notificationManager.checkExpiringVouchers();
@@ -23,7 +22,7 @@ class NotificationScheduler {
         });
 
         // Check for expiring vouchers every 6 hours (for more urgent notifications)
-        this.jobs.urgentExpiryCheck = cron.schedule('0 */6 * * *', async () => {
+        this.jobs.urgentExpiryCheck = cron.createTask('0 */6 * * *', async () => {
             try {
                 logger.info('Starting urgent expiry notification check...');
                 
