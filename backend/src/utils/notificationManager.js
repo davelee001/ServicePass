@@ -788,9 +788,9 @@ class NotificationManager {
 
             for (const voucher of expiringVouchers) {
                 const daysLeft = Math.ceil((voucher.expiryTimestamp - Date.now()) / (1000 * 60 * 60 * 24));
-                
+
                 const notificationData = {
-                    voucherId: voucher.voucherObjectId,
+                    voucherId: voucher.voucherId,
                     voucherType: voucher.voucherType,
                     amount: voucher.amount,
                     merchantName: voucher.merchantId, // You might want to fetch actual merchant name
@@ -798,7 +798,8 @@ class NotificationManager {
                     daysLeft
                 };
 
-                await this.sendNotification(voucher.owner, 'voucher_expiring', notificationData);
+                const owner = await User.findOne({ $or: [{ userId: voucher.recipient }, { walletAddress: voucher.recipient }] });
+                if (owner) await this.sendNotification(owner.userId, 'voucher_expiring', notificationData);
             }
 
             logger.info(`Checked ${expiringVouchers.length} expiring vouchers`);
@@ -811,3 +812,4 @@ class NotificationManager {
 }
 
 module.exports = new NotificationManager();
+module.exports.NotificationManager = NotificationManager;
