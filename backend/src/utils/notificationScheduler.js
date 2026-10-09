@@ -78,16 +78,16 @@ class NotificationScheduler {
         });
 
         // Daily notification summary (optional) - sends a summary email to admins
-        this.jobs.dailySummary = cron.schedule('0 18 * * *', async () => {
+        this.jobs.dailySummary = cron.createTask('0 18 * * *', async () => {
             try {
                 logger.info('Starting daily notification summary...');
-                
+
                 const NotificationHistory = require('../models/NotificationHistory');
-                
+
                 // Get today's notification stats
                 const startOfDay = new Date();
                 startOfDay.setHours(0, 0, 0, 0);
-                
+
                 const endOfDay = new Date();
                 endOfDay.setHours(23, 59, 59, 999);
                 
