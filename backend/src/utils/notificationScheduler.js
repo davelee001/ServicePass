@@ -25,7 +25,7 @@ class NotificationScheduler {
         this.jobs.urgentExpiryCheck = cron.createTask('0 */6 * * *', async () => {
             try {
                 logger.info('Starting urgent expiry notification check...');
-                
+
                 // Check for vouchers expiring in the next 24 hours
                 const oneDayFromNow = new Date();
                 oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
@@ -41,7 +41,7 @@ class NotificationScheduler {
 
                 for (const voucher of urgentlyExpiringVouchers) {
                     const hoursLeft = Math.ceil((voucher.expiryTimestamp - Date.now()) / (1000 * 60 * 60));
-                    
+
                     const notificationData = {
                         voucherId: voucher.voucherObjectId,
                         voucherType: voucher.voucherType,
@@ -63,7 +63,7 @@ class NotificationScheduler {
         });
 
         // Process scheduled notifications every 5 minutes
-        this.jobs.processScheduled = cron.schedule('*/5 * * * *', async () => {
+        this.jobs.processScheduled = cron.createTask('*/5 * * * *', async () => {
             try {
                 logger.info('Processing scheduled notifications...');
                 const processed = await notificationManager.processScheduledNotifications();
