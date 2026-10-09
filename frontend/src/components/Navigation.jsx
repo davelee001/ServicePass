@@ -32,10 +32,34 @@ function Navigation({
   setMerchantId 
 }) {
   const location = useLocation();
-  
+  const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const navRef = useRef(null);
+
+  const isLanding = location.pathname === '/';
+  const isActive = (path) => location.pathname === path;
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setDropdownOpen(null);
+        setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Close menus on route change
+  useEffect(() => {
+    setDropdownOpen(null);
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
   const handleWalletConnect = () => {
-    // Simplified wallet connection - in production, integrate with Sui wallet
-    const mockAddress = '0x' + Math.random().toString(16).substr(2, 40);
+    const mockAddress = '0x' + Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16)).join('');
     setWalletAddress(mockAddress);
   };
   
