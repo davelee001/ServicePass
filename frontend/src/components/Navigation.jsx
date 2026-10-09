@@ -400,11 +400,11 @@ function Navigation({
               <Link to="/user/vouchers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaTicketAlt /> My Vouchers
               </Link>
-              <Link to="/user/redeem" className={isActive('/user/redeem') ? 'active' : ''}>
-                <FaTicketAlt /> Approve Redemption
+              <Link to="/user/redeem" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaQrcode /> Approve Redemption
               </Link>
-              <Link to="/user/templates" className={isActive('/user/templates') ? 'active' : ''}>
-                <FaLayerGroup /> Templates
+              <Link to="/user/templates" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaLayerGroup /> Voucher Templates
               </Link>
               <Link to="/user/scheduled" className={isActive('/user/scheduled') ? 'active' : ''}>
                 <FaClock /> Scheduled
