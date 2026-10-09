@@ -113,12 +113,13 @@ public entry fun mint_voucher(
     merchant_id: vector<u8>,
     expiry_timestamp: u64,
     metadata: vector<u8>,
+    clock: &sui::clock::Clock,
     ctx: &mut TxContext
 )
 ```
 - **Access**: Admin only (requires AdminCap)
 - **Purpose**: Create and distribute vouchers
-- **Validation**: Checks voucher type validity
+- **Validation**: Checks voucher type validity and future millisecond expiry (zero means no expiry)
 - **Side Effects**: 
   - Increments registry counter
   - Emits VoucherMinted event
