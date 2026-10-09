@@ -116,11 +116,12 @@ button {
   border-radius: 12px;
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow);
-  max-width: 500px;
+  max-width: 540px;
   margin: 3rem auto;
 }
 
 .connect-prompt h2 {
-  margin-bottom: 1rem;
-  color: var(--primary-color);
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  font-weight: 800;
 }
