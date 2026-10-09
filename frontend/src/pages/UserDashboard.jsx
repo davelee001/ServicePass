@@ -51,12 +51,12 @@ function UserDashboard({ walletAddress }) {
 
   const activeVouchers = vouchers.filter(v => {
     const expiry = v.data?.content?.fields?.expiry_timestamp;
-    return expiry && !isVoucherExpired(expiry);
+    return !isVoucherExpired(expiry);
   });
 
   const expiredVouchers = vouchers.filter(v => {
     const expiry = v.data?.content?.fields?.expiry_timestamp;
-    return expiry && isVoucherExpired(expiry);
+    return isVoucherExpired(expiry);
   });
 
   return (
@@ -109,8 +109,8 @@ function UserDashboard({ walletAddress }) {
             }, 0);
 
             return (
-              <div 
-                key={type} 
+              <div
+                key={type}
                 className="type-card"
                 style={{ borderLeftColor: getVoucherTypeColor(parseInt(type)) }}
               >
