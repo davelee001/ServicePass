@@ -534,14 +534,14 @@ class NotificationManager {
 
         this.analytics.totalSent += successful;
         this.analytics.totalFailed += failed;
-        
+
         logger.info(`Batch ${batchId} completed: ${successful} successful, ${failed} failed`);
     }
-    
+
     // Schedule notifications for future delivery
     async scheduleNotification(userId, type, data, scheduleTime, options = {}) {
         const scheduleId = `schedule_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        
+
         this.scheduledNotifications.set(scheduleId, {
             userId,
             type,
@@ -551,7 +551,7 @@ class NotificationManager {
             scheduleId,
             status: 'scheduled'
         });
-        
+
         logger.info(`Notification scheduled for ${new Date(scheduleTime)} with ID ${scheduleId}`);
         
         return {
