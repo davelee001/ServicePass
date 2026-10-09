@@ -111,9 +111,10 @@ button {
 
 .connect-prompt {
   text-align: center;
-  padding: 3rem;
+  padding: 3.5rem 2rem;
   background: var(--bg-secondary);
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
   box-shadow: var(--shadow);
   max-width: 500px;
   margin: 3rem auto;
