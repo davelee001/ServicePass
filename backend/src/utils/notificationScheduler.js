@@ -90,7 +90,7 @@ class NotificationScheduler {
 
                 const endOfDay = new Date();
                 endOfDay.setHours(23, 59, 59, 999);
-                
+
                 const todaysNotifications = await NotificationHistory.aggregate([
                     {
                         $match: {
@@ -111,9 +111,9 @@ class NotificationScheduler {
                         }
                     }
                 ]);
-                
+
                 logger.info('Daily notification summary:', { stats: todaysNotifications });
-                
+
                 // You can implement admin email notification here
                 // with the daily summary if needed
                 
