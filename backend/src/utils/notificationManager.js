@@ -634,7 +634,7 @@ class NotificationManager {
                 statusStats[record.status] = (statusStats[record.status] || 0) + 1;
                 typeStats[record.type] = (typeStats[record.type] || 0) + 1;
             });
-            
+
             return {
                 totalNotifications: userHistory.length,
                 channelStats,
@@ -648,13 +648,13 @@ class NotificationManager {
             throw error;
         }
     }
-    
+
     // Get rate limit status for user
     async getRateLimitStatus(userId) {
         if (!this.rateLimits) {
             return { status: 'No rate limits applied' };
         }
-        
+
         const now = Date.now();
         const windowMs = 60 * 1000; // 1 minute window
         const maxRequests = 10;
