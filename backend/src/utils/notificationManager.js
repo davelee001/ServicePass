@@ -726,14 +726,14 @@ class NotificationManager {
 
         validRequests.push(now);
         this.rateLimits.set(rateLimitKey, validRequests);
-        
+
         return true;
     }
-    
+
     // Enhanced template system with dynamic variables
     getTemplate(type, data, priority = 'medium', customVariables = {}) {
         const templateData = { ...data, ...customVariables };
-        
+
         // Add system variables
         templateData.currentDate = new Date().toLocaleDateString();
         templateData.systemName = 'ServicePass';
