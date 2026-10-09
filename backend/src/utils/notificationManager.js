@@ -658,12 +658,12 @@ class NotificationManager {
         const now = Date.now();
         const windowMs = 60 * 1000; // 1 minute window
         const maxRequests = 10;
-        
+
         const rateLimitData = {};
-        
+
         for (const [key, requests] of this.rateLimits.entries()) {
-            if (key.startsWith(userId)) {
-                const type = key.split('_')[1];
+            if (key.startsWith(`${userId}_`)) {
+                const type = key.slice(String(userId).length + 1);
                 const validRequests = requests.filter(time => now - time < windowMs);
                 rateLimitData[type] = {
                     requests: validRequests.length,
@@ -673,7 +673,7 @@ class NotificationManager {
                 };
             }
         }
-        
+
         return rateLimitData;
     }
     
