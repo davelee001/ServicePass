@@ -520,10 +520,12 @@
 }
 
 .connect-btn:hover {
-  background: #1976D2;
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
 }
 
-@media (max-width: 968px) {
+@media (max-width: 1024px) {
   .nav-container {
     flex-wrap: wrap;
     padding: 1rem;
