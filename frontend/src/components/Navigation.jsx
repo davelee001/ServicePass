@@ -420,11 +420,11 @@ function Navigation({
               <Link to="/merchant/dashboard" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaStore /> Merchant Dashboard
               </Link>
-              <Link to="/user/notifications" className={isActive('/user/notifications') ? 'active' : ''}>
-                <FaBell /> Notifications
+              <Link to="/merchant/redeem" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaQrcode /> POS QR Scanner
               </Link>
-              <Link to="/analytics" className={isActive('/analytics') ? 'active' : ''}>
-                <FaChartPie /> Analytics
+              <Link to="/merchant/redemptions" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaTicketAlt /> Settlement Logs
               </Link>
               <Link to="/admin" className={isActive('/admin') ? 'active admin-link' : 'admin-link'}>
                 <FaShieldAlt /> Admin Panel
