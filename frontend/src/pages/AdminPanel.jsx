@@ -90,9 +90,9 @@ function AdminPanel() {
   // Handle mint form submit
   const handleMintSubmit = (e) => {
     e.preventDefault();
-    
-    const expiryTimestamp = Math.floor(Date.now() / 1000) + (parseInt(mintForm.expiryDays) * 24 * 60 * 60);
-    
+
+    const expiryTimestamp = Date.now() + (parseInt(mintForm.expiryDays) * 24 * 60 * 60 * 1000);
+
     mintMutation.mutate({
       voucherType: parseInt(mintForm.voucherType),
       amount: parseFloat(mintForm.amount),
@@ -106,7 +106,7 @@ function AdminPanel() {
   // Handle merchant form submit
   const handleMerchantSubmit = (e) => {
     e.preventDefault();
-    
+
     registerMerchantMutation.mutate({
       ...merchantForm,
       voucherTypesAccepted: merchantForm.voucherTypesAccepted.map(Number),
@@ -301,8 +301,8 @@ function AdminPanel() {
               </div>
 
               <div className="form-actions">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn-primary"
                   disabled={mintMutation.isLoading}
                 >
