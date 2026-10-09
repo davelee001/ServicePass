@@ -308,8 +308,8 @@ function AdminPanel() {
                 >
                   {mintMutation.isLoading ? 'Minting...' : 'Mint Voucher'}
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn-secondary"
                   onClick={() => {/* Navigate to bulk mint */}}
                 >
@@ -406,15 +406,15 @@ function AdminPanel() {
               </div>
 
               <div className="form-actions">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn-primary"
                   disabled={registerMerchantMutation.isLoading}
                 >
                   {registerMerchantMutation.isLoading ? 'Registering...' : 'Register Merchant'}
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn-secondary"
                   onClick={() => {/* Navigate to merchant list */}}
                 >
