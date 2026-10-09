@@ -17,6 +17,7 @@ import MultiSigOperations from './pages/MultiSigOperations';
 import AdminPanel from './pages/AdminPanel';
 import OwnerRedemption from './pages/OwnerRedemption';
 import MerchantQrRedemption from './pages/MerchantQrRedemption';
+import LandingPage from './pages/LandingPage';
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -47,7 +48,19 @@ function App() {
           />
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<Navigate to="/user/dashboard" replace />} />
+              <Route 
+                path="/" 
+                element={
+                  <LandingPage 
+                    userType={userType} 
+                    setUserType={setUserType} 
+                    walletAddress={walletAddress} 
+                    setWalletAddress={setWalletAddress} 
+                    merchantId={merchantId} 
+                    setMerchantId={setMerchantId} 
+                  />
+                } 
+              />
               <Route path="/user/redeem" element={<OwnerRedemption />} />
               <Route path="/merchant/redeem" element={<MerchantQrRedemption />} />
               
