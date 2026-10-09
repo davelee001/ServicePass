@@ -388,7 +388,8 @@ sui client call \
   --package <PACKAGE_ID> \
   --module voucher_system \
   --function mint_voucher \
-  --args <ADMIN_CAP_ID> 1000 0 <RECIPIENT_ADDRESS> <EXPIRY_TIMESTAMP> \
+  --args <ADMIN_CAP_ID> <REGISTRY_ID> 2 1000 <RECIPIENT_ADDRESS> \
+    '[99,108,105,110,105,99]' <EXPIRY_TIMESTAMP_MS> '[]' 0x6 \
   --gas-budget 10000000
 ```
 
