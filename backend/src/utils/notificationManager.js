@@ -566,14 +566,14 @@ class NotificationManager {
         this.processorTimers.push(setInterval(async () => {
             const now = Date.now();
             const toSend = [];
-            
+
             for (const [scheduleId, data] of this.scheduledNotifications.entries()) {
                 if (data.status === 'scheduled' && data.scheduleTime <= now) {
                     toSend.push(data);
                     this.scheduledNotifications.delete(scheduleId);
                 }
             }
-            
+
             for (const data of toSend) {
                 try {
                     await this.sendNotification(data.userId, data.type, data.data, data.options);
@@ -582,9 +582,9 @@ class NotificationManager {
                     logger.error(`Failed to send scheduled notification ${data.scheduleId}:`, error);
                 }
             }
-        }, 10000); // Check every 10 seconds
+        }, 10000)); // Check every 10 seconds
     }
-    
+
     // Get batch status
     getBatchStatus(batchId) {
         return this.batchQueue.get(batchId) || { error: 'Batch not found' };
