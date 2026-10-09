@@ -5,7 +5,7 @@ const request = require('supertest');
 const express = require('express');
 const { Ed25519Keypair } = require('@mysten/sui/keypairs/ed25519');
 const { Transaction } = require('@mysten/sui/transactions');
-const { normalizeSuiObjectId } = require('@mysten/sui/utils');
+const { normalizeSuiObjectId, SUI_CLOCK_OBJECT_ID } = require('@mysten/sui/utils');
 const { createQrRedemptionService } = require('../src/services/qrRedemption');
 const { createQrRouter } = require('../src/routes/qrRedemptions');
 const id = n => normalizeSuiObjectId(`0x${n}`);
@@ -19,7 +19,9 @@ function fixture() {
     const intents = new Map(), redemptions = new Map(), submitted = [];
     const merchant = { merchantId: 'clinic', onChainObjectId: merchantId, isActive: true };
     const fields = { voucher_type: 2, amount: '100', merchant_id: 'clinic', expiry_timestamp: String(time + 86400000), is_redeemed: false };
+    const clockFields = { timestamp_ms: String(time) };
     const objects = {
+        [SUI_CLOCK_OBJECT_ID]: { objectId: SUI_CLOCK_OBJECT_ID, owner: { Shared: { initial_shared_version: '1' } }, content: { type: '0x2::clock::Clock', fields: clockFields } },
         [voucherId]: { objectId: voucherId, version: '1', digest, owner: { AddressOwner: owner.toSuiAddress() }, content: { type: `${packageId}::voucher_system::Voucher`, fields } },
         [merchantId]: { objectId: merchantId, version: '1', digest, owner: { Shared: { initial_shared_version: '1' } }, content: { type: `${packageId}::voucher_system::Merchant`, fields: { merchant_id: 'clinic', voucher_types_accepted: [2] } } },
         [registryId]: { objectId: registryId, version: '1', digest, owner: { Shared: { initial_shared_version: '1' } }, content: { type: `${packageId}::voucher_system::VoucherRegistry`, fields: {} } },
