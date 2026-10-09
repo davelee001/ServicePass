@@ -149,13 +149,15 @@ public entry fun redeem_voucher(
     registry: &mut VoucherRegistry,
     merchant: &mut Merchant,
     voucher: Voucher,
-    ctx: &mut TxContext
+    clock: &sui::clock::Clock,
+    _ctx: &mut TxContext
 )
 ```
 - **Access**: Public
 - **Validations**:
   - Voucher not already redeemed
-  - Voucher not expired
+  - Voucher not expired according to the Sui millisecond clock (zero means no expiry)
+  - Voucher merchant ID matches the supplied Merchant object
   - Merchant accepts voucher type
 - **Side Effects**:
   - Updates registry counter
