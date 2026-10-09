@@ -439,33 +439,21 @@ function Navigation({
               </Link>
             </div>
 
-        <div className="nav-wallet">
-          {userType === 'user' ? (
-            walletAddress ? (
-              <div className="wallet-info">
-                <FaWallet />
-                <span>{shortenAddress(walletAddress)}</span>
-              </div>
-            ) : (
-              <button className="connect-btn" onClick={handleWalletConnect}>
-                Connect Wallet
+            <div className="mobile-drawer-footer">
+              <button 
+                className="btn-drawer-action"
+                onClick={() => {
+                  handleWalletConnect();
+                  setMobileMenuOpen(false);
+                }}
+              >
+                <FaWallet /> {walletAddress ? 'Connected: ' + shortenAddress(walletAddress) : 'Connect Sui Wallet'}
               </button>
-            )
-          ) : (
-            merchantId ? (
-              <div className="wallet-info">
-                <FaStore />
-                <span>{merchantId}</span>
-              </div>
-            ) : (
-              <button className="connect-btn" onClick={handleMerchantLogin}>
-                Merchant Login
-              </button>
-            )
-          )}
-        </div>
-      </div>
-    </nav>
+            </div>
+          </div>
+        )}
+      </nav>
+    </header>
   );
 }
 
