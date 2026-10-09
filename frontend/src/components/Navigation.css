@@ -1,6 +1,5 @@
-.navigation {
-  background: var(--bg-secondary);
-  box-shadow: var(--shadow);
+/* Site Header & Navigation */
+.site-header {
   position: sticky;
   top: 0;
   z-index: 100;
