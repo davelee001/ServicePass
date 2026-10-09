@@ -96,8 +96,8 @@ function VoucherList({ walletAddress }) {
           const redemptionPercentage = ((originalAmount - balance) / originalAmount) * 100;
 
           return (
-            <div 
-              key={objectId} 
+            <div
+              key={objectId}
               className={`voucher-card ${expired ? 'expired' : ''} ${partiallyRedeemed ? 'partially-redeemed' : ''}`}
               style={{ borderTopColor: getVoucherTypeColor(voucherType) }}
             >
@@ -125,8 +125,8 @@ function VoucherList({ walletAddress }) {
                     <span>Remaining: {formatCurrency(balance)}</span>
                   </div>
                   <div className="progress-bar-container">
-                    <div 
-                      className="progress-bar-fill" 
+                    <div
+                      className="progress-bar-fill"
                       style={{ width: `${redemptionPercentage}%` }}
                     ></div>
                   </div>
@@ -144,7 +144,7 @@ function VoucherList({ walletAddress }) {
                 <div className="detail-row">
                   <span className="label">Expiry Date:</span>
                   <span className={expired ? 'expired-text' : ''}>
-                    {expiry ? formatDate(new Date(expiry)) : 'No expiry'}
+                    {Number(expiry) > 0 ? formatDate(new Date(Number(expiry))) : 'No expiry'}
                   </span>
                 </div>
                 {fields.merchant_id && (
@@ -163,7 +163,7 @@ function VoucherList({ walletAddress }) {
 
               {!expired && balance > 0 && (
                 <div className="voucher-actions">
-                  <button 
+                  <button
                     className="btn-primary"
                     onClick={() => {
                       setSelectedVoucher(voucher);
