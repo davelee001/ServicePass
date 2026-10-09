@@ -613,22 +613,22 @@ class NotificationManager {
             scheduledCount: this.scheduledNotifications.size
         };
     }
-    
+
     // Get user-specific analytics
     async getUserAnalytics(userId) {
         try {
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            
+
             const userHistory = await NotificationHistory.find({
                 userId,
                 createdAt: { $gte: thirtyDaysAgo }
             });
-            
+
             const channelStats = { email: 0, sms: 0, push: 0 };
             const statusStats = { sent: 0, failed: 0 };
             const typeStats = {};
-            
+
             userHistory.forEach(record => {
                 channelStats[record.channel] = (channelStats[record.channel] || 0) + 1;
                 statusStats[record.status] = (statusStats[record.status] || 0) + 1;
