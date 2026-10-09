@@ -700,17 +700,17 @@ class NotificationManager {
                 results.push({ scheduleId: data.scheduleId, status: 'failed', error: error.message });
             }
         }
-        
+
         return results;
     }
-    
+
     // Rate limiting for notifications
     async checkRateLimit(userId, type) {
         const rateLimitKey = `${userId}_${type}`;
         const now = Date.now();
         const windowMs = 60 * 1000; // 1 minute window
         const maxRequests = 10; // max 10 notifications per minute per type
-        
+
         if (!this.rateLimits) {
             this.rateLimits = new Map();
         }
