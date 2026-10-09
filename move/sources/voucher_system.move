@@ -59,7 +59,7 @@ module servicepass::voucher_system {
 
     // ===== Events =====
 
-    struct VoucherMinted has copy, drop {
+    public struct VoucherMinted has copy, drop {
         voucher_id: address,
         voucher_type: u8,
         amount: u64,
@@ -67,7 +67,7 @@ module servicepass::voucher_system {
         timestamp: u64,
     }
 
-    struct VoucherRedeemed has copy, drop {
+    public struct VoucherRedeemed has copy, drop {
         voucher_id: address,
         voucher_type: u8,
         amount: u64,
@@ -75,7 +75,7 @@ module servicepass::voucher_system {
         timestamp: u64,
     }
 
-    struct MerchantRegistered has copy, drop {
+    public struct MerchantRegistered has copy, drop {
         merchant_id: String,
         name: String,
     }
