@@ -36,7 +36,7 @@ Merchants use a scanner (e.g., in a mobile app or a web portal) to scan the user
     - **Signature Verification**: It recalculates the HMAC signature of the received payload (excluding the signature itself) and compares it to the signature in the payload. If they don't match, the request is rejected. This prevents tampering with the voucher data.
     - **Merchant Validation**: It checks that the `merchantId` in the payload matches the ID of the merchant making the request.
     - **Redemption Status**: It queries the `redemptions` database to ensure the `voucherId` has not already been redeemed.
-4.  **On-Chain Redemption**: If all checks pass, the backend constructs and executes a `redeem_voucher` transaction on the Sui blockchain using its own credentials.
+4.  **Owner Approval**: The backend prepares `redeem_voucher(registry, merchant, voucher, clock)`. The current owner reviews the request and signs the exact transaction in their wallet, paying gas. The backend submits that owner-signed transaction. The contract checks millisecond expiry and the designated merchant independently of the QR checks.
 5.  **Record Redemption**: Upon successful on-chain redemption, a new document is created in the `redemptions` collection to log the event and prevent double-spending.
 
 ## 4. Security Considerations
@@ -50,4 +50,6 @@ Merchants use a scanner (e.g., in a mobile app or a web portal) to scan the user
 
 -   `POST /api/vouchers/mint`: Mints a voucher and generates the QR code. (Admin only)
 -   `GET /api/vouchers/{voucherId}/qrcode`: Retrieves the QR code for a specific voucher. (User token required)
--   `POST /api/redemptions/redeem-qr`: Redeems a voucher using the scanned QR code payload. (Merchant API key required)
+-   `POST /api/redemptions/redeem-qr`: Prepares an owner-approved redemption using the scanned QR code payload. (Merchant API key required)
+
+See [owner signing and retry APIs](QR_REDEMPTION.md) and [on-chain expiry semantics](ONCHAIN_EXPIRY.md) for configuration, verification limits, and migration requirements.
