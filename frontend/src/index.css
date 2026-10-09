@@ -4,14 +4,21 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
-  --primary-color: #2196F3;
-  --secondary-color: #4CAF50;
-  --danger-color: #f44336;
-  --warning-color: #FF9800;
-  --text-primary: #333;
-  --text-secondary: #666;
-  --bg-primary: #f5f5f5;
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary-color: #10b981;
+  --secondary-hover: #059669;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
   --border-color: #e0e0e0;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
