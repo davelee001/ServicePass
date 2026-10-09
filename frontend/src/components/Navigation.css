@@ -168,14 +168,54 @@
   flex: 1;
 }
 
-.nav-links a:hover {
-  background: var(--bg-primary);
+.portal-toggle-pill {
+  display: flex;
+  background: #f1f5f9;
+  padding: 0.2rem;
+  border-radius: 8px;
+  margin-right: 0.5rem;
+}
+
+.portal-toggle-pill .toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: transparent;
+  color: #64748b;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.portal-toggle-pill .toggle-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.app-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.app-nav-link:hover {
+  background: #f8fafc;
+  color: #0f172a;
   text-decoration: none;
 }
 
-.nav-links a.active {
-  background: var(--primary-color);
-  color: white;
+.app-nav-link.active {
+  background: #eff6ff;
+  color: #2563eb;
 }
 
 .nav-links a.admin-link {
