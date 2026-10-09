@@ -589,7 +589,7 @@ class NotificationManager {
     getBatchStatus(batchId) {
         return this.batchQueue.get(batchId) || { error: 'Batch not found' };
     }
-    
+
     // Cancel scheduled notification
     cancelScheduledNotification(scheduleId) {
         const notification = this.scheduledNotifications.get(scheduleId);
@@ -599,11 +599,11 @@ class NotificationManager {
         }
         return { success: false, message: 'Notification not found' };
     }
-    
+
     // Get notification analytics
     getAnalytics() {
         const totalNotifications = this.analytics.totalSent + this.analytics.totalFailed;
-        
+
         return {
             ...this.analytics,
             successRate: totalNotifications > 0 ? (this.analytics.totalSent / totalNotifications) * 100 : 0,
