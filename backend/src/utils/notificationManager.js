@@ -676,20 +676,20 @@ class NotificationManager {
 
         return rateLimitData;
     }
-    
+
     // Process scheduled notifications manually
     async processScheduledNotifications() {
         const now = Date.now();
         const toSend = [];
-        
+
         for (const [scheduleId, data] of this.scheduledNotifications.entries()) {
             if (data.status === 'scheduled' && data.scheduleTime <= now) {
                 toSend.push(data);
             }
         }
-        
+
         const results = [];
-        
+
         for (const data of toSend) {
             try {
                 await this.sendNotification(data.userId, data.type, data.data, data.options);
