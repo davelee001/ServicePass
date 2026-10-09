@@ -448,14 +448,19 @@ class NotificationManager {
                     await this.addToRetryQueue(data, data.attempt + 1);
                 }
             }
-        }, 5000); // Check every 5 seconds
+        }, 5000)); // Check every 5 seconds
     }
-    
+
     // Send notifications in batches
-    async sendBulkNotifications(notifications, options = {}) {
+    async sendBulkNotifications(notifications, options = {}, data, legacyOptions = {}) {
+        if (typeof options === 'string') {
+            return typeof data === 'function'
+                ? this.sendBulkWithCallback(notifications, options, data)
+                : this.sendBulkToUsers(notifications, options, data, legacyOptions);
+        }
         const batchSize = options.batchSize || 50;
-        const batchId = `batch_${Date.now()}`;
-        
+        const batchId = `batch_${require('crypto').randomUUID()}`;
+
         // Add to batch queue
         this.batchQueue.set(batchId, {
             notifications,
