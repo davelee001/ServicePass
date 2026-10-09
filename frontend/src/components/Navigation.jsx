@@ -388,13 +388,16 @@ function Navigation({
               </button>
             </div>
 
-        <div className="nav-links">
-          {userType === 'user' ? (
-            <>
-              <Link to="/user/dashboard" className={isActive('/user/dashboard') ? 'active' : ''}>
-                <FaChartBar /> Dashboard
+            <div className="mobile-links-list">
+              <Link to="/" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                Home & Overview
               </Link>
-              <Link to="/user/vouchers" className={isActive('/user/vouchers') ? 'active' : ''}>
+
+              <div className="drawer-section-title">Beneficiary Experience</div>
+              <Link to="/user/dashboard" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaChartBar /> User Dashboard
+              </Link>
+              <Link to="/user/vouchers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaTicketAlt /> My Vouchers
               </Link>
               <Link to="/user/redeem" className={isActive('/user/redeem') ? 'active' : ''}>
