@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { voucherAPI } from '../services/api';
 import PartialRedemptionModal from '../components/PartialRedemptionModal';
-import { 
-  getVoucherTypeName, 
+import {
+  getVoucherTypeName,
   getVoucherTypeColor,
   getVoucherTypeIcon,
   formatCurrency,
@@ -44,11 +44,11 @@ function VoucherList({ walletAddress }) {
   }
 
   const vouchers = vouchersData?.vouchers || [];
-  
+
   const filteredVouchers = vouchers.filter(voucher => {
     const expiry = voucher.data?.content?.fields?.expiry_timestamp;
-    const expired = expiry && isVoucherExpired(expiry);
-    
+    const expired = isVoucherExpired(expiry);
+
     if (filter === 'active') return !expired;
     if (filter === 'expired') return expired;
     return true;
