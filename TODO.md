@@ -60,3 +60,8 @@ Completed items: **1, 2, 4, 5, 6 and 9**. Hosted CI and live deployment evidence
   Wallet entry generates a random 40-digit hex address, while the owner API requires 64 digits. Connect a real Sui wallet and use its account address; opening the dashboard must preserve the connected account instead of generating another. Cover landing-page entry and returning to an existing dashboard. See [Navigation.jsx](frontend/src/components/Navigation.jsx#L65) and [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L174).
 
   Completed (October 10, 2026): Both header and landing entry use a shared Wallet Standard selector with network/account validation and normalized 64-digit addresses. Dashboard entry preserves the selected account; disconnection and revoked-account events clear it. Missing wallets, rejected connections and multiple accounts have explicit UI handling. Eight automated wallet tests and four headless-browser scenarios passed with an injected Wallet Standard wallet; the frontend build passed. Live extension/testnet confirmation remains item 7. Run `npm --prefix frontend run test:wallet`.
+
+- [ ] **10. Correct unsupported landing page claims - P1 - Small**
+  Remove or qualify claims of partial on-chain redemption, audited architecture/templates, active deployed package status, and instant settlement that the current implementation does not establish. The contract currently consumes the entire voucher. Distinguish illustrative examples/simulations from live behavior, and describe the owner-signing flow accurately. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L132).
+
+- [ ] **11. Repair malformed landing page CSS - P1 - Small**
