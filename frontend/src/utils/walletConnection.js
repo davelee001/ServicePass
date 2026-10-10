@@ -16,3 +16,7 @@ export function compatibleWallets(wallets, chain) {
 
 export async function connectAccounts(wallet, chain) {
   const result = await wallet.features['standard:connect'].connect();
+  const accounts = compatibleAccounts(result.accounts || [], chain);
+  if (!accounts.length) throw new Error(`No compatible account. Switch your wallet to Sui ${chain.split(':')[1]} and try again.`);
+  return accounts;
+}
