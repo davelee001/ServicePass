@@ -29,3 +29,8 @@ test('rejects connection with no matching account or an invalid wallet address',
   for (const accounts of [[], [account('0x1', ['sui:mainnet'])], [account('0xnothex')], [account('0x' + 'a'.repeat(65))]]) {
     await assert.rejects(connectAccounts(wallet(accounts), chain), /No compatible account/);
   }
+  assert.throws(() => accountAddress(account('0xnothex')), /Invalid Sui/);
+});
+
+test('propagates wallet rejection without inventing a replacement account', async () => {
+  await assert.rejects(connectAccounts(wallet([], async () => { throw new Error('User rejected'); }), chain), /User rejected/);
