@@ -3,9 +3,12 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { generateTokens, verifyToken, JWT_SECRET } = require('../middleware/auth');
+const { generateTokens, verifyToken, adminOnly, JWT_SECRET } = require('../middleware/auth');
 const { authLimiter, registerLimiter, passwordResetLimiter } = require('../middleware/rateLimiter');
 const { logger } = require('../utils/logger');
+
+const adminCookieOptions = () => ({ httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict', path: '/api' });
+
 
 /**
  * @route   POST /api/auth/register
