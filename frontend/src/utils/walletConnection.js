@@ -11,3 +11,8 @@ export function compatibleAccounts(accounts, chain) {
 }
 
 export function compatibleWallets(wallets, chain) {
+  return wallets.filter(wallet => wallet.features['standard:connect'] && wallet.chains?.includes(chain));
+}
+
+export async function connectAccounts(wallet, chain) {
+  const result = await wallet.features['standard:connect'].connect();
