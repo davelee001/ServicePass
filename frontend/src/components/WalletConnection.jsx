@@ -84,3 +84,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
       await activeWallet.current?.features['standard:disconnect']?.disconnect();
       eventCleanup.current?.(); eventCleanup.current = null; activeWallet.current = null;
       setWalletAddress('');
+    } catch (failure) { setError(failure.message || 'Could not disconnect your wallet.'); }
+  };
+
+  return <Context.Provider value={{ requestConnection, disconnect }}>
+    {children}
