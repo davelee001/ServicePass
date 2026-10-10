@@ -22,6 +22,7 @@ import {
 } from 'react-icons/fa';
 import { shortenAddress } from '../utils/helpers';
 import './Navigation.css';
+import { useWalletConnection } from './WalletConnection';
 
 function Navigation({ 
   userType, 
@@ -31,6 +32,7 @@ function Navigation({
   merchantId, 
   setMerchantId 
 }) {
+  const { requestConnection, disconnect } = useWalletConnection();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -59,8 +61,8 @@ function Navigation({
   }, [location.pathname]);
 
   const handleWalletConnect = () => {
-    const mockAddress = '0x' + Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16)).join('');
-    setWalletAddress(mockAddress);
+    requestConnection(() => {
+      setUserType('user');
     setUserType('user');
     if (isLanding) {
       navigate('/user/dashboard');
