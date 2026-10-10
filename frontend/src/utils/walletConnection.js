@@ -7,3 +7,7 @@ export function accountAddress(account) {
 
 export function compatibleAccounts(accounts, chain) {
   return accounts.filter(account => account.chains?.includes(chain)
+    && /^0x[0-9a-fA-F]{1,64}$/.test(account.address));
+}
+
+export function compatibleWallets(wallets, chain) {
