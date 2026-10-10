@@ -55,3 +55,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
     });
     const onConnected = destination.current;
     destination.current = null; setOpen(false); setError(''); setAccounts([]);
+    onConnected?.();
+  };
+  const requestConnection = onConnected => enterWithAccount(walletAddress, onConnected, callback => {
+    destination.current = callback;
+    setWallet(null); setAccounts([]); setError(''); setOpen(true);
