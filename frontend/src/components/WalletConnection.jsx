@@ -31,3 +31,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
       }
     };
     update();
+    const offRegister = registry.on('register', update);
+    const offUnregister = registry.on('unregister', update);
+    return () => { offRegister(); offUnregister(); eventCleanup.current?.(); generation.current++; };
+  }, [setWalletAddress]);
+
