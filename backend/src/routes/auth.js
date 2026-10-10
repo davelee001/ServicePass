@@ -44,6 +44,11 @@ router.post('/admin/logout', (req, res, next) => {
     res.clearCookie('servicepass_admin', adminCookieOptions());
     next();
 }, verifyToken, adminOnly, async (req, res) => {
+    try {
+        await User.updateOne({ _id: req.userId }, { $inc: { adminSessionVersion: 1 } });
+        res.json({ success: true });
+    } catch (error) { res.status(500).json({ error: 'Logout failed' }); }
+});
 
 /**
  * @route   POST /api/auth/register
