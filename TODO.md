@@ -4,6 +4,11 @@
 
 Updated October 10, 2026. **8 items remain unfinished.** Existing item numbers are retained below.
 
+1. **Item 11 - Fix malformed landing page CSS.** Remove the stray declaration/brace and verify a warning-free CSS build.
+2. **Item 10 - Correct unsupported landing page claims.** Describe the implemented full-voucher redemption flow and actual audit/deployment status.
+3. **Item 12 - Validate the POS simulator.** Reject invalid amounts and amounts above the selected balance; clearly label simulated results.
+4. **Item 13 - Repair Security & Audit navigation.** Add an accurate destination section or point the control to an existing section.
+
 - [x] **1. Make CI run the real checks — P0 · Small**
   The root `npm test` script is a placeholder, while the CI workflow runs it from the root. Update `package.json` and `automated-testing.yml` to install and run the backend suite. Fix the smart-contract workflow’s build command/path too; the Move package manifest is `Move.toml`. Require these checks to pass before deployment.
 
