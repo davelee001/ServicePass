@@ -10,6 +10,9 @@ const api = axios.create({
   },
 });
 
+api.interceptors.response.use(response => response, error => {
+  if ([401, 403].includes(error.response?.status)) window.dispatchEvent(new Event('admin-session-expired'));
+  return Promise.reject(error);
 });
 
 // Voucher APIs
