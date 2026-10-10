@@ -179,10 +179,8 @@ function LandingPage({
   const handleQuickEnterUser = () => {
     requestConnection(() => {
       setUserType('user');
-      const mockAddress = '0x' + Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16)).join('');
-      setWalletAddress(mockAddress);
-    }
-    navigate('/user/dashboard');
+      navigate('/user/dashboard');
+    });
   };
 
   const handleQuickEnterMerchant = () => {
