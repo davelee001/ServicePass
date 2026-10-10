@@ -22,3 +22,8 @@ test('correct credentials establish an HttpOnly session accepted by protected AP
     const response = await login();
     expect(response.status).toBe(200);
     expect(response.body.user.role).toBe('admin');
+    const cookie = response.headers['set-cookie'][0];
+    expect(cookie).toContain('HttpOnly');
+    expect(cookie).toContain('SameSite=Strict');
+    expect(response.body.accessToken).toBeUndefined();
+    expect((await request(app).get('/api/auth/admin/session').set('Cookie', cookie)).status).toBe(200);
