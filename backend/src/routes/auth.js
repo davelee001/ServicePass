@@ -40,6 +40,10 @@ router.get('/admin/session', verifyToken, adminOnly, (req, res) => {
     res.json({ user: { username: req.user.username, role: req.user.role } });
 });
 
+router.post('/admin/logout', (req, res, next) => {
+    res.clearCookie('servicepass_admin', adminCookieOptions());
+    next();
+}, verifyToken, adminOnly, async (req, res) => {
 
 /**
  * @route   POST /api/auth/register
