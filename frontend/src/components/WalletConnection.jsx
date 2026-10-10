@@ -89,3 +89,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
 
   return <Context.Provider value={{ requestConnection, disconnect }}>
     {children}
+    {error && !open && <p role="alert" className="wallet-connection-notice">{error}</p>}
+    <dialog ref={dialog} className="wallet-connection-dialog" aria-labelledby="wallet-dialog-title" onCancel={cancel}>
+      <h2 id="wallet-dialog-title">Connect your Sui wallet</h2>
+      <p>Connect your wallet to view your vouchers. You will be asked to approve the connection.</p>
+      <div className="wallet-connection-options">
