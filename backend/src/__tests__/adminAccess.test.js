@@ -36,3 +36,8 @@ test('correct credentials establish an HttpOnly session accepted by protected AP
 test('incorrect passwords cannot establish an admin session', async () => {
     const response = await request(app).post('/api/auth/admin/login').send({ username: 'Admin', password: 'incorrect' });
     expect(response.status).toBe(401);
+    expect(response.headers['set-cookie']).toBeUndefined();
+});
+
+test('regular users cannot use the admin login or a forged role claim', async () => {
+    const user = await User.create({ username: 'Regular', email: 'regular@test.com', password: 'ServicePass', name: 'Regular', role: 'user' });
