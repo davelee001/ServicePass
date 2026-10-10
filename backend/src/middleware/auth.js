@@ -27,7 +27,9 @@ const generateTokens = (userId, role) => {
 // Verify JWT token middleware
 const verifyToken = async (req, res, next) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1]; // Bearer <token>
+        const cookie = req.headers.cookie?.split(';').map(value => value.trim())
+            .find(value => value.startsWith('servicepass_admin='));
+        const token = req.headers.authorization?.split(' ')[1] || cookie?.slice('servicepass_admin='.length);
 
         if (!token) {
             return res.status(401).json({ error: 'Access token required' });
@@ -50,6 +52,7 @@ const verifyToken = async (req, res, next) => {
             return res.status(401).json({ error: 'Account is deactivated' });
         }
 
+        if (decoded.type === 'admin-session' && decoded.sessionVersion !== user.adminSessionVersion) {
         req.user = user;
         req.userId = decoded.userId;
         req.userRole = decoded.role;
