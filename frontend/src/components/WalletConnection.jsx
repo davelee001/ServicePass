@@ -41,3 +41,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
     if (!open && dialog.current.open) dialog.current.close();
   }, [open]);
 
+  const cancel = () => {
+    generation.current++; destination.current = null;
+    setOpen(false); setBusy(false); setAccounts([]); setError('');
+  };
+  const complete = (selectedWallet, account) => {
