@@ -16,3 +16,8 @@ export default function AdminAccess({ children }) {
     let active = true;
     api.get('/auth/admin/session').then(response => { if (active) setUser(response.data.user); })
       .catch(failure => { if (active && failure.response?.status !== 401 && failure.response?.status !== 403) setError('Unable to reach the server. Please try again.'); })
+      .finally(() => { if (active) setLoading(false); });
+    const expired = () => { setUser(null); queryClient.clear(); };
+    window.addEventListener('admin-session-expired', expired);
+    return () => { active = false; window.removeEventListener('admin-session-expired', expired); };
+  }, [queryClient]);
