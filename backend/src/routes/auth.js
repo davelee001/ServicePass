@@ -35,6 +35,11 @@ router.post('/admin/login', authLimiter,
     }
 );
 
+router.get('/admin/session', verifyToken, adminOnly, (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    res.json({ user: { username: req.user.username, role: req.user.role } });
+});
+
 
 /**
  * @route   POST /api/auth/register
