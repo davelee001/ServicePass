@@ -17,3 +17,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
   const dialog = useRef(null);
   const destination = useRef(null);
   const activeWallet = useRef(null);
+  const eventCleanup = useRef(null);
+  const generation = useRef(0);
+
+  useEffect(() => {
+    const registry = getWallets();
