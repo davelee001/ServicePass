@@ -52,3 +52,8 @@ test('new entry waits for wallet approval before navigating', () => {
 
 test('account events preserve the selected account but clear revoked or changed access', () => {
   const current = accountAddress(account('0x1'));
+  assert.equal(retainedAddress([account('0x2'), account('0x1')], current, chain), current);
+  assert.equal(retainedAddress([], current, chain), '');
+  assert.equal(retainedAddress([account('0x2')], current, chain), '');
+  assert.equal(retainedAddress([account('0x1', ['sui:mainnet'])], current, chain), '');
+});
