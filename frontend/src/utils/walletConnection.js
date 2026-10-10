@@ -25,3 +25,8 @@ export async function connectAccounts(wallet, chain) {
 export function enterWithAccount(address, onConnected, openSelector) {
   if (address) onConnected();
   else openSelector(onConnected);
+}
+
+export function retainedAddress(accounts, address, chain) {
+  return compatibleAccounts(accounts, chain).some(account => accountAddress(account) === address) ? address : '';
+}
