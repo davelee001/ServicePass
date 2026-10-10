@@ -49,3 +49,8 @@ export default function AdminAccess({ children }) {
   return <section className="admin-login-card">
     <h1>Admin login</h1>
     <p>Sign in to access the admin dashboard.</p>
+    <form onSubmit={login}>
+      <label htmlFor="admin-username">Username</label>
+      <input id="admin-username" autoComplete="username" value={username} onChange={event => setUsername(event.target.value)} required />
+      <label htmlFor="admin-password">Password</label>
+      <input id="admin-password" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} required />
