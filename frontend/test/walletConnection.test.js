@@ -43,3 +43,7 @@ test('Open Dashboard retains the account and does not open another connection re
 });
 
 test('new entry waits for wallet approval before navigating', () => {
+  let navigated = 0, approval;
+  enterWithAccount('', () => navigated++, callback => { approval = callback; });
+  assert.equal(navigated, 0);
+  approval();
