@@ -70,3 +70,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
       if (available.length === 1) complete(selectedWallet, available[0]);
       else setAccounts(available);
     } catch (failure) {
+      if (request === generation.current) setError(failure.message || 'Wallet connection was declined. Try again.');
+    } finally { if (request === generation.current) setBusy(false); }
+  };
+  const detectWallet = () => {
+    const available = compatibleWallets(getWallets().get(), chain);
