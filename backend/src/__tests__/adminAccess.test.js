@@ -27,3 +27,7 @@ test('correct credentials establish an HttpOnly session accepted by protected AP
     expect(cookie).toContain('SameSite=Strict');
     expect(response.body.accessToken).toBeUndefined();
     expect((await request(app).get('/api/auth/admin/session').set('Cookie', cookie)).status).toBe(200);
+    expect((await request(app).post('/api/admin-action').set('Cookie', cookie)).status).toBe(200);
+    const stored = await User.findOne({ username: 'Admin' });
+    expect(stored.password).not.toBe('ServicePass');
+    expect(await stored.comparePassword('ServicePass')).toBe(true);
