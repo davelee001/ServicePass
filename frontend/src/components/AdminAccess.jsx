@@ -44,3 +44,8 @@ export default function AdminAccess({ children }) {
   if (user?.role === 'admin') return <>
     <div className="admin-session-bar"><span>Signed in as {user.username || 'Administrator'}</span><button onClick={logout} disabled={busy}>Sign out</button></div>
     {error && <p role="alert">{error}</p>}
+    {children}
+  </>;
+  return <section className="admin-login-card">
+    <h1>Admin login</h1>
+    <p>Sign in to access the admin dashboard.</p>
