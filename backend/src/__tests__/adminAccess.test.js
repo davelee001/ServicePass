@@ -46,3 +46,8 @@ test('regular users cannot use the admin login or a forged role claim', async ()
     expect((await request(app).post('/api/admin-action').set('Authorization', `Bearer ${token}`)).status).toBe(403);
 });
 
+test('sign-out invalidates previously issued admin cookies', async () => {
+    const cookie = (await login()).headers['set-cookie'][0];
+    const logout = await request(app).post('/api/auth/admin/logout').set('Cookie', cookie);
+    expect(logout.status).toBe(200);
+    expect(logout.headers['set-cookie'][0]).toContain('Expires=Thu, 01 Jan 1970');
