@@ -22,3 +22,7 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
 
   useEffect(() => {
     const registry = getWallets();
+    const update = () => {
+      const available = compatibleWallets(registry.get(), chain);
+      setWallets(available);
+      if (available.length) setError('');
