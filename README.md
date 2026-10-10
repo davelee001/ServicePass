@@ -46,7 +46,7 @@ ServicePass is an **actively developed** voucher system with:
 
 Work is tracked in [TODO.md](TODO.md).
 
-- **Item 1: CI checks:** Completed locally. `npm run test:ci` passes all 219 backend regression tests across 15 suites and 50 focused checks. `npm run test:move` builds the pinned package and passes all 11 Move tests with Sui CLI 1.80.1. Both deployment workflows require these checks for the same revision. A hosted GitHub run remains pending push. See [CI validation and repairs](docs/CI_VALIDATION.md).
+- **Item 1: CI checks:** Implemented backend checks on Node.js 24 and pinned Move build/tests. The latest backend regression run passed all 225 tests across 16 suites; the October 7 CI validation also passed 50 focused checks and 11 Move tests. Both deployment workflows require these checks for the same revision. Updates are pushed; hosted workflow results can be reviewed in [GitHub Actions](https://github.com/davelee001/ServicePass/actions). See [CI validation and repairs](docs/CI_VALIDATION.md).
 - **Item 2: API routing:** Implemented and checked off. Both frontend modes use same-origin `/api` requests. Frontend build and development proxy checks passed, including query strings, POST bodies, authentication headers, and API error responses. Live production-container verification is pending because Docker Desktop was not running during validation.
 - **Item 3: Deployment configuration:** Added fail-closed production startup checks, exact HTTPS CORS origins, and secret-manager file inputs. The standalone production Compose file uses mounted secrets and managed MongoDB/Redis. See [Production configuration](docs/PRODUCTION_CONFIGURATION.md). All **32 focused configuration tests passed**, including actual server startup rejection, secret file handling, and CORS checks; both Compose definitions passed configuration parsing. Actual secret-manager provisioning and live production verification remain pending, so item 3 stays open. Dependency triage is documented in [Dependency triage](docs/DEPENDENCY_TRIAGE.md).
 
@@ -56,7 +56,11 @@ Work is tracked in [TODO.md](TODO.md).
 
 - **Item 6: On-chain expiry and merchant enforcement:** Implemented the immutable Sui millisecond clock, exact expiry boundary, no-expiry sentinel, and contract merchant-ID enforcement. Transaction builders and application expiry units are aligned. The contract builds and all 11 Move tests pass; 11 focused QR tests, the model/frontend expiry check, and frontend build pass. See [expiry semantics and deployment migration](docs/ONCHAIN_EXPIRY.md).
 
-**3 TODO items remain open:** 3, 7, and 8. Item 7 (the complete testnet system) is next.
+- **Item 9: Wallet entry:** Completed. Header and landing-page entry use a shared Wallet Standard selector, normalize real account addresses and preserve the connected account when reopening the dashboard. Missing-wallet errors appear only after an explicit connection attempt. Eight wallet tests and four browser scenarios passed.
+
+- **Admin access:** `/admin` requires a server-verified administrator session. Login, session restoration and sign-out are covered by six backend tests and four browser checks. See [Admin access](docs/ADMIN_ACCESS.md).
+
+**8 TODO items remain open:** 3, 7, 8, 10, 11, 12, 13 and 14. The recommended next item is **11: repair malformed landing page CSS**, followed by correcting unsupported claims, simulator validation, navigation and accessibility. See [the ordered checklist](TODO.md).
 
 | Mode | Frontend URL | API upstream |
 |------|--------------|--------------|
@@ -65,6 +69,21 @@ Work is tracked in [TODO.md](TODO.md).
 | Compose Nginx | `http://localhost:3001` | `http://backend:3000` through Nginx |
 
 Browser API paths retain the `/api` prefix. Production readiness depends on resolving and validating the remaining checklist items.
+
+## Wallet Entry and Admin Login
+
+Open `/` and use a beneficiary entry action or **Launch Portal**. Choose an available Sui wallet and approve its connection; select an account if the wallet exposes several. Opening the selector shows a neutral prompt. If no wallet is available, click **Connect wallet** to attempt detection; only then does the missing-wallet message appear. Installing/unlocking a compatible wallet lets you retry.
+
+**Open Dashboard** reuses the selected account. Disconnecting or revoking wallet account access clears that account from the app. Wallet connection grants no administrator privileges. `VITE_SUI_NETWORK` defaults to `testnet`; live wallet-extension and end-to-end testnet verification remain item 7.
+
+Opening `/admin` without a valid admin session shows the login form. The local development account uses username `Admin` and the password supplied during provisioning. Passwords are bcrypt-hashed in MongoDB and are not embedded in frontend code. The one-hour session uses an HttpOnly, SameSite=Strict cookie, with Secure enabled in production. Admin APIs verify current database roles; sign-out invalidates previously issued admin-session cookies. Production administrator credentials must be provisioned separately.
+
+```sh
+npm --prefix frontend run test:wallet
+npm --prefix backend test -- --runInBand src/__tests__/adminAccess.test.js
+```
+
+Validated on October 10, 2026: eight wallet tests, six admin authentication tests, browser wallet/login scenarios, the full 225-test backend suite, and the frontend production build passed. The build still reports the known landing-page CSS warnings tracked in item 11.
 
 ## Owner-Approved QR Redemption
 
@@ -318,9 +337,12 @@ cp .env.example .env
 ### 3. Create Admin User
 
 ```bash
-# From the backend directory, create an admin with custom credentials
-npm run create-admin -- admin@example.com "ReplaceWithYourPassword" "Admin Name"
+# Configure MONGODB_URI, ADMIN_USERNAME and ADMIN_PASSWORD in the server environment.
+# From the repository root:
+npm --prefix backend run create-admin
 ```
+
+The creation script requires a supplied password and never prints it. It defaults the username to `Admin`; no production password is installed automatically. See [Admin access](docs/ADMIN_ACCESS.md).
 
 ### 4. Run Backend Server
 
@@ -385,11 +407,11 @@ npm ci --prefix backend
 npm run test:config
 ```
 
-Configuration, dependency compatibility, QR redemption, and SDK/Jest checks run before the backend Jest suite in `npm run test:ci`. The complete command now passes, including all 219 backend regression tests.
+Configuration, dependency compatibility, QR redemption, expiry, and SDK/Jest checks run before the backend Jest suite in `npm run test:ci`. The October 7 complete CI command passed; the latest October 10 backend regression run passed 225 tests.
 
 ### Current Integration Limitations
 
-- The shared `analyticsAPI.getDashboard()` helper used by AdminPanel does not yet attach a Bearer token. The backend dashboard route requires JWT authentication, so requests through this helper return 401 until token handling is added.
+- AdminPanel requests use the server-issued admin session cookie. Anonymous users see the login form; expired or rejected sessions return them to it.
 - Backend CI uses Node.js 24 and runs the backend Jest suite. Both automatic and manual deployment workflows depend on backend tests and Move build/tests passing for the same revision. Production deployment still contains placeholder server settings that must be configured before use.
 
 ## Frontend Features
@@ -578,6 +600,9 @@ Configuration, dependency compatibility, QR redemption, and SDK/Jest checks run 
 ### Authentication
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - User login
+- `POST /api/auth/admin/login` - Administrator username/password login
+- `GET /api/auth/admin/session` - Verify an administrator session
+- `POST /api/auth/admin/logout` - Clear and revoke administrator sessions
 - `POST /api/auth/refresh` - Refresh access token
 - `POST /api/auth/logout` - User logout
 - `GET /api/auth/me` - Get current user
@@ -1863,12 +1888,12 @@ For questions, issues, or support:
 ## Project Status
 
 **Status**: ✅ Active Development  
-**Last Updated**: October 7, 2026<br>
+**Last Updated**: October 10, 2026<br>
 **Version**: 1.0.0  
-**Test Validation**: 50 focused checks, 219 backend regression tests, and 11 Move tests pass.<br>
+**Test Validation**: Latest backend run: 225 tests; wallet checks: 8 tests; admin tests: 6 (included in the 225). Browser wallet/admin scenarios passed. Earlier CI validation passed 50 focused checks and 11 Move tests.<br>
 **Documentation**: Complete with enhanced API docs, user guides, merchant onboarding, audit reports, deployment runbooks, Docker & Kubernetes guides (includes diagrams, quick starts, and performance tips)  
 **Frontend**: Complete UI with 16+ React pages including Admin Panel, Template Gallery, Scheduled Vouchers, Transfer Management, Multi-Sig Operations  
-**Admin Panel**: Web-based control panel for voucher minting, merchant management, analytics, and system configuration  
+**Admin Panel**: Login-protected control panel with server-side authorization and sign-out<br>
 **Backend**: 85+ API endpoints with full authentication and authorization  
 **Database**: MongoDB with 13+ data models  
 **Blockchain**: SUI Move contracts; current Move CI and full testnet flows require verification.<br>
