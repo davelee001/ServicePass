@@ -28,6 +28,7 @@ import {
   FaCopy 
 } from 'react-icons/fa';
 import './LandingPage.css';
+import { useWalletConnection } from '../components/WalletConnection';
 
 const VOUCHER_CATEGORIES = [
   {
@@ -156,6 +157,7 @@ function LandingPage({
   merchantId, 
   setMerchantId 
 }) {
+  const { requestConnection } = useWalletConnection();
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState(VOUCHER_CATEGORIES[0]);
   const [activeFaq, setActiveFaq] = useState(0);
@@ -175,8 +177,8 @@ function LandingPage({
 
   // Quick Action Handler for Roles
   const handleQuickEnterUser = () => {
-    setUserType('user');
-    if (!walletAddress) {
+    requestConnection(() => {
+      setUserType('user');
       const mockAddress = '0x' + Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16)).join('');
       setWalletAddress(mockAddress);
     }
