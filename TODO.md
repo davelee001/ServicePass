@@ -13,6 +13,9 @@ Updated October 10, 2026. **8 items remain unfinished.** Existing item numbers a
 7. **Item 7 - Prove the full system on testnet.** Validate actual wallet/frontend/backend/contract flows after the integration fixes.
 8. **Item 8 - Complete security and operations readiness.** Finish audit, recovery, monitoring, staged deployment and rollback verification before production.
 
+Completed items: **1, 2, 4, 5, 6 and 9**. Hosted CI and live deployment evidence must still be checked for the relevant revision; prior local test results do not validate new changes automatically.
+
+## Detailed checklist
 
 - [x] **1. Make CI run the real checks — P0 · Small**
   The root `npm test` script is a placeholder, while the CI workflow runs it from the root. Update `package.json` and `automated-testing.yml` to install and run the backend suite. Fix the smart-contract workflow’s build command/path too; the Move package manifest is `Move.toml`. Require these checks to pass before deployment.
@@ -51,3 +54,5 @@ Updated October 10, 2026. **8 items remain unfinished.** Existing item numbers a
 
 - [ ] **8. Complete production security and operations readiness — P1 · Large**
   Review contract and API authorization with a security audit; protect admin signing keys; verify TLS, database/Redis backups and recovery, monitoring/alerts, and incident procedures. Then do a staged deployment with a rollback plan.
+
+
