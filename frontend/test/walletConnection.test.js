@@ -16,3 +16,7 @@ test('uses the wallet-provided address in the 64-digit format required by the AP
 });
 
 test('filters wallet discovery by configured network and connection support', () => {
+  const supported = wallet([]);
+  assert.deepEqual(compatibleWallets([supported, { ...supported, chains: ['sui:mainnet'] }, { chains: [chain], features: {} }], chain), [supported]);
+});
+
