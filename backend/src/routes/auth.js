@@ -22,6 +22,11 @@ router.post('/admin/login', authLimiter,
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
             if (user.loginAttempts || user.lockUntil) await user.resetLoginAttempts();
+            user.lastLogin = new Date();
+            await user.save();
+            const token = jwt.sign({ userId: user._id, role: 'admin', type: 'admin-session', sessionVersion: user.adminSessionVersion }, JWT_SECRET, { expiresIn: '1h' });
+            res.set('Cache-Control', 'no-store');
+            res.cookie('servicepass_admin', token, { ...adminCookieOptions(), maxAge: 3600000 });
 
 /**
  * @route   POST /api/auth/register
