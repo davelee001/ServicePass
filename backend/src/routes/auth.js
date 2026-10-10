@@ -27,6 +27,10 @@ router.post('/admin/login', authLimiter,
             const token = jwt.sign({ userId: user._id, role: 'admin', type: 'admin-session', sessionVersion: user.adminSessionVersion }, JWT_SECRET, { expiresIn: '1h' });
             res.set('Cache-Control', 'no-store');
             res.cookie('servicepass_admin', token, { ...adminCookieOptions(), maxAge: 3600000 });
+            return res.json({ user: { username: user.username, role: user.role } });
+        } catch (error) {
+            logger.error('Admin login failed', { error: error.message });
+            return res.status(500).json({ error: 'Login failed' });
 
 /**
  * @route   POST /api/auth/register
