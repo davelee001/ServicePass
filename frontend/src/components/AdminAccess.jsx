@@ -54,3 +54,8 @@ export default function AdminAccess({ children }) {
       <input id="admin-username" autoComplete="username" value={username} onChange={event => setUsername(event.target.value)} required />
       <label htmlFor="admin-password">Password</label>
       <input id="admin-password" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} required />
+      {error && <p role="alert">{error}</p>}
+      <button type="submit" disabled={busy}>{busy ? 'Signing in...' : 'Sign in'}</button>
+    </form>
+  </section>;
+}
