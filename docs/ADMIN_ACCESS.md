@@ -6,3 +6,7 @@ The `/admin` route checks the backend session before mounting any dashboard cont
 
 The requested administrator was provisioned in the isolated local development database. Credentials are not embedded in frontend code or automatically installed as production defaults.
 
+For another database, set `MONGODB_URI`, `ADMIN_USERNAME` and `ADMIN_PASSWORD` in your server environment, then run:
+
+```sh
+npm --prefix backend run create-admin
