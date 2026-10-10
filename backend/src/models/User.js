@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
+    username: { type: String, trim: true, unique: true, sparse: true },
+    adminSessionVersion: { type: Number, default: 0 },
     userId: { type: String, unique: true, sparse: true, default: function() { return this._id.toString(); } },
     email: {
         type: String,
