@@ -53,9 +53,12 @@ const verifyToken = async (req, res, next) => {
         }
 
         if (decoded.type === 'admin-session' && decoded.sessionVersion !== user.adminSessionVersion) {
+            return res.status(401).json({ error: 'Session expired' });
+        }
+
         req.user = user;
         req.userId = decoded.userId;
-        req.userRole = decoded.role;
+        req.userRole = user.role;
 
         next();
     } catch (error) {
