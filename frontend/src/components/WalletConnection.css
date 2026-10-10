@@ -6,3 +6,8 @@
   border-radius: 12px;
   color: #0f172a;
 }
+.wallet-connection-dialog::backdrop { background: rgba(15, 23, 42, 0.5); }
+.wallet-connection-options { display: grid; gap: 0.75rem; margin: 1rem 0; }
+.wallet-connection-options button { overflow-wrap: anywhere; }
+.wallet-connection-dialog [role="alert"], .wallet-connection-notice { color: #b91c1c; }
+.wallet-connection-dialog button:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
