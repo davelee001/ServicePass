@@ -60,3 +60,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
   const requestConnection = onConnected => enterWithAccount(walletAddress, onConnected, callback => {
     destination.current = callback;
     setWallet(null); setAccounts([]); setError(''); setOpen(true);
+  });
+  const connect = async selectedWallet => {
+    const request = ++generation.current;
+    setBusy(true); setError(''); setWallet(selectedWallet); setAccounts([]);
+    try {
