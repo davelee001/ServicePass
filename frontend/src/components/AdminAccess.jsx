@@ -35,3 +35,8 @@ export default function AdminAccess({ children }) {
     try { await api.post('/auth/admin/logout'); setUser(null); queryClient.clear(); }
     catch (failure) {
       if ([401, 403].includes(failure.response?.status)) { setUser(null); queryClient.clear(); }
+      else setError('Unable to sign out. Please try again.');
+    }
+    finally { setBusy(false); }
+  };
+
