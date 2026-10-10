@@ -10,3 +10,8 @@ For another database, set `MONGODB_URI`, `ADMIN_USERNAME` and `ADMIN_PASSWORD` i
 
 ```sh
 npm --prefix backend run create-admin
+```
+
+The existing script optionally accepts email, password, display name and username arguments. It requires a supplied password, hashes it through the User model, and does not print the password. Public registration cannot create administrator accounts.
+
+Validation: six backend tests cover denied access, correct/wrong credentials, cookie properties, current roles, revoked sessions and disabled accounts. Browser checks exercise the direct URL, wrong password, successful login, reload and sign-out against the running local API.
