@@ -13,6 +13,11 @@ router.post('/admin/login', authLimiter,
     [body('username').isString().trim().notEmpty(), body('password').isString().notEmpty()],
     async (req, res) => {
         if (!validationResult(req).isEmpty()) return res.status(400).json({ error: 'Username and password are required' });
+        try {
+            const user = await User.findOne({ username: req.body.username, role: 'admin' }).select('+password');
+            if (!user || !user.isActive) return res.status(401).json({ error: 'Invalid credentials' });
+            if (user.isLocked()) return res.status(423).json({ error: 'Account is temporarily locked. Try again later.' });
+            if (!await user.comparePassword(req.body.password)) {
 
 /**
  * @route   POST /api/auth/register
