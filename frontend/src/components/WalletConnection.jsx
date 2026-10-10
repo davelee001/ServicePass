@@ -46,3 +46,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
     setOpen(false); setBusy(false); setAccounts([]); setError('');
   };
   const complete = (selectedWallet, account) => {
+    const address = accountAddress(account);
+    eventCleanup.current?.();
+    activeWallet.current = selectedWallet;
+    setWalletAddress(address);
+    eventCleanup.current = selectedWallet.features['standard:events']?.on('change', changes => {
