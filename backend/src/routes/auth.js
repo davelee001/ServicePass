@@ -31,6 +31,10 @@ router.post('/admin/login', authLimiter,
         } catch (error) {
             logger.error('Admin login failed', { error: error.message });
             return res.status(500).json({ error: 'Login failed' });
+        }
+    }
+);
+
 
 /**
  * @route   POST /api/auth/register
