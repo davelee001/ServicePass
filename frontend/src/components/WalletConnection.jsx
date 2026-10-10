@@ -99,3 +99,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
           : wallets.map((item, index) => <button key={index} disabled={busy} onClick={() => connect(item)}>{item.name}</button>)}
       </div>
       {busy && <p role="status">Waiting for wallet approval...</p>}
+      {error && <p role="alert">{error}</p>}
+      <button onClick={cancel}>Cancel</button>
+    </dialog>
+  </Context.Provider>;
+}
