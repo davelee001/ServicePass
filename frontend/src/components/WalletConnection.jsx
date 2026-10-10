@@ -36,3 +36,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
     return () => { offRegister(); offUnregister(); eventCleanup.current?.(); generation.current++; };
   }, [setWalletAddress]);
 
+  useEffect(() => {
+    if (open && !dialog.current.open) dialog.current.showModal();
+    if (!open && dialog.current.open) dialog.current.close();
+  }, [open]);
+
