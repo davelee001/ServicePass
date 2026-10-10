@@ -26,3 +26,7 @@ export default function AdminAccess({ children }) {
     event.preventDefault(); setBusy(true); setError('');
     try {
       const response = await api.post('/auth/admin/login', { username, password });
+      queryClient.clear(); setPassword(''); setUser(response.data.user);
+    } catch (failure) { setError(failure.response?.data?.error || 'Unable to log in. Please try again.'); }
+    finally { setBusy(false); }
+  };
