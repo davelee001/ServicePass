@@ -47,3 +47,8 @@ test('new entry waits for wallet approval before navigating', () => {
   enterWithAccount('', () => navigated++, callback => { approval = callback; });
   assert.equal(navigated, 0);
   approval();
+  assert.equal(navigated, 1);
+});
+
+test('account events preserve the selected account but clear revoked or changed access', () => {
+  const current = accountAddress(account('0x1'));
