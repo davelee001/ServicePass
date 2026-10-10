@@ -34,3 +34,7 @@ test('rejects connection with no matching account or an invalid wallet address',
 
 test('propagates wallet rejection without inventing a replacement account', async () => {
   await assert.rejects(connectAccounts(wallet([], async () => { throw new Error('User rejected'); }), chain), /User rejected/);
+});
+
+test('Open Dashboard retains the account and does not open another connection request', () => {
+  let navigated = 0;
