@@ -51,3 +51,8 @@ test('sign-out invalidates previously issued admin cookies', async () => {
     const logout = await request(app).post('/api/auth/admin/logout').set('Cookie', cookie);
     expect(logout.status).toBe(200);
     expect(logout.headers['set-cookie'][0]).toContain('Expires=Thu, 01 Jan 1970');
+    expect((await request(app).get('/api/auth/admin/session').set('Cookie', cookie)).status).toBe(401);
+});
+
+test('disabling or demoting an administrator blocks an existing session', async () => {
+    const cookie = (await login()).headers['set-cookie'][0];
