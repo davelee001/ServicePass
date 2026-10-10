@@ -17,3 +17,8 @@ test('unauthenticated sessions and administrative actions are denied', async () 
     expect((await request(app).get('/api/auth/admin/session')).status).toBe(401);
     expect((await request(app).post('/api/admin-action')).status).toBe(401);
 });
+
+test('correct credentials establish an HttpOnly session accepted by protected API routes', async () => {
+    const response = await login();
+    expect(response.status).toBe(200);
+    expect(response.body.user.role).toBe('admin');
