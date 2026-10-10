@@ -94,3 +94,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
       <h2 id="wallet-dialog-title">Connect your Sui wallet</h2>
       <p>Connect your wallet to view your vouchers. You will be asked to approve the connection.</p>
       <div className="wallet-connection-options">
+        {!wallets.length && <button onClick={detectWallet}>Connect wallet</button>}
+        {accounts.length ? accounts.map(account => <button key={account.address} onClick={() => complete(wallet, account)}>{accountAddress(account)}</button>)
+          : wallets.map((item, index) => <button key={index} disabled={busy} onClick={() => connect(item)}>{item.name}</button>)}
+      </div>
+      {busy && <p role="status">Waiting for wallet approval...</p>}
