@@ -38,3 +38,8 @@ test('propagates wallet rejection without inventing a replacement account', asyn
 
 test('Open Dashboard retains the account and does not open another connection request', () => {
   let navigated = 0;
+  enterWithAccount('0x' + 'a'.repeat(64), () => navigated++, () => assert.fail('Must not reconnect'));
+  assert.equal(navigated, 1);
+});
+
+test('new entry waits for wallet approval before navigating', () => {
