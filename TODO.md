@@ -1,5 +1,9 @@
 # ServicePass TODO
 
+## Recommended order for unfinished work
+
+Updated October 10, 2026. **8 items remain unfinished.** Existing item numbers are retained below.
+
 - [x] **1. Make CI run the real checks — P0 · Small**
   The root `npm test` script is a placeholder, while the CI workflow runs it from the root. Update `package.json` and `automated-testing.yml` to install and run the backend suite. Fix the smart-contract workflow’s build command/path too; the Move package manifest is `Move.toml`. Require these checks to pass before deployment.
 
