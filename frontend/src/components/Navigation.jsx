@@ -69,7 +69,9 @@ function Navigation({
 
   const handleMerchantLogin = () => {
     if (!merchantId) {
-    setMerchantId(mockId);
+      const mockId = 'MERCHANT_' + Math.random().toString(36).substr(2, 7).toUpperCase();
+      setMerchantId(mockId);
+    }
     setUserType('merchant');
     if (isLanding) {
       navigate('/merchant/dashboard');
@@ -78,7 +80,7 @@ function Navigation({
 
   const handleDisconnect = () => {
     if (userType === 'user') {
-      setWalletAddress('');
+      void disconnect();
     } else {
       setMerchantId('');
     }
@@ -322,7 +324,7 @@ function Navigation({
                     }
                   }}
                 >
-                  <FaWallet /> {walletAddress ? 'Open Dashboard' : 'Launch Portal'} <FaArrowRight />
+                  <FaWallet /> {(userType === 'user' ? walletAddress : merchantId) ? 'Open Dashboard' : 'Launch Portal'} <FaArrowRight />
                 </button>
               </div>
             ) : (
