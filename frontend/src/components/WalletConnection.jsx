@@ -79,3 +79,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
     setError(available.length ? '' : 'No wallet detected. Open or install a Sui wallet, then try connecting again.');
   };
   const disconnect = async () => {
+    setError('');
+    try {
+      await activeWallet.current?.features['standard:disconnect']?.disconnect();
+      eventCleanup.current?.(); eventCleanup.current = null; activeWallet.current = null;
+      setWalletAddress('');
