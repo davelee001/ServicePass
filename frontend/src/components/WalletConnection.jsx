@@ -26,3 +26,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
       const available = compatibleWallets(registry.get(), chain);
       setWallets(available);
       if (available.length) setError('');
+      if (activeWallet.current && !available.includes(activeWallet.current)) {
+        eventCleanup.current?.(); activeWallet.current = null; setWalletAddress('');
+      }
+    };
+    update();
