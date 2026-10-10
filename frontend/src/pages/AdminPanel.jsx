@@ -68,7 +68,7 @@ function AdminPanel() {
 
   // Register merchant mutation
   const registerMerchantMutation = useMutation({
-    mutationFn: (data) => merchantAPI.register(data),
+    mutationFn: (data) => merchantAPI.registerMerchant(data),
     onSuccess: () => {
       queryClient.invalidateQueries(['merchants']);
       alert('Merchant registered successfully!');
