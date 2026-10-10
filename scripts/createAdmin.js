@@ -8,6 +8,8 @@
 const path = require('path');
 const { createRequire } = require('module');
 const backendRequire = createRequire(path.join(__dirname, '../backend/package.json'));
+const mongoose = backendRequire('mongoose');
+const dotenv = backendRequire('dotenv');
 
 // Load environment variables from backend/.env
 dotenv.config({ path: path.join(__dirname, '../backend/.env') });
@@ -23,7 +25,8 @@ const createAdmin = async () => {
 
         // Admin details
         const adminEmail = process.argv[2] || 'admin@servicepass.com';
-        const adminPassword = process.argv[3] || 'Admin123456';
+        const adminPassword = process.argv[3] || process.env.ADMIN_PASSWORD;
+        const adminUsername = process.argv[5] || process.env.ADMIN_USERNAME || 'Admin';
         const adminName = process.argv[4] || 'System Administrator';
 
         // Check if admin already exists
