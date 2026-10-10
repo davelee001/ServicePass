@@ -2,3 +2,7 @@
   margin: auto;
   padding: 1.5rem;
   width: min(92vw, 480px);
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  color: #0f172a;
+}
