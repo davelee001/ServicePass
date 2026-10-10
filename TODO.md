@@ -65,3 +65,8 @@ Completed items: **1, 2, 4, 5, 6 and 9**. Hosted CI and live deployment evidence
   Remove or qualify claims of partial on-chain redemption, audited architecture/templates, active deployed package status, and instant settlement that the current implementation does not establish. The contract currently consumes the entire voucher. Distinguish illustrative examples/simulations from live behavior, and describe the owner-signing flow accurately. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L132).
 
 - [ ] **11. Repair malformed landing page CSS - P1 - Small**
+  Remove the stray declaration and closing brace that produce CSS build warnings. Check stylesheet parsing and the production build, then inspect the landing page at desktop and mobile widths. See [LandingPage.css](frontend/src/pages/LandingPage.css#L1969).
+
+- [ ] **12. Validate POS simulator inputs - P1 - Small**
+  Reject non-finite, zero/negative and over-balance amounts before showing success. Use the selected sample voucher's actual remaining balance and avoid presenting random simulated digests as confirmed chain transactions. Verify category switching and boundary values. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L206).
+
