@@ -5,9 +5,9 @@
  * Run with: node scripts/createAdmin.js
  */
 
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const path = require('path');
+const { createRequire } = require('module');
+const backendRequire = createRequire(path.join(__dirname, '../backend/package.json'));
 
 // Load environment variables from backend/.env
 dotenv.config({ path: path.join(__dirname, '../backend/.env') });
