@@ -40,3 +40,7 @@ export default function AdminAccess({ children }) {
     finally { setBusy(false); }
   };
 
+  if (loading) return <p role="status">Checking admin session...</p>;
+  if (user?.role === 'admin') return <>
+    <div className="admin-session-bar"><span>Signed in as {user.username || 'Administrator'}</span><button onClick={logout} disabled={busy}>Sign out</button></div>
+    {error && <p role="alert">{error}</p>}
