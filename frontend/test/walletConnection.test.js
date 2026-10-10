@@ -20,3 +20,8 @@ test('filters wallet discovery by configured network and connection support', ()
   assert.deepEqual(compatibleWallets([supported, { ...supported, chains: ['sui:mainnet'] }, { chains: [chain], features: {} }], chain), [supported]);
 });
 
+test('returns all compatible accounts so the user can select instead of silently choosing one', async () => {
+  const first = account('0x1'), second = account('0x2');
+  assert.deepEqual(await connectAccounts(wallet([first, account('0x3', ['sui:mainnet']), second]), chain), [first, second]);
+});
+
