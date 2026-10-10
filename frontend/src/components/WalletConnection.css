@@ -1,0 +1,4 @@
+.wallet-connection-dialog {
+  margin: auto;
+  padding: 1.5rem;
+  width: min(92vw, 480px);
