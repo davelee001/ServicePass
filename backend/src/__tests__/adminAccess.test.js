@@ -31,3 +31,8 @@ test('correct credentials establish an HttpOnly session accepted by protected AP
     const stored = await User.findOne({ username: 'Admin' });
     expect(stored.password).not.toBe('ServicePass');
     expect(await stored.comparePassword('ServicePass')).toBe(true);
+});
+
+test('incorrect passwords cannot establish an admin session', async () => {
+    const response = await request(app).post('/api/auth/admin/login').send({ username: 'Admin', password: 'incorrect' });
+    expect(response.status).toBe(401);
