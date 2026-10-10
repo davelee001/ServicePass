@@ -75,3 +75,7 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
   };
   const detectWallet = () => {
     const available = compatibleWallets(getWallets().get(), chain);
+    setWallets(available);
+    setError(available.length ? '' : 'No wallet detected. Open or install a Sui wallet, then try connecting again.');
+  };
+  const disconnect = async () => {
