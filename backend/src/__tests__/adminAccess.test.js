@@ -41,3 +41,8 @@ test('incorrect passwords cannot establish an admin session', async () => {
 
 test('regular users cannot use the admin login or a forged role claim', async () => {
     const user = await User.create({ username: 'Regular', email: 'regular@test.com', password: 'ServicePass', name: 'Regular', role: 'user' });
+    expect((await request(app).post('/api/auth/admin/login').send({ username: 'Regular', password: 'ServicePass' })).status).toBe(401);
+    const token = jwt.sign({ userId: user._id, role: 'admin' }, JWT_SECRET);
+    expect((await request(app).post('/api/admin-action').set('Authorization', `Bearer ${token}`)).status).toBe(403);
+});
+
