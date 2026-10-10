@@ -25,3 +25,7 @@ test('returns all compatible accounts so the user can select instead of silently
   assert.deepEqual(await connectAccounts(wallet([first, account('0x3', ['sui:mainnet']), second]), chain), [first, second]);
 });
 
+test('rejects connection with no matching account or an invalid wallet address', async () => {
+  for (const accounts of [[], [account('0x1', ['sui:mainnet'])], [account('0xnothex')], [account('0x' + 'a'.repeat(65))]]) {
+    await assert.rejects(connectAccounts(wallet(accounts), chain), /No compatible account/);
+  }
