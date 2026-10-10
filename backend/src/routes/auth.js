@@ -9,6 +9,10 @@ const { logger } = require('../utils/logger');
 
 const adminCookieOptions = () => ({ httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict', path: '/api' });
 
+router.post('/admin/login', authLimiter,
+    [body('username').isString().trim().notEmpty(), body('password').isString().notEmpty()],
+    async (req, res) => {
+        if (!validationResult(req).isEmpty()) return res.status(400).json({ error: 'Username and password are required' });
 
 /**
  * @route   POST /api/auth/register
