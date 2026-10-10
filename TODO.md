@@ -70,3 +70,8 @@ Completed items: **1, 2, 4, 5, 6 and 9**. Hosted CI and live deployment evidence
 - [ ] **12. Validate POS simulator inputs - P1 - Small**
   Reject non-finite, zero/negative and over-balance amounts before showing success. Use the selected sample voucher's actual remaining balance and avoid presenting random simulated digests as confirmed chain transactions. Verify category switching and boundary values. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L206).
 
+- [ ] **13. Repair Security & Audit navigation - P1 - Small**
+  The navigation control targets a nonexistent `security` section. Add a section with accurate security/audit status or link to a valid existing destination; verify scrolling from the landing page and cross-route navigation. See [Navigation.jsx](frontend/src/components/Navigation.jsx#L159).
+
+- [ ] **14. Make FAQ controls accessible - P1 - Small**
+  Replace clickable div-only FAQ controls with semantic buttons that expose `aria-expanded` and reference their answer panels. Support keyboard activation, visible focus and accurate state when filtering FAQ categories. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L1104).
