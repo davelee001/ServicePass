@@ -12,3 +12,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
   const [wallet, setWallet] = useState(null);
   const [accounts, setAccounts] = useState([]);
   const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const dialog = useRef(null);
+  const destination = useRef(null);
+  const activeWallet = useRef(null);
