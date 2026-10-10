@@ -27,6 +27,7 @@ const createAdmin = async () => {
         const adminEmail = process.argv[2] || 'admin@servicepass.com';
         const adminPassword = process.argv[3] || process.env.ADMIN_PASSWORD;
         const adminUsername = process.argv[5] || process.env.ADMIN_USERNAME || 'Admin';
+        if (!adminPassword) throw new Error('Set ADMIN_PASSWORD or provide a password argument');
         const adminName = process.argv[4] || 'System Administrator';
 
         // Check if admin already exists
@@ -39,6 +40,7 @@ const createAdmin = async () => {
         // Create admin user
         const admin = new User({
             email: adminEmail,
+            username: adminUsername,
             password: adminPassword,
             name: adminName,
             role: 'admin',
@@ -51,7 +53,7 @@ const createAdmin = async () => {
         console.log('\n✓ Admin user created successfully!');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.log(`Email:    ${adminEmail}`);
-        console.log(`Password: ${adminPassword}`);
+        console.log(`Username: ${adminUsername}`);
         console.log(`Name:     ${adminName}`);
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.log('\n⚠️  Please change the password after first login!\n');
@@ -68,13 +70,13 @@ if (require.main === module) {
     console.log('\n🔧 ServicePass Admin User Creation Tool\n');
     
     if (process.argv.includes('--help')) {
-        console.log('Usage: node scripts/createAdmin.js [email] [password] [name]');
+        console.log('Usage: node scripts/createAdmin.js [email] [password] [name] [username]');
         console.log('\nExamples:');
         console.log('  node scripts/createAdmin.js');
         console.log('  node scripts/createAdmin.js admin@example.com MySecurePass123 "John Admin"');
         console.log('\nDefaults:');
         console.log('  Email:    admin@servicepass.com');
-        console.log('  Password: Admin123456');
+        console.log('  Password: required (ADMIN_PASSWORD or argument)');
         console.log('  Name:     System Administrator\n');
         process.exit(0);
     }
