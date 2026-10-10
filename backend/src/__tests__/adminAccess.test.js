@@ -56,3 +56,8 @@ test('sign-out invalidates previously issued admin cookies', async () => {
 
 test('disabling or demoting an administrator blocks an existing session', async () => {
     const cookie = (await login()).headers['set-cookie'][0];
+    await User.updateOne({ username: 'Admin' }, { role: 'user' });
+    expect((await request(app).get('/api/auth/admin/session').set('Cookie', cookie)).status).toBe(403);
+    await User.updateOne({ username: 'Admin' }, { isActive: false });
+    expect((await request(app).get('/api/auth/admin/session').set('Cookie', cookie)).status).toBe(401);
+});
