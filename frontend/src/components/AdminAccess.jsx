@@ -21,3 +21,8 @@ export default function AdminAccess({ children }) {
     window.addEventListener('admin-session-expired', expired);
     return () => { active = false; window.removeEventListener('admin-session-expired', expired); };
   }, [queryClient]);
+
+  const login = async event => {
+    event.preventDefault(); setBusy(true); setError('');
+    try {
+      const response = await api.post('/auth/admin/login', { username, password });
