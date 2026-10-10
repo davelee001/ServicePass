@@ -20,3 +20,8 @@ export async function connectAccounts(wallet, chain) {
   if (!accounts.length) throw new Error(`No compatible account. Switch your wallet to Sui ${chain.split(':')[1]} and try again.`);
   return accounts;
 }
+
+// An entry action must reuse the selected account rather than reconnecting it.
+export function enterWithAccount(address, onConnected, openSelector) {
+  if (address) onConnected();
+  else openSelector(onConnected);
