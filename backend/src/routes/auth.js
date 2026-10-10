@@ -18,6 +18,10 @@ router.post('/admin/login', authLimiter,
             if (!user || !user.isActive) return res.status(401).json({ error: 'Invalid credentials' });
             if (user.isLocked()) return res.status(423).json({ error: 'Account is temporarily locked. Try again later.' });
             if (!await user.comparePassword(req.body.password)) {
+                await user.incLoginAttempts();
+                return res.status(401).json({ error: 'Invalid credentials' });
+            }
+            if (user.loginAttempts || user.lockUntil) await user.resetLoginAttempts();
 
 /**
  * @route   POST /api/auth/register
