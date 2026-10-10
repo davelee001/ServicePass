@@ -12,3 +12,8 @@ beforeEach(async () => {
     await User.create({ username: 'Admin', email: 'admin@test.com', password: 'ServicePass', name: 'Admin', role: 'admin' });
 });
 const login = () => request(app).post('/api/auth/admin/login').send({ username: 'Admin', password: 'ServicePass' });
+
+test('unauthenticated sessions and administrative actions are denied', async () => {
+    expect((await request(app).get('/api/auth/admin/session')).status).toBe(401);
+    expect((await request(app).post('/api/admin-action')).status).toBe(401);
+});
