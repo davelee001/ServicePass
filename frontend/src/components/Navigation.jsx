@@ -63,14 +63,12 @@ function Navigation({
   const handleWalletConnect = () => {
     requestConnection(() => {
       setUserType('user');
-    setUserType('user');
-    if (isLanding) {
-      navigate('/user/dashboard');
-    }
+      if (isLanding) navigate('/user/dashboard');
+    });
   };
 
   const handleMerchantLogin = () => {
-    const mockId = 'MERCHANT_' + Math.random().toString(36).substr(2, 7).toUpperCase();
+    if (!merchantId) {
     setMerchantId(mockId);
     setUserType('merchant');
     if (isLanding) {
