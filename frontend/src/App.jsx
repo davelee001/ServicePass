@@ -39,6 +39,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
+        <WalletConnection walletAddress={walletAddress} setWalletAddress={setWalletAddress}>
         <div className="app">
           <Navigation 
             userType={userType} 
@@ -143,11 +144,12 @@ function App() {
               {/* Admin Panel */}
               <Route 
                 path="/admin" 
-                element={<AdminPanel />} 
+                element={<AdminAccess><AdminPanel /></AdminAccess>}
               />
             </Routes>
           </main>
         </div>
+        </WalletConnection>
       </Router>
     </QueryClientProvider>
   );
