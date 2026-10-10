@@ -30,3 +30,8 @@ export default function AdminAccess({ children }) {
     } catch (failure) { setError(failure.response?.data?.error || 'Unable to log in. Please try again.'); }
     finally { setBusy(false); }
   };
+  const logout = async () => {
+    setBusy(true); setError('');
+    try { await api.post('/auth/admin/logout'); setUser(null); queryClient.clear(); }
+    catch (failure) {
+      if ([401, 403].includes(failure.response?.status)) { setUser(null); queryClient.clear(); }
