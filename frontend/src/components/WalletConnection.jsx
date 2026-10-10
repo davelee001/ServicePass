@@ -65,3 +65,8 @@ export default function WalletConnection({ walletAddress, setWalletAddress, chil
     const request = ++generation.current;
     setBusy(true); setError(''); setWallet(selectedWallet); setAccounts([]);
     try {
+      const available = await connectAccounts(selectedWallet, chain);
+      if (request !== generation.current) return;
+      if (available.length === 1) complete(selectedWallet, available[0]);
+      else setAccounts(available);
+    } catch (failure) {
