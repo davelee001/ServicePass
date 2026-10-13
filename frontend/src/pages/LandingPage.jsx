@@ -489,6 +489,9 @@ function LandingPage({
               <label htmlFor="pos-sample-amount">Illustrative Receipt Amount ($)</label>
               <input 
                 type="number"
+                id="pos-sample-amount"
+                min="0.01"
+                max={selectedPosVoucher.balanceCents / 100}
                 value={posSimAmount} 
                 onChange={(e) => setPosSimAmount(e.target.value)}
                 className="sim-input"
