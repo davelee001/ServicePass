@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   FaTicketAlt, 
@@ -28,6 +28,7 @@ import {
   FaCopy 
 } from 'react-icons/fa';
 import './LandingPage.css';
+import { SAMPLE_POS_VOUCHERS, validateSimulatorAmount } from '../utils/posSimulator.js';
 import { useWalletConnection } from '../components/WalletConnection';
 
 const VOUCHER_CATEGORIES = [
@@ -170,6 +171,7 @@ function LandingPage({
   const [posSimAmount, setPosSimAmount] = useState('50.00');
   const [posSimState, setPosSimState] = useState('idle');
   const [posSimResult, setPosSimResult] = useState(null);
+  const [posSimError, setPosSimError] = useState('');
 
   // Quick Action Handler for Roles
   const handleQuickEnterUser = () => {
