@@ -531,19 +531,19 @@ function LandingPage({
                       <strong>{posSimResult.amount}</strong>
                     </div>
                     <div className="receipt-row">
-                      <span>Certified Merchant:</span>
+                      <span>Sample Merchant:</span>
                       <span>{posSimResult.merchant}</span>
                     </div>
                     <div className="receipt-row">
-                      <span>On-Chain Status:</span>
+                      <span>Demo Status:</span>
                       <strong className="status-green">{posSimResult.status}</strong>
                     </div>
                     <div className="receipt-row">
-                      <span>Transaction Digest:</span>
+                      <span>Demo Reference:</span>
                       <code>{posSimResult.digest}</code>
                     </div>
                     <div className="receipt-row">
-                      <span>Network Gas Cost:</span>
+                      <span>Gas Used:</span>
                       <span className="gas-tag">{posSimResult.gasCost}</span>
                     </div>
                   </div>
@@ -563,7 +563,7 @@ function LandingPage({
           <span className="section-kicker">Program Efficiency Model</span>
           <h2 className="section-h2">Calculate Your Grant Cost Savings & Impact</h2>
           <p className="section-desc">
-            Compare traditional cash or paper voucher disbursements with ServicePass smart contracts.
+            Illustrative model only: assumes 18% recoverable overhead, 3.5% comparison fees, $125 per beneficiary and $0.001 gas per transaction. These assumptions are not measured outcomes or current fee quotes.
           </p>
         </div>
 
@@ -624,10 +624,10 @@ function LandingPage({
 
           <div className="calc-results-col">
             <div className="savings-highlight-card">
-              <span className="savings-label">ESTIMATED RECOVERED AID VALUE</span>
+              <span className="savings-label">ILLUSTRATIVE RECOVERABLE VALUE</span>
               <h3 className="savings-amount">+${estimatedServicePassSavings.toLocaleString()}</h3>
               <p className="savings-subtext">
-                Saved from traditional voucher forgery, administrative overhead, and merchant leakage (~18%).
+                Assumes all of the modelled 18% overhead could be recovered. Actual savings are unverified.
               </p>
             </div>
 
@@ -645,8 +645,8 @@ function LandingPage({
                 <span className="box-val">${Number(estimatedTraditionalFees).toLocaleString()}</span>
               </div>
               <div className="calc-metric-box">
-                <span className="box-label">Settlement Time Saved</span>
-                <span className="box-val">30-60 Days → Instant</span>
+                <span className="box-label">Confirmation Timing</span>
+                <span className="box-val">Network dependent</span>
               </div>
             </div>
           </div>
