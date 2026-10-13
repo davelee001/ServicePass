@@ -16,3 +16,6 @@ test('accepts cents and each exact sample value, rejects a cent above it', () =>
     assert.ok(validateSimulatorAmount(((voucher.balanceCents + 1) / 100).toFixed(2), voucher.id).error);
   }
 });
+
+test('switching vouchers applies the new balance and merchant', () => {
+  assert.equal(validateSimulatorAmount('100', 'VOUCH-EDU-8902').amount, '100.00');
