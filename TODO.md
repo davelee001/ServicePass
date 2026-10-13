@@ -4,8 +4,8 @@
 
 Updated October 13, 2026. **7 items remain unfinished.** Existing item numbers are retained below.
 
-1. **Item 10 - Correct unsupported landing page claims.** Describe the implemented full-voucher redemption flow and actual audit/deployment statusfree CSS build.
-2. **Item 10 - Correct unsupported landing page claims.** Describe the implemented full-voucher redemption flow and actual audit/deployment status.
+1. **Item 10 - Correct unsupported landing page claims.** Describe the implemented full-voucher redemption flow and actual audit/deployment status.
+2. **Item 12 - Validate the POS simulnding page claims.** Describe the implemented full-voucher redemption flow and actual audit/deployment status.
 3. **Item 12 - Validate the POS simulator.** Reject invalid amounts and amounts above the selected balance; clearly label simulated results.
 4. **Item 13 - Repair Security & Audit navigation.** Add an accurate destination section or point the control to an existing section.
 5. **Item 14 - Make FAQ controls keyboard accessible.** Use semantic controls with expanded state and keyboard operation.
