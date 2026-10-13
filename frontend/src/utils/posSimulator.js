@@ -18,3 +18,7 @@ export function validateSimulatorAmount(rawAmount, voucherId) {
   }
   const cents = Math.round(amount * 100);
   if (!Number.isSafeInteger(cents) || cents > voucher.balanceCents) {
+    return { error: `Amount cannot exceed the sample value of $${(voucher.balanceCents / 100).toFixed(2)}.` };
+  }
+  return { voucher, amount: (cents / 100).toFixed(2) };
+}
