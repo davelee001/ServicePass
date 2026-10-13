@@ -172,6 +172,10 @@ function LandingPage({
   const [posSimState, setPosSimState] = useState('idle');
   const [posSimResult, setPosSimResult] = useState(null);
   const [posSimError, setPosSimError] = useState('');
+  const posSimTimer = useRef(null);
+  useEffect(() => () => clearTimeout(posSimTimer.current), []);
+  const selectedPosVoucher = SAMPLE_POS_VOUCHERS.find(voucher => voucher.id === posSimVoucherId);
+  const resetPosSimulation = () => {
 
   // Quick Action Handler for Roles
   const handleQuickEnterUser = () => {
