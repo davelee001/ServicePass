@@ -23,3 +23,7 @@ test('switching vouchers applies the new balance and merchant', () => {
   assert.equal(validateSimulatorAmount('50', 'VOUCH-TRN-1209').voucher.merchant, 'Metropolitan Transit (sample)');
 });
 
+test('rejects fractional cents, exponential notation and unknown vouchers', () => {
+  for (const amount of ['0.001', '1.999', '1e1']) assert.ok(validateSimulatorAmount(amount, 'VOUCH-EDU-8902').error);
+  assert.ok(validateSimulatorAmount('1', 'unknown').error);
+});
