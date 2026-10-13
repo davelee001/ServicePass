@@ -477,9 +477,9 @@ function LandingPage({
                 onChange={(e) => { resetPosSimulation(); setPosSimVoucherId(e.target.value); }}
                 className="sim-select"
               >
-                <option value="VOUCH-EDU-8902">🎓 Term 1 Secondary Tuition ($150.00 Full Value)</option>
-                <option value="VOUCH-HLTH-4410">🏥 Pediatric Clinic Diagnostics ($100.00 Full Value)</option>
-                <option value="VOUCH-TRN-1209">🚌 Metro Transit Monthly ($50.00 Full Value)</option>
+                {SAMPLE_POS_VOUCHERS.map(voucher => (
+                  <option key={voucher.id} value={voucher.id}>
+                    {voucher.label} (${(voucher.balanceCents / 100).toFixed(2)} Full Value)
                 <option value="VOUCH-AGRI-7731">🌾 Seed & Fertilizer Grant ($250.00 Full Value)</option>
               </select>
             </div>
