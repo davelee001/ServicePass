@@ -422,9 +422,9 @@ function LandingPage({
             <span className="metric-sub">No fixed fee or timing guarantee</span>
           </div>
           <div className="metric-cell">
-            <span className="metric-highlight">100%</span>
-            <span className="metric-title">Audit Trail Traceability</span>
-            <span className="metric-sub">Verifiable by donors and auditors</span>
+            <span className="metric-highlight">Pending</span>
+            <span className="metric-title">Independent Security Audit</span>
+            <span className="metric-sub">Production readiness is not yet verified</span>
           </div>
         </div>
       </section>
@@ -433,9 +433,9 @@ function LandingPage({
       <section className="pos-simulator-section" id="pos-simulator">
         <div className="section-head-box">
           <span className="section-kicker">Interactive Point-of-Sale Simulator</span>
-          <h2 className="section-h2">Experience Sub-Second Merchant Settlement</h2>
+          <h2 className="section-h2">Explore a Simulated POS Receipt</h2>
           <p className="section-desc">
-            Test how a certified merchant scans and settles a digital voucher. The Sui Move smart contract validates the accredited registry and executes instant burn-on-redemption.
+            This browser-only demonstration sends no transaction and verifies no signature. Entered amounts illustrate a receipt; actual redemption consumes the whole voucher after owner approval. Simulator amount validation is still pending.
           </p>
         </div>
 
@@ -457,10 +457,10 @@ function LandingPage({
                 onChange={(e) => setPosSimVoucherId(e.target.value)}
                 className="sim-select"
               >
-                <option value="VOUCH-EDU-8902">🎓 Term 1 Secondary Tuition ($150.00 Remaining)</option>
-                <option value="VOUCH-HLTH-4410">🏥 Pediatric Clinic Diagnostics ($65.00 Remaining)</option>
-                <option value="VOUCH-TRN-1209">🚌 Metro Transit Monthly ($50.00 Remaining)</option>
-                <option value="VOUCH-AGRI-7731">🌾 Seed & Fertilizer Grant ($175.00 Remaining)</option>
+                <option value="VOUCH-EDU-8902">🎓 Term 1 Secondary Tuition ($150.00 Full Value)</option>
+                <option value="VOUCH-HLTH-4410">🏥 Pediatric Clinic Diagnostics ($100.00 Full Value)</option>
+                <option value="VOUCH-TRN-1209">🚌 Metro Transit Monthly ($50.00 Full Value)</option>
+                <option value="VOUCH-AGRI-7731">🌾 Seed & Fertilizer Grant ($250.00 Full Value)</option>
               </select>
             </div>
 
