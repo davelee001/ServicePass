@@ -225,7 +225,7 @@ function LandingPage({
       setPosSimResult({
         digest: sampleReference,
         amount: '$' + validated.amount,
-        merchant: 'Greenwood Academy (sample)',
+        merchant: validated.voucher.merchant,
         status: 'SIMULATED_ONLY',
         epochTimestamp: Date.now(),
         gasCost: 'None - no transaction sent'
@@ -453,7 +453,7 @@ function LandingPage({
           <span className="section-kicker">Interactive Point-of-Sale Simulator</span>
           <h2 className="section-h2">Explore a Simulated POS Receipt</h2>
           <p className="section-desc">
-            This browser-only demonstration sends no transaction and verifies no signature. Entered amounts illustrate a receipt; actual redemption consumes the whole voucher after owner approval. Simulator amount validation is still pending.
+            This browser-only demonstration sends no transaction and verifies no signature. Entered amounts illustrate a receipt; actual redemption consumes the whole voucher after owner approval. Amounts must be positive, use at most two decimal places and stay within the selected sample value.
           </p>
         </div>
 
@@ -464,7 +464,7 @@ function LandingPage({
               <FaQrcode className="panel-icon" />
               <div>
                 <h4>Merchant POS Terminal</h4>
-                <p>Simulating St. Jude Health Center Point-of-Sale</p>
+                <p>Sample merchant: {selectedPosVoucher.merchant}</p>
               </div>
             </div>
 
