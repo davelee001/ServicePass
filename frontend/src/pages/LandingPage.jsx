@@ -497,11 +497,13 @@ function LandingPage({
                 aria-invalid={!!posSimError}
                 aria-describedby={posSimError ? 'pos-sim-error' : undefined}
                 value={posSimAmount} 
-                onChange={(e) => setPosSimAmount(e.target.value)}
+                onChange={(e) => { resetPosSimulation(); setPosSimAmount(e.target.value); }}
                 className="sim-input"
                 placeholder="50.00"
               />
             </div>
+
+            {posSimError && <p id="pos-sim-error" role="alert">{posSimError}</p>}
 
             <button 
               className={`btn-run-sim ${posSimState === 'scanning' ? 'running' : ''}`}
@@ -575,7 +577,7 @@ function LandingPage({
                       <span className="gas-tag">{posSimResult.gasCost}</span>
                     </div>
                   </div>
-                  <button className="btn-sim-reset" onClick={() => setPosSimState('idle')}>
+                  <button className="btn-sim-reset" onClick={resetPosSimulation}>
                     Simulate Next Transaction
                   </button>
                 </div>
