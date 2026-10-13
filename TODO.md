@@ -9,8 +9,8 @@ Updated October 13, 2026. **7 items remain unfinished.** Existing item numbers a
 3. **Item 13 - Repair Security & Audit navigation.** Add an accurate destination section or point the control to an existing section.
 4. **Item 14 - Make FAQ controls keyboard accessible.** Use semantic controls with expanded state and keyboard operation.
 5. **Item 3 - Finish production configuration verification.** Provision secret-manager values and verify the live configuration.
-6. **Item 7 - Prove the full system on testnet.** Validate actual wallet/frontend/backend/contract flows after the integration fix.
-7. **Item 7 - Prove the full system on testnet.** Validate actual wallet/frontend/backend/contract flows after the integration fixes.
+6. **Item 7 - Prove the full system on testnet.** Validate actual wallet/frontend/backend/contract flows after the integration fixes.
+7 on testnet.** Validate actual wallet/frontend/backend/contract flows after the integration fixes.
 8. **Item 8 - Complete security and operations readiness.** Finish audit, recovery, monitoring, staged deployment and rollback verification before production.
 
 Completed items: **1, 2, 4, 5, 6 and 9**. Hosted CI and live deployment evidence must still be checked for the relevant revision; prior local test results do not validate new changes automatically.
