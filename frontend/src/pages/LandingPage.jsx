@@ -297,10 +297,10 @@ function LandingPage({
                 <FaCheckCircle className="check-icon" /> Owner Approval
               </div>
               <div className="guarantee-pill">
-                <FaCheckCircle className="check-icon" /> Multi-Sig Security
+                <FaCheckCircle className="check-icon" /> Expiry Checks
               </div>
               <div className="guarantee-pill">
-                <FaCheckCircle className="check-icon" /> Partial Balances
+                <FaCheckCircle className="check-icon" /> Full-Voucher Redemption
               </div>
             </div>
           </div>
@@ -315,7 +315,7 @@ function LandingPage({
                   {selectedCategory.icon} <span>{selectedCategory.badge} Credit</span>
                 </div>
                 <div className="ticket-network-status">
-                  <span className="dot-green"></span> SUI MOVE V1.0
+                  <span className="dot-green"></span> SAMPLE VOUCHER
                 </div>
               </div>
 
@@ -339,7 +339,7 @@ function LandingPage({
                   </div>
                   <div className="ledger-separator"></div>
                   <div className="ledger-col highlight-balance">
-                    <span className="ledger-label">Available Balance</span>
+                    <span className="ledger-label">Full Redemption Value</span>
                     <span className="ledger-val main-balance">{selectedCategory.sampleVoucher.remaining}</span>
                   </div>
                 </div>
@@ -347,7 +347,7 @@ function LandingPage({
                 {/* Utilization Gauge */}
                 <div className="ticket-gauge-box">
                   <div className="gauge-labels">
-                    <span>Smart Contract State</span>
+                    <span>Illustrative State</span>
                     <span className="status-tag" style={{ color: selectedCategory.color }}>
                       {selectedCategory.sampleVoucher.status}
                     </span>
@@ -369,10 +369,10 @@ function LandingPage({
                     <FaClock className="item-icon" /> {selectedCategory.sampleVoucher.expiry}
                   </div>
                   <div className="constraint-item">
-                    <FaLock className="item-icon" /> Non-Transferable
+                    <FaLock className="item-icon" /> Owner-Held
                   </div>
                   <div className="constraint-item">
-                    <FaCoins className="item-icon" /> Partial Burn OK
+                    <FaCoins className="item-icon" /> Full Voucher Only
                   </div>
                 </div>
               </div>
@@ -387,7 +387,7 @@ function LandingPage({
                   <span className="bar b1"></span><span className="bar b2"></span><span className="bar b3"></span>
                 </div>
                 <div className="ticket-object-copy" onClick={() => handleCopySampleId(selectedCategory.sampleVoucher.id)}>
-                  <code>ObjectID: {selectedCategory.sampleVoucher.id}</code>
+                  <code>Sample ID: {selectedCategory.sampleVoucher.id}</code>
                   <span className="copy-tag">{copiedId ? 'Copied!' : 'Copy'}</span>
                 </div>
               </div>
@@ -395,7 +395,7 @@ function LandingPage({
               {/* Ticket Footer Quick Trigger */}
               <div className="ticket-footer">
                 <button className="btn-ticket-simulate" onClick={handleQuickEnterUser}>
-                  Simulate In-App Redemption <FaArrowRight />
+                  Open Wallet Dashboard <FaArrowRight />
                 </button>
               </div>
             </div>
