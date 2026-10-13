@@ -66,7 +66,7 @@ Completed items: **1, 2, 4, 5, 6, 9 and 11**. Hosted CI and live deployment evid
 - [x] **11. Repair malformed landing page CSS - P1 - Small**
   Remove the stray declaration and closing brace that produce CSS build warnings. Check stylesheet parsing and the production build, then inspect the landing page at desktop and mobile widths. See [LandingPage.css](frontend/src/pages/LandingPage.css#L1969).
 
-  Completed (October 13, 2026): Removed the stray top-level declaration and unmatched closing brace. The production build passes without CSS parsing warnings. Inspected the built landing page in headless Edg.
+  Completed (October 13, 2026): Removed the stray top-level declaration and unmatched closing brace. The production build passes without CSS parsing warnings. Inspected the built landing page in headless Edge at 1440px desktop and 390px mobile.
 
 - [ ] **12. Validate POS simulator inputs - P1 - Small**
   Reject non-finite, zero/negative and over-balance amounts before showing success. Use the selected sample voucher's actual remaining balance and avoid presenting random simulated digests as confirmed chain transactions. Verify category switching and boundary values. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L206).
