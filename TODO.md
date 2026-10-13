@@ -12,7 +12,7 @@ Updated October 13, 2026. **7 items remain unfinished.** Existing item numbers a
 6. **Item 7 - Prove the full system on testnet.** Validate actual wallet/frontend/backend/contract flows after the integration fixes.
 7. **Item 8 - Complete security and operations readiness.** Finish audit, recovery, monitoring, staged deployment and rollback verification before production.
 
-Completed items: **1, 2, 4, 5, 6, 9 an**. Hosted CI and live deployment evidence must still be checked for the relevant revision; prior local test results do not validate new changes automatically.
+Completed items: **1, 2, 4, 5, 6, 9 and 11**. Hosted CI and live deployment evidence must still be checked for the relevant revision; prior local test results do not validate new changes automatically.
 
 ## Detailed checklist
 
@@ -63,8 +63,10 @@ Completed items: **1, 2, 4, 5, 6, 9 an**. Hosted CI and live deployment evidence
 - [ ] **10. Correct unsupported landing page claims - P1 - Small**
   Remove or qualify claims of partial on-chain redemption, audited architecture/templates, active deployed package status, and instant settlement that the current implementation does not establish. The contract currently consumes the entire voucher. Distinguish illustrative examples/simulations from live behavior, and describe the owner-signing flow accurately. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L132).
 
-- [ ] **11. Repair malformed landing page CSS - P1 - Small**
+- [x] **11. Repair malformed landing page CSS - P1 - Small**
   Remove the stray declaration and closing brace that produce CSS build warnings. Check stylesheet parsing and the production build, then inspect the landing page at desktop and mobile widths. See [LandingPage.css](frontend/src/pages/LandingPage.css#L1969).
+
+  Completed (October 13, 202.
 
 - [ ] **12. Validate POS simulator inputs - P1 - Small**
   Reject non-finite, zero/negative and over-balance amounts before showing success. Use the selected sample voucher's actual remaining balance and avoid presenting random simulated digests as confirmed chain transactions. Verify category switching and boundary values. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L206).
