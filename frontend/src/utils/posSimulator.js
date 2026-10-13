@@ -11,3 +11,7 @@ export function validateSimulatorAmount(rawAmount, voucherId) {
   const text = String(rawAmount).trim();
   const amount = Number(text);
   if (!text || !Number.isFinite(amount) || amount <= 0) {
+    return { error: 'Enter a finite amount greater than zero.' };
+  }
+  if (!/^\d+(?:\.\d{1,2})?$/.test(text)) {
+    return { error: 'Enter a dollar amount with at most two decimal places.' };
