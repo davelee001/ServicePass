@@ -68,8 +68,10 @@ Completed items: **1, 2, 4, 5, 6, 9, 10, 11 and 12**. Hosted CI and live deploym
 
   Completed (October 13, 2026): Removed the stray top-level declaration and unmatched closing brace. The production build passes without CSS parsing warnings. Inspected the built landing page in headless Edge at 1440px desktop and 390px mobile widths. Unrelated dependency annotation and bundle-size warnings remain.
 
-- [ ] **12. Validate POS simulator inputs - P1 - Small**
+- [x] **12. Validate POS simulator inputs - P1 - Small**
   Reject non-finite, zero/negative and over-balance amounts before showing success. Use the selected sample voucher's actual remaining balance and avoid presenting random simulated digests as confirmed chain transactions. Verify category switching and boundary values. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L206).
+
+  Completed (October 13, 2026): Shared sample data drives voucher values, selector labels, validation and receipt merchants. Rejects empty, non-finite, zero/negative, malformed, fractional-cent and over-value amounts before success. Changing inputs clears stale receipts/errors; controls are disabled during a demo and pending timers are cleaned up on unmount. Receipts retain DEMO references and no-chain-submission labels. Four automated boundary/voucher-switch tests, browser interaction checks and the production build passed. Run `npm --prefix frontend run test:simulator`.
 
 - [ ] **13. Repair Security & Audit navigation - P1 - Small**
   The navigation control targets a nonexistent `security` section. Add a section with accurate security/audit status or link to a valid existing destination; verify scrolling from the landing page and cross-route navigation. See [Navigation.jsx](frontend/src/components/Navigation.jsx#L159).
