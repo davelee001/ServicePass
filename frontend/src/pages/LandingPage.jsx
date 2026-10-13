@@ -1070,8 +1070,8 @@ function LandingPage({
           <div className="step-card">
             <div className="step-num">04</div>
             <div className="step-icon-box"><FaCheckCircle /></div>
-            <h4>On-Chain Burn & Settle</h4>
-            <p>The Move contract burns the credit on-chain and updates merchant ledger in sub-second finality.</p>
+            <h4>Owner Approval & Confirmation</h4>
+            <p>The owner signs and pays gas. After successful effects and the redemption event, the backend records the full voucher redemption; this does not establish a cash payout.</p>
           </div>
         </div>
       </section>
@@ -1121,10 +1121,10 @@ function LandingPage({
       {/* ENTERPRISE CALL TO ACTION BANNER */}
       <section className="enterprise-cta-section">
         <div className="cta-inner-card">
-          <span className="cta-pill">READY TO DEPLOY?</span>
+          <span className="cta-pill">EXPLORE THE PREVIEW</span>
           <h2>Launch Your First Purpose-Bound Voucher Program</h2>
           <p>
-            Experience next-generation targeted aid delivery on the Sui blockchain. Test live on Sui Testnet today.
+            Explore the application and wallet entry. A coordinated contract deployment and full testnet validation are still pending; production deployment is not yet verified.
           </p>
           <div className="cta-actions-group">
             <button className="btn-cta-user" onClick={handleQuickEnterUser}>
@@ -1149,11 +1149,10 @@ function LandingPage({
               <span>ServicePass Protocol</span>
             </div>
             <p>
-              The open-source, non-custodial voucher system built on Sui Move. Ensuring purpose-bound aid reaches verified recipients with zero leakage.
+              The open-source voucher system built on Sui Move, with owner-approved redemption and merchant, category and expiry checks. Audit and full testnet verification remain pending.
             </p>
-            <div className="contract-hash-chip" onClick={() => handleCopySampleId('0x7a8c90b4d21e8432f9104c2a')}>
-              <code>Package: 0x7a8c...90b4</code>
-              <span className="copy-badge-chip">Copy</span>
+            <div className="contract-hash-chip">
+              <span>Deployment: testnet verification pending</span>
             </div>
           </div>
 
@@ -1188,7 +1187,7 @@ function LandingPage({
           <p>© {new Date().getFullYear()} ServicePass Protocol. Open Source MIT License. Powered by Sui Blockchain.</p>
           <div className="footer-network-status">
             <span className="status-indicator-dot"></span>
-            <span>SUI TESTNET FULLNODE CONNECTED</span>
+            <span>TESTNET VERIFICATION PENDING</span>
           </div>
         </div>
       </footer>
