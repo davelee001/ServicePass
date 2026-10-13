@@ -207,10 +207,10 @@ function LandingPage({
       setPosSimResult({
         digest: sampleReference,
         amount: '$' + parseFloat(posSimAmount || 50).toFixed(2),
-        merchant: 'Greenwood Certified Academy',
-        status: 'BURNT_AND_SETTLED',
+        merchant: 'Greenwood Academy (sample)',
+        status: 'SIMULATED_ONLY',
         epochTimestamp: Date.now(),
-        gasCost: '0.00085 SUI ($0.0009)'
+        gasCost: 'None - no transaction sent'
       });
       setPosSimState('success');
     }, 1100);
@@ -233,12 +233,12 @@ function LandingPage({
       <div className="hero-announcement-strip">
         <div className="announcement-content">
           <span className="live-status-badge">
-            <span className="pulsing-beacon"></span> ON-CHAIN PROTOCOL
+            <span className="pulsing-beacon"></span> DEVELOPMENT PREVIEW
           </span>
           <span className="announcement-copy">
             ServicePass v1.0 • Built on Sui Move • Cryptographic Burn-on-Redemption
           </span>
-          <span className="announcement-tag">AUDITED ARCHITECTURE</span>
+          <span className="announcement-tag">AUDIT PENDING</span>
         </div>
       </div>
 
@@ -250,12 +250,12 @@ function LandingPage({
               <FaShieldAlt className="eyebrow-icon" /> Next-Generation Purpose-Bound Aid
             </div>
             <h1 className="hero-headline">
-              Programmable Vouchers That <span className="gradient-text-hero">Cannot Be Diverted</span>
+              Programmable Vouchers for <span className="gradient-text-hero">Purpose-Bound Programs</span>
             </h1>
             <p className="hero-subhead">
               The blockchain-native protocol empowering NGOs, governments, and foundations to disburse 
               ring-fenced relief for <strong>Education</strong>, <strong>Healthcare</strong>, <strong>Transport</strong>, and <strong>Agriculture</strong>. 
-              Protected by Move smart contracts, POS QR verification, and sub-second instant settlement.
+              Redemption checks the designated merchant, category and expiry, and requires approval from the voucher owner. Testnet verification is pending.
             </p>
 
             {/* Role Gateway Actions */}
@@ -291,10 +291,10 @@ function LandingPage({
             {/* Protocol Guarantees Row */}
             <div className="protocol-guarantees">
               <div className="guarantee-pill">
-                <FaCheckCircle className="check-icon" /> Zero Leakage
+                <FaCheckCircle className="check-icon" /> Merchant Checks
               </div>
               <div className="guarantee-pill">
-                <FaCheckCircle className="check-icon" /> Sub-Second Sui Finality
+                <FaCheckCircle className="check-icon" /> Owner Approval
               </div>
               <div className="guarantee-pill">
                 <FaCheckCircle className="check-icon" /> Multi-Sig Security
