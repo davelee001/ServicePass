@@ -120,28 +120,28 @@ const VOUCHER_CATEGORIES = [
 const FAQS = [
   {
     category: 'Security',
-    q: 'How does ServicePass mathematically prevent voucher fraud and misallocation?',
-    a: 'Every voucher exists as an on-chain, non-custodial object on Sui Move. The Move smart contract enforces category validation and verifies that the redeeming party is present in the on-chain Merchant Registry. When redeemed, the voucher object is permanently burned, making double-spending and diversion impossible.'
+    q: 'What does the redemption contract enforce?',
+    a: 'The Move contract checks expiry, the designated merchant and accepted voucher category, then consumes the entire owner-held voucher. The same object cannot be redeemed again. These checks do not guarantee service delivery or eliminate all fraud; independent security review and full testnet verification remain pending.'
   },
   {
     category: 'Operations',
-    q: 'How does partial redemption work without creating unbacked tokens?',
-    a: 'ServicePass supports native incremental burning. When a user redeems $25 of a $100 voucher, the smart contract records an on-chain partial redemption event and safely updates the voucher object state with the remaining balance of $75. All changes are cryptographically signed and auditable in real time.'
+    q: 'Can I redeem only part of a voucher?',
+    a: 'No. The current redemption entry point consumes the entire voucher and records its full value. It does not leave a remaining balance. The owner reviews the prepared request, approves it with their Sui wallet and pays network gas.'
   },
   {
     category: 'Point of Sale',
     q: 'How do merchants verify vouchers in low-connectivity or offline settings?',
-    a: 'Vouchers can be formatted into HMAC-SHA256 cryptographically signed QR payloads. The Merchant POS Scanner validates the cryptographic signature and merchant ID before broadcasting the transaction to Sui. If offline, the signed receipt can be queued and processed via our resilient BullMQ queue.'
+    a: 'The backend validates signed QR payloads and prepares a redemption request for the owner. The owner must approve with their wallet; the backend records success only after confirming chain effects and the matching event. Completing redemption requires connectivity. An offline scan is not a confirmed redemption.'
   },
   {
     category: 'Governance',
     q: 'What controls do donors and program officers have over large disbursements?',
-    a: 'ServicePass features enterprise Multi-Signature Approval Workflows (e.g., 2-of-3 or 3-of-5 signers required), Scheduled Cron Issuance, and pre-audited Voucher Templates. High-value grants cannot be minted by a single rogue actor, ensuring full institutional oversight.'
+    a: 'The application includes admin access, templates, scheduling and approval workflow interfaces. They are not evidence of an audited treasury or contract-enforced multi-party minting. The current contract uses an AdminCap for minting; institutional approval policies and production operations need separate verification.'
   },
   {
     category: 'Blockchain',
     q: 'Why build ServicePass on Sui blockchain rather than traditional payment rails?',
-    a: 'Traditional card and banking rails charge 2-4% interchange fees, take 30-60 days for merchant settlement, and suffer up to 20% fraud leakage in humanitarian aid. Sui delivers sub-second finality, gas fees under a fraction of a cent ($0.001), and programmable Move object-level ownership.'
+    a: 'Sui provides owner-held objects and programmable redemption rules. Actual gas costs and confirmation times depend on the network and transaction. ServicePass has not established a production settlement benchmark or guaranteed savings; the calculator on this page uses illustrative assumptions.'
   }
 ];
 
@@ -203,9 +203,9 @@ function LandingPage({
     setPosSimState('scanning');
     setPosSimResult(null);
     setTimeout(() => {
-      const txDigest = '0x' + Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+      const sampleReference = 'DEMO-' + Math.random().toString(36).slice(2, 10).toUpperCase();
       setPosSimResult({
-        digest: txDigest.slice(0, 18) + '...' + txDigest.slice(-6),
+        digest: sampleReference,
         amount: '$' + parseFloat(posSimAmount || 50).toFixed(2),
         merchant: 'Greenwood Certified Academy',
         status: 'BURNT_AND_SETTLED',
