@@ -60,9 +60,9 @@ Work is tracked in [TODO.md](TODO.md).
 
 - **Admin access:** `/admin` requires a server-verified administrator session. Login, session restoration and sign-out are covered by six backend tests and four browser checks. See [Admin access](docs/ADMIN_ACCESS.md).
 
-Latest maintenance (October 13, 2026): repaired the landing-page CSS syntax and verified the production build, with desktop (1440px) and mobile (390px) browser inspection. CSS parsing warnings are resolved; dependency annotation and bundle-size warnings remain. This maintenance was recorded as 49 non-empty commits. Hosted CI results still require verification for the pushed revision.
+Latest maintenance (October 13, 2026): repaired the landing-page CSS syntax and verified the production build, with desktop (1440px) and mobile (390px) browser inspection. CSS parsing warnings are resolved; dependency annotation and bundle-size warnings remain. This maintenance was recorded as 49 non-empty commits. Hosted CI results still require verification for the pushed revision. The subsequent item 10 copy corrections also pass the production build and desktop/mobile browser checks; those changes are local until committed and pushed.
 
-**7 TODO items remain open:** 3, 7, 8, 10, 12, 13 and 14. Item 11 is complete: the malformed landing-page CSS has been repaired. The recommended next item is **10: correct unsupported landing page claims**, followed by simulator validation, navigation and accessibility. See [the ordered checklist](TODO.md).
+**6 TODO items remain open:** 3, 7, 8, 12, 13 and 14. Items 10 and 11 are complete: landing-page claims now reflect owner-signed full-voucher redemption and pending audit/testnet verification, and malformed CSS is repaired. Samples and receipts are explicitly illustrative; calculator assumptions are disclosed. The recommended next item is **12: validate POS simulator inputs**, followed by navigation and accessibility. See [the ordered checklist](TODO.md).
 
 | Mode | Frontend URL | API upstream |
 |------|--------------|--------------|
