@@ -83,7 +83,7 @@ npm --prefix frontend run test:wallet
 npm --prefix backend test -- --runInBand src/__tests__/adminAccess.test.js
 ```
 
-Validated on October 10, 2026: eight wallet tests, six admin authentication tests, browser wallet/login scenarios, the full 225-test backend suite, and the frontend production build passed. On  build still reports the known landing-page CSS warnings tracked in item 11.
+Validated on October 10, 2026: eight wallet tests, six admin authentication tests, browser wallet/login scenarios, the full 225-test backend suite, and the frontend production build passed. On October 13, item 11 was repaig-page CSS warnings tracked in item 11.
 
 ## Owner-Approved QR Redemption
 
