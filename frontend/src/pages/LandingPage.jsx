@@ -46,10 +46,9 @@ const VOUCHER_CATEGORIES = [
       title: 'Term 1 Secondary Education Tuition Grant',
       amount: '$150.00',
       remaining: '$150.00',
-      merchant: 'Greenwood Academy & 14 Certified Schools',
+      merchant: 'Greenwood Academy (sample merchant)',
       expiry: '90 Days Remaining',
       status: 'Active',
-      allowPartial: true,
       categoryCode: 1
     }
   },
@@ -67,11 +66,10 @@ const VOUCHER_CATEGORIES = [
       id: '0x4b9a...91ce',
       title: 'Family Wellness & Essential Clinic Care',
       amount: '$100.00',
-      remaining: '$65.00',
+      remaining: '$100.00',
       merchant: 'St. Jude Community Health Network',
       expiry: '60 Days Remaining',
-      status: 'Partially Used',
-      allowPartial: true,
+      status: 'Active',
       categoryCode: 2
     }
   },
@@ -93,7 +91,6 @@ const VOUCHER_CATEGORIES = [
       merchant: 'Metropolitan Rapid Transit Authority',
       expiry: '30 Days Remaining',
       status: 'Active',
-      allowPartial: false,
       categoryCode: 3
     }
   },
@@ -111,11 +108,10 @@ const VOUCHER_CATEGORIES = [
       id: '0x99a1...33d4',
       title: 'Smallholder Seed & Agro-Input Subsidy',
       amount: '$250.00',
-      remaining: '$175.00',
+      remaining: '$250.00',
       merchant: 'Regional Agro-Dealer Cooperative',
       expiry: '120 Days Remaining',
-      status: 'Partially Used',
-      allowPartial: true,
+      status: 'Active',
       categoryCode: 4
     }
   }
