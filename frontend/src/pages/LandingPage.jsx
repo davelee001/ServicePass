@@ -465,7 +465,7 @@ function LandingPage({
             </div>
 
             <div className="sim-form-group">
-              <label>Redemption Amount ($ USD Equivalent)</label>
+              <label>Illustrative Receipt Amount ($)</label>
               <input 
                 type="number" 
                 value={posSimAmount} 
@@ -482,11 +482,11 @@ function LandingPage({
             >
               {posSimState === 'scanning' ? (
                 <>
-                  <FaSyncAlt className="spin-icon" /> Verifying On-Chain...
+                  <FaSyncAlt className="spin-icon" /> Preparing Demo...
                 </>
               ) : (
                 <>
-                  <FaQrcode /> Scan & Execute On-Chain Burn
+                  <FaQrcode /> Run Receipt Demo
                 </>
               )}
             </button>
@@ -506,16 +506,16 @@ function LandingPage({
                     <FaQrcode className="scanner-qr-large" />
                     <div className="laser-beam"></div>
                   </div>
-                  <p className="idle-text">Ready for POS QR Scan. Click "Scan & Execute" to simulate.</p>
+                  <p className="idle-text">Demo ready. Click "Run Receipt Demo"; no wallet or network call is made.</p>
                 </div>
               )}
 
               {posSimState === 'scanning' && (
                 <div className="screen-processing-state">
                   <div className="processing-spinner"></div>
-                  <h4>Validating HMAC Cryptographic Signature...</h4>
-                  <p>Broadcasting Move Call to Sui Testnet Fullnode</p>
-                  <code>Call: servicepass::voucher_system::redeem_voucher</code>
+                  <h4>Preparing Sample Receipt...</h4>
+                  <p>No signature check or network submission is performed</p>
+                  <code>Browser-only illustration</code>
                 </div>
               )}
 
@@ -524,10 +524,10 @@ function LandingPage({
                   <div className="success-icon-badge">
                     <FaCheck />
                   </div>
-                  <h4>REDEMPTION SETTLED</h4>
+                  <h4>DEMO RECEIPT - NOT CONFIRMED</h4>
                   <div className="receipt-details">
                     <div className="receipt-row">
-                      <span>Redeemed Amount:</span>
+                      <span>Sample Amount:</span>
                       <strong>{posSimResult.amount}</strong>
                     </div>
                     <div className="receipt-row">
