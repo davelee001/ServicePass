@@ -10,10 +10,9 @@ Updated October 13, 2026. **7 items remain unfinished.** Existing item numbers a
 4. **Item 14 - Make FAQ controls keyboard accessible.** Use semantic controls with expanded state and keyboard operation.
 5. **Item 3 - Finish production configuration verification.** Provision secret-manager values and verify the live configuration.
 6. **Item 7 - Prove the full system on testnet.** Validate actual wallet/frontend/backend/contract flows after the integration fixes.
-7ter the integration fixes.
-8. **Item 8 - Complete security and operations readiness.** Finish audit, recovery, monitoring, staged deployment and rollback verification before production.
+7. **Item 8 - Complete security and operations readiness.** Finish audit, recovery, monitoring, staged deployment and rollback verification before production.
 
-Completed items: **1, 2, 4, 5, 6 and 9**. Hosted CI and live deployment evidence must still be checked for the relevant revision; prior local test results do not validate new changes automatically.
+Completed items: **1, 2, 4, 5, 6, 9 an**. Hosted CI and live deployment evidence must still be checked for the relevant revision; prior local test results do not validate new changes automatically.
 
 ## Detailed checklist
 
