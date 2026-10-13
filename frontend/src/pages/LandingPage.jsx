@@ -492,6 +492,10 @@ function LandingPage({
                 id="pos-sample-amount"
                 min="0.01"
                 max={selectedPosVoucher.balanceCents / 100}
+                step="0.01"
+                disabled={posSimState === 'scanning'}
+                aria-invalid={!!posSimError}
+                aria-describedby={posSimError ? 'pos-sim-error' : undefined}
                 value={posSimAmount} 
                 onChange={(e) => setPosSimAmount(e.target.value)}
                 className="sim-input"
