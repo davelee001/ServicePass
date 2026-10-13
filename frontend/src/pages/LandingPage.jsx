@@ -659,7 +659,7 @@ function LandingPage({
           <span className="section-kicker">Multi-Stakeholder Architecture</span>
           <h2 className="section-h2">Engineered for Every Actor in the Ecosystem</h2>
           <p className="section-desc">
-            Intuitive, role-specific interfaces designed for zero friction and maximum security.
+            Explore role-specific interfaces. The widgets below are sample previews; full testnet verification and production security review remain pending.
           </p>
         </div>
 
@@ -691,25 +691,25 @@ function LandingPage({
                 <span className="role-tag user-tag">Beneficiary Portal</span>
                 <h3>Dignified, Seamless Access to Essential Services</h3>
                 <p>
-                  Beneficiaries hold vouchers securely in their Sui Web3 wallet. Credits can be spent incrementally at accredited schools, clinics, pharmacies, and stores.
+                  Beneficiaries hold voucher objects in their Sui wallet. Each voucher is redeemed once, in full, at its designated merchant after wallet approval.
                 </p>
                 <div className="features-bullet-list">
                   <div className="bullet-row">
                     <FaCheck className="bullet-check" />
                     <div>
-                      <strong>Non-Custodial Balance Ownership:</strong> No intermediary can freeze or seize verified beneficiary grants.
+                      <strong>Non-Custodial Balance Ownership:</strong> The current owner must approve redemption with their wallet.
                     </div>
                   </div>
                   <div className="bullet-row">
                     <FaCheck className="bullet-check" />
                     <div>
-                      <strong>Offline-Ready QR Pass:</strong> Generate cryptographically signed QR codes for redemption without requiring continuous internet.
+                      <strong>Signed QR Requests:</strong> QR payloads support request preparation; confirmation requires network connectivity.
                     </div>
                   </div>
                   <div className="bullet-row">
                     <FaCheck className="bullet-check" />
                     <div>
-                      <strong>Partial Spending Protocol:</strong> Spend exact amounts for visits, retaining remaining credits for future needs.
+                      <strong>Full-Voucher Redemption:</strong> Redemption consumes the whole object and leaves no remaining balance.
                     </div>
                   </div>
                 </div>
@@ -728,7 +728,7 @@ function LandingPage({
                   <div className="mock-user-widget">
                     <div className="widget-header">
                       <span>💳 My Active Service Passes</span>
-                      <span className="widget-badge">Connected</span>
+                      <span className="widget-badge">Sample Preview</span>
                     </div>
                     <div className="widget-item">
                       <div>
@@ -757,9 +757,9 @@ function LandingPage({
             <div className="workflow-detail-grid">
               <div className="workflow-text-col">
                 <span className="role-tag merchant-tag">Merchant Portal</span>
-                <h3>Guaranteed Payment Clearance & Zero Chargebacks</h3>
+                <h3>Prepare Requests for Owner Approval</h3>
                 <p>
-                  Service providers and local businesses eliminate paperwork and slow reimbursement cycles. Scanning a beneficiary pass instantly confirms eligibility and executes on-chain settlement.
+                  The merchant submits a signed QR payload with their API key, then shares an approval request with the owner. A scan alone does not redeem the voucher or guarantee reimbursement.
                 </p>
                 <div className="features-bullet-list">
                   <div className="bullet-row">
@@ -796,7 +796,7 @@ function LandingPage({
                   <div className="mock-merchant-widget">
                     <div className="widget-header">
                       <span>🏪 POS Point of Sale Terminal</span>
-                      <span className="widget-badge merchant">Merchant Online</span>
+                      <span className="widget-badge merchant">Sample Preview</span>
                     </div>
                     <div className="mock-scanner-view">
                       <FaQrcode className="scanner-center-icon" />
