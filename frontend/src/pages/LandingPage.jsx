@@ -213,6 +213,9 @@ function LandingPage({
   const handleRunPosSimulation = () => {
     if (posSimState === 'scanning') return;
     const validated = validateSimulatorAmount(posSimAmount, posSimVoucherId);
+    resetPosSimulation();
+    if (validated.error) {
+      setPosSimError(validated.error);
     setPosSimState('scanning');
     setPosSimResult(null);
     setTimeout(() => {
