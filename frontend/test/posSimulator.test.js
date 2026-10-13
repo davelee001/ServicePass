@@ -12,3 +12,7 @@ test('accepts cents and each exact sample value, rejects a cent above it', () =>
   for (const voucher of SAMPLE_POS_VOUCHERS) {
     assert.equal(validateSimulatorAmount('0.01', voucher.id).amount, '0.01');
     const maximum = (voucher.balanceCents / 100).toFixed(2);
+    assert.equal(validateSimulatorAmount(maximum, voucher.id).amount, maximum);
+    assert.ok(validateSimulatorAmount(((voucher.balanceCents + 1) / 100).toFixed(2), voucher.id).error);
+  }
+});
