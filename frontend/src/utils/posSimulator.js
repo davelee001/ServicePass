@@ -8,3 +8,6 @@ export const SAMPLE_POS_VOUCHERS = [
 export function validateSimulatorAmount(rawAmount, voucherId) {
   const voucher = SAMPLE_POS_VOUCHERS.find(item => item.id === voucherId);
   if (!voucher) return { error: 'Select a valid sample voucher.' };
+  const text = String(rawAmount).trim();
+  const amount = Number(text);
+  if (!text || !Number.isFinite(amount) || amount <= 0) {
