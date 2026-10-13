@@ -60,6 +60,8 @@ Work is tracked in [TODO.md](TODO.md).
 
 - **Admin access:** `/admin` requires a server-verified administrator session. Login, session restoration and sign-out are covered by six backend tests and four browser checks. See [Admin access](docs/ADMIN_ACCESS.md).
 
+Latest maintenance (October 13, 2026): repaired the landing-page CSS syntax and verified the production build, with desktop (1440px) and mobile (390px) browser inspection. CSS parsing warnings are resolved; dependency annotation and bundle-size warnings remain. This maintenance was recorded as 49 non-empty commits. Hosted CI results still require verification for the pushed revision.
+
 **7 TODO items remain open:** 3, 7, 8, 10, 12, 13 and 14. Item 11 is complete: the malformed landing-page CSS has been repaired. The recommended next item is **10: correct unsupported landing page claims**, followed by simulator validation, navigation and accessibility. See [the ordered checklist](TODO.md).
 
 | Mode | Frontend URL | API upstream |
@@ -1888,7 +1890,7 @@ For questions, issues, or support:
 ## Project Status
 
 **Status**: ✅ Active Development  
-**Last Updated**: October 10, 2026<br>
+**Last Updated**: October 13, 2026<br>
 **Version**: 1.0.0  
 **Test Validation**: Latest backend run: 225 tests; wallet checks: 8 tests; admin tests: 6 (included in the 225). Browser wallet/admin scenarios passed. Earlier CI validation passed 50 focused checks and 11 Move tests.<br>
 **Documentation**: Complete with enhanced API docs, user guides, merchant onboarding, audit reports, deployment runbooks, Docker & Kubernetes guides (includes diagrams, quick starts, and performance tips)  
