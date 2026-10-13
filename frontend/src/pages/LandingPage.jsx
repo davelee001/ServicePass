@@ -179,6 +179,8 @@ function LandingPage({
     clearTimeout(posSimTimer.current);
     setPosSimState('idle');
     setPosSimResult(null);
+    setPosSimError('');
+  };
 
   // Quick Action Handler for Roles
   const handleQuickEnterUser = () => {
@@ -209,6 +211,8 @@ function LandingPage({
 
   // Run POS Simulation
   const handleRunPosSimulation = () => {
+    if (posSimState === 'scanning') return;
+    const validated = validateSimulatorAmount(posSimAmount, posSimVoucherId);
     setPosSimState('scanning');
     setPosSimResult(null);
     setTimeout(() => {
