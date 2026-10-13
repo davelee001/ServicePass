@@ -108,11 +108,11 @@ function Navigation({
         <div className="protocol-container">
           <div className="protocol-left">
             <span className="net-pill">
-              <span className="live-dot-green"></span> Sui Testnet Active
+              <span className="live-dot-green"></span> Development Preview
             </span>
-            <span className="protocol-stat">Package: <code>0x7a8c...90b4</code></span>
+            <span className="protocol-stat">Deployment: unverified</span>
             <span className="protocol-divider">|</span>
-            <span className="protocol-stat">Finality: &lt; 1s</span>
+            <span className="protocol-stat">Audit: pending</span>
           </div>
           <div className="protocol-right">
             <Link to="/admin" className="protocol-link admin-pill">
