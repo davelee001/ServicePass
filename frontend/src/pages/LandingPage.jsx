@@ -970,20 +970,20 @@ function LandingPage({
             </div>
             <h3>On-Chain Burn-on-Redemption</h3>
             <p>
-              Vouchers are consumed and deleted from the Sui global object store upon redemption, making double-spending mathematically impossible.
+              A successful redemption consumes the entire voucher object, preventing another redemption of that same object.
             </p>
-            <span className="pillar-link">Move Verified Object Model →</span>
+            <span className="pillar-link">Move Object Consumption →</span>
           </div>
 
           <div className="pillar-card">
             <div className="pillar-icon" style={{ background: 'rgba(16, 185, 129, 0.12)', color: '#10B981' }}>
               <FaCoins />
             </div>
-            <h3>Partial Redemption Engine</h3>
+            <h3>Owner-Signed Full Redemption</h3>
             <p>
-              Beneficiaries can spend vouchers incrementally across multiple transactions, tracking exact remaining balance with zero residual loss.
+              The owner approves the prepared transaction with their Sui wallet and pays gas. The full voucher value is recorded; partial spending is not supported.
             </p>
-            <span className="pillar-link">Incremental Balance Protocol →</span>
+            <span className="pillar-link">Owner Approval Flow →</span>
           </div>
 
           <div className="pillar-card">
@@ -992,7 +992,7 @@ function LandingPage({
             </div>
             <h3>HMAC-Signed POS QR Codes</h3>
             <p>
-              Generate cryptographically signed, timestamped QR payloads that can be scanned by any merchant smartphone with offline validation.
+              The backend validates signed, timestamped QR payloads for a merchant request. Owner approval and chain confirmation require connectivity.
             </p>
             <span className="pillar-link">Cryptographic POS Verification →</span>
           </div>
@@ -1001,11 +1001,11 @@ function LandingPage({
             <div className="pillar-icon" style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8B5CF6' }}>
               <FaUsers />
             </div>
-            <h3>Multi-Signature Governance</h3>
+            <h3>Application Approval Workflows</h3>
             <p>
-              Require multi-party approvals (e.g., 2 of 3 program officers) before releasing high-value voucher batches or modifying registries.
+              Approval workflow interfaces are separate from contract authorization. The current minting entry point uses an AdminCap, without a multi-signature threshold.
             </p>
-            <span className="pillar-link">Role-Based Multi-Sig Approval →</span>
+            <span className="pillar-link">Governance Review Pending →</span>
           </div>
 
           <div className="pillar-card">
