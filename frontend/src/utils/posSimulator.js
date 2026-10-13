@@ -15,3 +15,6 @@ export function validateSimulatorAmount(rawAmount, voucherId) {
   }
   if (!/^\d+(?:\.\d{1,2})?$/.test(text)) {
     return { error: 'Enter a dollar amount with at most two decimal places.' };
+  }
+  const cents = Math.round(amount * 100);
+  if (!Number.isSafeInteger(cents) || cents > voucher.balanceCents) {
