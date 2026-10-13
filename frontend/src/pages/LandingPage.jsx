@@ -216,13 +216,15 @@ function LandingPage({
     resetPosSimulation();
     if (validated.error) {
       setPosSimError(validated.error);
+      return;
+    }
     setPosSimState('scanning');
     setPosSimResult(null);
-    setTimeout(() => {
+    posSimTimer.current = setTimeout(() => {
       const sampleReference = 'DEMO-' + Math.random().toString(36).slice(2, 10).toUpperCase();
       setPosSimResult({
         digest: sampleReference,
-        amount: '$' + parseFloat(posSimAmount || 50).toFixed(2),
+        amount: '$' + validated.amount,
         merchant: 'Greenwood Academy (sample)',
         status: 'SIMULATED_ONLY',
         epochTimestamp: Date.now(),
