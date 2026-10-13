@@ -2,9 +2,9 @@
 
 ## Recommended order for unfinished work
 
-Updated October 10, 2026. **8 items remain unfinished.** Existing item numbers are retained below.
+Updated October 13, 2026. **7 items remain unfinished.** Existing item numbers are retained below.
 
-1. **Item 11 - Fix malformed landing page CSS.** Remove the stray declaration/brace and verify a warning-free CSS build.
+1. **Item 10 - Correc.** Remove the stray declaration/brace and verify a warning-free CSS build.
 2. **Item 10 - Correct unsupported landing page claims.** Describe the implemented full-voucher redemption flow and actual audit/deployment status.
 3. **Item 12 - Validate the POS simulator.** Reject invalid amounts and amounts above the selected balance; clearly label simulated results.
 4. **Item 13 - Repair Security & Audit navigation.** Add an accurate destination section or point the control to an existing section.
