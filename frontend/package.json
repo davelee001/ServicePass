@@ -22,6 +22,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "test:simulator": "node --test test/posSimulator.test.js",
     "test:wallet": "node --test test/walletConnection.test.js"
   },
   "type": "module",
