@@ -469,10 +469,12 @@ function LandingPage({
             </div>
 
             <div className="sim-form-group">
-              <label>Select Sample Voucher</label>
+              <label htmlFor="pos-sample-voucher">Select Sample Voucher</label>
               <select 
+                id="pos-sample-voucher"
+                disabled={posSimState === 'scanning'}
                 value={posSimVoucherId} 
-                onChange={(e) => setPosSimVoucherId(e.target.value)}
+                onChange={(e) => { resetPosSimulation(); setPosSimVoucherId(e.target.value); }}
                 className="sim-select"
               >
                 <option value="VOUCH-EDU-8902">🎓 Term 1 Secondary Tuition ($150.00 Full Value)</option>
