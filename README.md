@@ -60,7 +60,7 @@ Work is tracked in [TODO.md](TODO.md).
 
 - **Admin access:** `/admin` requires a server-verified administrator session. Login, session restoration and sign-out are covered by six backend tests and four browser checks. See [Admin access](docs/ADMIN_ACCESS.md).
 
-**8 TODO items remain open:** 3, 7, 8, 10, 11, 12, 13 and 14. The recommended next item is **11: repair malformed landing page CSS**, followed by correcting unsupported claims, simulator validation, navigation and accessibility. See [the ordered checklist](TODO.md).
+**7 TODO items remain open:** 3, 7, 8, 10, 12, 13 and 14. Item 11 : repair malformed landing page CSS**, followed by correcting unsupported claims, simulator validation, navigation and accessibility. See [the ordered checklist](TODO.md).
 
 | Mode | Frontend URL | API upstream |
 |------|--------------|--------------|
