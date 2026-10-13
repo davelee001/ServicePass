@@ -816,7 +816,7 @@ function LandingPage({
             <div className="workflow-detail-grid">
               <div className="workflow-text-col">
                 <span className="role-tag admin-tag">Admin & Governance Studio</span>
-                <h3>Institutional Governance, Multi-Sig & Auditability</h3>
+                <h3>Admin Tools & Operational Review</h3>
                 <p>
                   Program directors and grant administrators retain full control over minting policies, merchant accreditation, and automated disbursement schedules.
                 </p>
@@ -824,7 +824,7 @@ function LandingPage({
                   <div className="bullet-row">
                     <FaCheck className="bullet-check" />
                     <div>
-                      <strong>Multi-Signature Treasury:</strong> Require dual or triple cryptographic signatures before high-value grants are released.
+                      <strong>Approval Workflow Interfaces:</strong> Approval interfaces do not establish contract-enforced multi-party minting; the contract uses an AdminCap.
                     </div>
                   </div>
                   <div className="bullet-row">
@@ -855,21 +855,21 @@ function LandingPage({
                   <div className="mock-admin-widget">
                     <div className="widget-header">
                       <span>🛡️ Multi-Sig Treasury Queue</span>
-                      <span className="widget-badge admin">2 Pending Approvals</span>
+                      <span className="widget-badge admin">Sample Preview</span>
                     </div>
                     <div className="widget-item">
                       <div>
                         <strong>Tuition Grant Batch #091</strong>
                         <p>$50,000 • 350 Beneficiaries</p>
                       </div>
-                      <span className="amount-badge purple">2/3 Signed</span>
+                      <span className="amount-badge purple">Sample: 2/3</span>
                     </div>
                     <div className="widget-item">
                       <div>
                         <strong>Healthcare Emergency Fund</strong>
                         <p>$20,000 • 120 Beneficiaries</p>
                       </div>
-                      <span className="amount-badge orange">1/3 Signed</span>
+                      <span className="amount-badge orange">Sample: 1/3</span>
                     </div>
                     <button className="btn-mock-action purple" onClick={handleQuickEnterAdmin}>
                       Review & Authorize Batches
@@ -885,10 +885,10 @@ function LandingPage({
       {/* SECTOR TAXONOMY SHOWCASE */}
       <section className="sectors-section" id="sectors">
         <div className="section-head-box">
-          <span className="section-kicker">Certified Aid Taxonomy</span>
+          <span className="section-kicker">Illustrative Service Categories</span>
           <h2 className="section-h2">Targeted Smart Contract Categories</h2>
           <p className="section-desc">
-            Each voucher is cryptographically tied to a verified Move category code. Funds cannot be redeemed outside approved sector registries.
+            Each voucher is cryptographically tied to a verified Move category code. Redemption checks the designated merchant and its accepted voucher types. The examples below are illustrative.
           </p>
         </div>
 
@@ -957,9 +957,9 @@ function LandingPage({
       <section className="architecture-pillars-section" id="features">
         <div className="section-head-box">
           <span className="section-kicker">Smart Contract Architecture</span>
-          <h2 className="section-h2">Enterprise-Grade Security by Design</h2>
+          <h2 className="section-h2">Implemented Contract Checks & Remaining Review</h2>
           <p className="section-desc">
-            Combining the formal verification strengths of Sui Move with enterprise operational resiliency.
+            Local contract and API tests cover redemption rules. Independent audit, full testnet flows and production operations verification remain pending.
           </p>
         </div>
 
