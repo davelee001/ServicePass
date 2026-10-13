@@ -480,14 +480,15 @@ function LandingPage({
                 {SAMPLE_POS_VOUCHERS.map(voucher => (
                   <option key={voucher.id} value={voucher.id}>
                     {voucher.label} (${(voucher.balanceCents / 100).toFixed(2)} Full Value)
-                <option value="VOUCH-AGRI-7731">🌾 Seed & Fertilizer Grant ($250.00 Full Value)</option>
+                  </option>
+                ))}
               </select>
             </div>
 
             <div className="sim-form-group">
-              <label>Illustrative Receipt Amount ($)</label>
+              <label htmlFor="pos-sample-amount">Illustrative Receipt Amount ($)</label>
               <input 
-                type="number" 
+                type="number"
                 value={posSimAmount} 
                 onChange={(e) => setPosSimAmount(e.target.value)}
                 className="sim-input"
