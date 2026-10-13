@@ -407,19 +407,19 @@ function LandingPage({
       <section className="protocol-stats-strip">
         <div className="stats-container">
           <div className="metric-cell">
-            <span className="metric-highlight">0.00%</span>
-            <span className="metric-title">Fraud & Diverted Leakage</span>
-            <span className="metric-sub">Mathematically restricted on-chain</span>
+            <span className="metric-highlight">Merchant</span>
+            <span className="metric-title">Designated Merchant Check</span>
+            <span className="metric-sub">Enforced by the redemption contract</span>
           </div>
           <div className="metric-cell">
-            <span className="metric-highlight">&lt; 0.9s</span>
-            <span className="metric-title">Merchant Settlement Speed</span>
-            <span className="metric-sub">Instant POS burn & credit validation</span>
+            <span className="metric-highlight">Owner</span>
+            <span className="metric-title">Wallet Approval Required</span>
+            <span className="metric-sub">The owner signs and pays network gas</span>
           </div>
           <div className="metric-cell">
-            <span className="metric-highlight">&lt; $0.001</span>
-            <span className="metric-title">Average Sui Gas Fee</span>
-            <span className="metric-sub">99.9% lower than card interchange</span>
+            <span className="metric-highlight">Variable</span>
+            <span className="metric-title">Network Gas Cost</span>
+            <span className="metric-sub">No fixed fee or timing guarantee</span>
           </div>
           <div className="metric-cell">
             <span className="metric-highlight">100%</span>
