@@ -60,7 +60,7 @@ Work is tracked in [TODO.md](TODO.md).
 
 - **Admin access:** `/admin` requires a server-verified administrator session. Login, session restoration and sign-out are covered by six backend tests and four browser checks. See [Admin access](docs/ADMIN_ACCESS.md).
 
-**7 TODO items remain open:** 3, 7, 8, 10, 12, 13 and 14. Item 11 is complete: the malformed landing-page CSS has been repaired. The recommended next item is **10: correct unsupported landing page clai**, followed by correcting unsupported claims, simulator validation, navigation and accessibility. See [the ordered checklist](TODO.md).
+**7 TODO items remain open:** 3, 7, 8, 10, 12, 13 and 14. Item 11 is complete: the malformed landing-page CSS has been repaired. The recommended next item is **10: correct unsupported landing page claims**, followed by simulator validation, navigation and accessibility. See [the ordered checklist](TODO.md).
 
 | Mode | Frontend URL | API upstream |
 |------|--------------|--------------|
@@ -83,7 +83,7 @@ npm --prefix frontend run test:wallet
 npm --prefix backend test -- --runInBand src/__tests__/adminAccess.test.js
 ```
 
-Validated on October 10, 2026: eight wallet tests, six admin authentication tests, browser wallet/login scenarios, the full 225-test backend suite, and the frontend production build passed. The build still reports the known landing-page CSS warnings tracked in item 11.
+Validated on October 10, 2026: eight wallet tests, six admin authentication tests, browser wallet/login scenarios, the full 225-test backend suite, and the frontend production build passed. On  build still reports the known landing-page CSS warnings tracked in item 11.
 
 ## Owner-Approved QR Redemption
 
