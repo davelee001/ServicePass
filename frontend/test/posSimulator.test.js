@@ -19,3 +19,7 @@ test('accepts cents and each exact sample value, rejects a cent above it', () =>
 
 test('switching vouchers applies the new balance and merchant', () => {
   assert.equal(validateSimulatorAmount('100', 'VOUCH-EDU-8902').amount, '100.00');
+  assert.ok(validateSimulatorAmount('100', 'VOUCH-TRN-1209').error);
+  assert.equal(validateSimulatorAmount('50', 'VOUCH-TRN-1209').voucher.merchant, 'Metropolitan Transit (sample)');
+});
+
