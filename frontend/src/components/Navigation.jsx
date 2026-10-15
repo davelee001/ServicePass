@@ -401,8 +401,10 @@ function Navigation({
               </Link>
 
               <div className="drawer-section-title">Beneficiary Experience</div>
-              <Link to="/user/dashboard  <Link to="/user/vouchers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
-                <FaTicketAlt /> My Vouchers
+              <Link to="/user/dashboard" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaChartBar /> User Dashboard
+              </Link>
+              <Link to="/userouchers
               </Link>
               <Link to="/user/redeem" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaQrcode /> Approve Redemption
