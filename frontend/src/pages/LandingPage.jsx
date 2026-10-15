@@ -1072,7 +1072,9 @@ function LandingPage({
         </div>
       </section>
 
-      <section className="architecture-pillars-section security-status-section" id="security{/* HOW IT WORKS STEPPER */}
+      <section className="architecture-pillars-section security-status-section" id="security" tabIndex={-1} aria-labelledby="security-heading">
+        <div className="section-head-box">
+       {/* HOW IT WORKS STEPPER */}
       <section className="how-it-works-section" id="how-it-works">
         <div className="section-head-box">
           <span className="section-kicker">Simple 4-Step Lifecycle</span>
