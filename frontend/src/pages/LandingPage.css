@@ -3184,4 +3184,9 @@
   scroll-margin-top: 160px;
 }
 
-.security-status-se
+.security-status-section:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: -3px;
+}
+
+.faq-question-head
