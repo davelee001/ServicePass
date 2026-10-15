@@ -408,9 +408,9 @@ function Navigation({
                 <FaTicketAlt /> My Vouchers
               </Link>
               <Link to="/user/redeem" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
-                <FaQrcodLayerGroup /> Voucher Templates
+                <FaQrcode /> Approve Redemption
               </Link>
-              <Link to="/user/scheduled" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <Link to="/user/temp <Link to="/user/scheduled" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaClock /> Scheduled Disbursements
               </Link>
               <Link to="/user/transfers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
