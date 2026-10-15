@@ -1169,10 +1169,12 @@ function LandingPage({
                 >
                   <span className="faq-q-text">{faq.q}</span>
                   <span className="faq-expand-icon" aria-hidden="true">
-                    {activeFaq === faq. ? <FaChevronUp /> : <FaChevronDown />}
-                </span>
-              </div>
-              {activeFaq === idx && (
+                    {activeFaq === faq.category ? <FaChevronUp /> : <FaChevronDown />}
+                  </span>
+                </button>
+              </h3>
+              <div
+                className="faq-a-conte{activeFaq === idx && (
                 <div className="faq-a-content">
                   <p>{faq.a}</p>
                 </div>
