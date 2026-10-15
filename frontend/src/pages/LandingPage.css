@@ -3202,4 +3202,10 @@ button.faq-q-row {
   font: inherit;
   font-weight: 700;
   font-size: 1.05rem;
-  tex
+  text-align: left;
+  cursor: pointer;
+}
+
+.faq-q-row:focus-visible,
+.faq-filter-btn:focus-visible {
+  
