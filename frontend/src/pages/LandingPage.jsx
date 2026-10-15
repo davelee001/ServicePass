@@ -1083,7 +1083,12 @@ function LandingPage({
           </p>
           <p className="section-desc">
             No independent security audit is claimed. Full testnet verification, production secret
-            provisioning, key protection, backup recovery and {/* HOW IT WORKS STEPPER */}
+            provisioning, key protection, backup recovery and operational readiness remain pending.
+          </p>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS STEPPER */}
       <section className="how-it-works-section" id="how-it-works">
         <div className="section-head-box">
           <span className="section-kicker">Simple 4-Step Lifecycle</span>
@@ -1139,7 +1144,7 @@ function LandingPage({
             <button
               key={i}
               className={`faq-filter-btn ${faqCategoryFilter === cat ? 'active' : ''}`}
-              onClick={() => setFaqCategoryFilter(cat)}
+              aria-pressonClick={() => setFaqCategoryFilter(cat)}
             >
               {cat}
             </button>
