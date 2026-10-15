@@ -397,7 +397,10 @@ function Navigation({
               </Link>
 
               <Link to="/#security" className="mobile-link" onClick={() => { setMobileMenuOpen(false); if (isLanding) scrollToSection('security'); }}>
-                <FaChartBar /> User Dashboard
+                <FaShieldAlt /> Security &amp; Audit
+              </Link>
+
+              <div className="drawer-sectionBar /> User Dashboard
               </Link>
               <Link to="/user/vouchers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaTicketAlt /> My Vouchers
