@@ -165,9 +165,9 @@ function LandingPage({
       section?.focus({ preventScroll: true });
     });
     return () => cancelAnimationFrame(frame);
-  }, [hash, key);
+  }, [hash, key]);
   const [selectedCategory, setSelectedCategory] = useState(VOUCHER_CATEGORIES[0]);
-  const [activeFaq, setActiveFaq] = useState(0);
+  const [activeFaq, setActiveFaq] = useState(FAQS[0].category);
   const [activeRoleTab, setActiveRoleTab] = useState('user');
   const [faqCategoryFilter, setFaqCategoryFilter] = useState('All');
   const [copiedId, setCopiedId] = useState(false);
@@ -1072,7 +1072,7 @@ function LandingPage({
         </div>
       </section>
 
-      {/* HOW IT WORKS STEPPER */}
+      <section className="architecture-pillars-section security-status-section" id="security{/* HOW IT WORKS STEPPER */}
       <section className="how-it-works-section" id="how-it-works">
         <div className="section-head-box">
           <span className="section-kicker">Simple 4-Step Lifecycle</span>
