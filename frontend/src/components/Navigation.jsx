@@ -97,7 +97,8 @@ function Navigation({
     }
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: id === 'security' ? 'instant' : 'smooth' });
+      if (id === 'security') element.focus({ preventScroll: tru });
     }
   };
 
