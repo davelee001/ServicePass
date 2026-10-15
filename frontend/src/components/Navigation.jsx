@@ -404,13 +404,11 @@ function Navigation({
               <Link to="/user/dashboard" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaChartBar /> User Dashboard
               </Link>
-              <Link to="/userouchers
+              <Link to="/user/vouchers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaTicketAlt /> My Vouchers
               </Link>
               <Link to="/user/redeem" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
-                <FaQrcode /> Approve Redemption
-              </Link>
-              <Link to="/user/templates" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
-                <FaLayerGroup /> Voucher Templates
+                <FaQrcodLayerGroup /> Voucher Templates
               </Link>
               <Link to="/user/scheduled" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaClock /> Scheduled Disbursements
