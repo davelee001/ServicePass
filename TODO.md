@@ -4,8 +4,8 @@
 
 Updated October 15, 2026. **3 items remain unfinished.** Existing item numbers are retained below.
 
-1. **Item 3 - Finish production configuration verification.** Provision secret-manager values and verify the live configurang section.
-2. **Item 14 - Make FAQ controls keyboard accessible.** Use semantic controls with expanded state and keyboard operation.
+1. **Item 3 - Finish production configuration verification.** Provision secret-manager values and verify the live configuration.
+2. **Item 7 - Prove the full system on testnet.** Validate actual wallet/frontend/backend/contract flows afxpanded state and keyboard operation.
 3. **Item 3 - Finish production configuration verification.** Provision secret-manager values and verify the live configuration.
 4. **Item 7 - Prove the full system on testnet.** Validate actual wallet/frontend/backend/contract flows after the integration fixes.
 5. **Item 8 - Complete security and operations readiness.** Finish audit, recovery, monitoring, staged deployment and rollback verification before production.
