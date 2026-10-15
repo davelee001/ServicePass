@@ -3208,4 +3208,10 @@ button.faq-q-row {
 
 .faq-q-row:focus-visible,
 .faq-filter-btn:focus-visible {
-  
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+.faq-a-content[hidden] {
+  display: none;
+}
