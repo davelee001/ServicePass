@@ -2,9 +2,9 @@
 
 ## Recommended order for unfinished work
 
-Updated October 13, 2026. **5 items remain unfinished.** Existing item numbers are retained below.
+Updated October 15, 2026. **3 items remain unfinished.** Existing item numbers are retained below.
 
-1. **Item 13 - Repair Security & Audit navigation.** Add an accurate destination section or point the control to an existing section.
+1. **Item 3 - Finish production configuration verification.** Provision secret-manager values and verify the live configurang section.
 2. **Item 14 - Make FAQ controls keyboard accessible.** Use semantic controls with expanded state and keyboard operation.
 3. **Item 3 - Finish production configuration verification.** Provision secret-manager values and verify the live configuration.
 4. **Item 7 - Prove the full system on testnet.** Validate actual wallet/frontend/backend/contract flows after the integration fixes.
