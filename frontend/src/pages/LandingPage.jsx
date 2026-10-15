@@ -1075,7 +1075,8 @@ function LandingPage({
       <section className="architecture-pillars-section security-status-section" id="security" tabIndex={-1} aria-labelledby="security-heading">
         <div className="section-head-box">
           <span className="section-kicker">Security &amp; Audit Status</span>
-          <h2 className="sectio{/* HOW IT WORKS STEPPER */}
+          <h2 className="section-h2" id="security-heading">Implemented Checks, Review Still Pending</h2>
+          <p className="sect{/* HOW IT WORKS STEPPER */}
       <section className="how-it-works-section" id="how-it-works">
         <div className="section-head-box">
           <span className="section-kicker">Simple 4-Step Lifecycle</span>
