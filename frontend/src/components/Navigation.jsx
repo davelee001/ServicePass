@@ -400,9 +400,8 @@ function Navigation({
                 <FaShieldAlt /> Security &amp; Audit
               </Link>
 
-              <div className="drawer-sectionBar /> User Dashboard
-              </Link>
-              <Link to="/user/vouchers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <div className="drawer-section-title">Beneficiary Experience</div>
+              <Link to="/user/dashboard  <Link to="/user/vouchers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaTicketAlt /> My Vouchers
               </Link>
               <Link to="/user/redeem" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
