@@ -416,8 +416,10 @@ function Navigation({
               <Link to="/user/scheduled" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaClock /> Scheduled Disbursements
               </Link>
-              <Link to="/user/transfers     <Link to="/user/multisig" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
-                <FaUsers /> Multi-Sig Approvals
+              <Link to="/user/transfers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaExchangeAlt /> Transfers
+              </Link>
+              <Link to="Users /> Multi-Sig Approvals
               </Link>
 
               <div className="drawer-section-title">Merchant Point-of-Sale</div>
