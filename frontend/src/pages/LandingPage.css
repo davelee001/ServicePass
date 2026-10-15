@@ -3197,4 +3197,9 @@
 button.faq-q-row {
   width: 100%;
   border: 0;
-  background
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  tex
