@@ -1632,7 +1632,6 @@
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 1.35rem 1.65rem;
-  cursor: pointer;
   transition: all 0.2s ease;
 }
 
@@ -3180,3 +3179,9 @@
     text-align: center;
   }
 }
+
+.security-status-section {
+  scroll-margin-top: 160px;
+}
+
+.security-status-se
