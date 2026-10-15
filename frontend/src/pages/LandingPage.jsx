@@ -1157,7 +1157,10 @@ function LandingPage({
             <div
               key={faq.category}
               className={`faq-card ${activeFaq === faq.category ? 'expanded' : ''}`}
-            >  onClick={() => setActiveFaq(activeFaq === idx ? -1 : idx)}
+            >
+              <h3 className="faq-question-heading">
+                <button
+                  type="b  onClick={() => setActiveFaq(activeFaq === idx ? -1 : idx)}
             >
               <div className="faq-q-row">
                 <span className="faq-q-text">{faq.q}</span>
