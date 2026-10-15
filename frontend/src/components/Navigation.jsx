@@ -414,9 +414,9 @@ function Navigation({
                 <FaLayerGroup /> Voucher Templates
               </Link>
               <Link to="/user/scheduled" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
-                <FaClock /> Scheduledt /> Transfers
+                <FaClock /> Scheduled Disbursements
               </Link>
-              <Link to="/user/multisig" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <Link to="/user/transfers     <Link to="/user/multisig" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaUsers /> Multi-Sig Approvals
               </Link>
 
