@@ -98,7 +98,7 @@ function Navigation({
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: id === 'security' ? 'instant' : 'smooth' });
-      if (id === 'security') element.focus({ preventScroll: tru });
+      if (id === 'security') element.focus({ preventScroll: true });
     }
   };
 
@@ -155,9 +155,9 @@ function Navigation({
               <button className="nav-menu-btn" onClick={() => scrollToSection('calculator')}>
                 ROI Calculator
               </button>
-              <button className="nav-menu-btn" onClick={() => scrollToSection('security')}>
+              <Link className="nav-menu-btn" to="/#security" onClick={() => { if (isLanding) scrollToSection('security'); }}>
                 Security & Audit
-              </button>
+              </Link>
               <button className="nav-menu-btn" onClick={() => scrollToSection('faq')}>
                 FAQ
               </button>
@@ -396,7 +396,7 @@ function Navigation({
                 Home & Overview
               </Link>
 
-              <div className="drawer-section-title">Beneficiary Experience</div>
+              <Link to="/#securityience</div>
               <Link to="/user/dashboard" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaChartBar /> User Dashboard
               </Link>
