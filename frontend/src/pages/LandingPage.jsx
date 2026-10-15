@@ -1165,12 +1165,11 @@ function LandingPage({
                   id={`faq-question-${faq.category.replaceAll(' ', '-').toLowerCase()}`}
                   aria-expanded={activeFaq === faq.category}
                   aria-controls={`faq-answer-${faq.category.replaceAll(' ', '-').toLowerCase()}`}
-             onClick={() => setActiveFaq(activeFaq === idx ? -1 : idx)}
-            >
-              <div className="faq-q-row">
-                <span className="faq-q-text">{faq.q}</span>
-                <span className="faq-expand-icon">
-                  {activeFaq === idx ? <FaChevronUp /> : <FaChevronDown />}
+                  onClick={() => setActiveFaq(activeFaq === faq.category ? null : faq.category)}
+                >
+                  <span className="faq-q-text">{faq.q}</span>
+                  <span className="faq-expand-icon" aria-hidden="true">
+                    {activeFaq === faq. ? <FaChevronUp /> : <FaChevronDown />}
                 </span>
               </div>
               {activeFaq === idx && (
