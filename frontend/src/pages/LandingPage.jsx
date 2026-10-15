@@ -1160,7 +1160,9 @@ function LandingPage({
             >
               <h3 className="faq-question-heading">
                 <button
-                  type="b  onClick={() => setActiveFaq(activeFaq === idx ? -1 : idx)}
+                  type="button"
+                  className="faq-q-row"
+                  id={`faq-question-${faq.category.repl  onClick={() => setActiveFaq(activeFaq === idx ? -1 : idx)}
             >
               <div className="faq-q-row">
                 <span className="faq-q-text">{faq.q}</span>
