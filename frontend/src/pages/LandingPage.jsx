@@ -1080,7 +1080,9 @@ function LandingPage({
             Redemption requires the owner's wallet approval and checks the designated merchant,
             accepted category and expiry. It consumes the entire voucher. Local tests cover these rules;
             they do not establish production security or confirm service delivery.
-          <{/* HOW IT WORKS STEPPER */}
+          </p>
+          <p className="section-desc">
+            No independent security audit is claimed. Full {/* HOW IT WORKS STEPPER */}
       <section className="how-it-works-section" id="how-it-works">
         <div className="section-head-box">
           <span className="section-kicker">Simple 4-Step Lifecycle</span>
