@@ -3189,4 +3189,12 @@
   outline-offset: -3px;
 }
 
-.faq-question-head
+.faq-question-heading {
+  margin: 0;
+  font: inherit;
+}
+
+button.faq-q-row {
+  width: 100%;
+  border: 0;
+  background
