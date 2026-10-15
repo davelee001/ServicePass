@@ -1175,9 +1175,9 @@ function LandingPage({
               </h3>
               <div
                 className="faq-a-content"
-                id={`faq-answer-$        <p>{faq.a}</p>
-                </div>
-              )}
+                id={`faq-answer-${faq.category.replaceAll(' ', '-').toLowerCase()}`}
+                role="region"
+               
             </div>
           ))}
         </div>
