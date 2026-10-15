@@ -162,7 +162,10 @@ function LandingPage({
     const frame = requestAnimationFrame(() => {
       const section = document.getElementById('security');
       section?.scrollIntoView({ behavior: 'instant', block: 'start' });
-      section?);
+      section?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [hash, key);
   const [selectedCategory, setSelectedCategory] = useState(VOUCHER_CATEGORIES[0]);
   const [activeFaq, setActiveFaq] = useState(0);
   const [activeRoleTab, setActiveRoleTab] = useState('user');
