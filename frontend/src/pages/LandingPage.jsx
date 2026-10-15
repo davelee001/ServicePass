@@ -1078,7 +1078,9 @@ function LandingPage({
           <h2 className="section-h2" id="security-heading">Implemented Checks, Review Still Pending</h2>
           <p className="section-desc">
             Redemption requires the owner's wallet approval and checks the designated merchant,
-            accepted category and expiry. It consumes the entire voucher. Local tests cover these{/* HOW IT WORKS STEPPER */}
+            accepted category and expiry. It consumes the entire voucher. Local tests cover these rules;
+            they do not establish production security or confirm service delivery.
+          <{/* HOW IT WORKS STEPPER */}
       <section className="how-it-works-section" id="how-it-works">
         <div className="section-head-box">
           <span className="section-kicker">Simple 4-Step Lifecycle</span>
