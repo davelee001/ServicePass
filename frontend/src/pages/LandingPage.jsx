@@ -1178,7 +1178,10 @@ function LandingPage({
                 id={`faq-answer-${faq.category.replaceAll(' ', '-').toLowerCase()}`}
                 role="region"
                 aria-labelledby={`faq-question-${faq.category.replaceAll(' ', '-').toLowerCase()}`}
-                h
+                hidden={activeFaq !== faq.category}
+              >
+                <p>{faq.a}</p>
+              </div>
             </div>
           ))}
         </div>
