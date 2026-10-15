@@ -413,10 +413,8 @@ function Navigation({
               <Link to="/user/templates" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaLayerGroup /> Voucher Templates
               </Link>
-              <Link to=cheduled Disbursements
-              </Link>
-              <Link to="/user/transfers" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
-                <FaExchangeAlt /> Transfers
+              <Link to="/user/scheduled" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                <FaClock /> Scheduledt /> Transfers
               </Link>
               <Link to="/user/multisig" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
                 <FaUsers /> Multi-Sig Approvals
