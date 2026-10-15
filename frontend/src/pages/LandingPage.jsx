@@ -1174,9 +1174,8 @@ function LandingPage({
                 </button>
               </h3>
               <div
-                className="faq-a-conte{activeFaq === idx && (
-                <div className="faq-a-content">
-                  <p>{faq.a}</p>
+                className="faq-a-content"
+                id={`faq-answer-$        <p>{faq.a}</p>
                 </div>
               )}
             </div>
