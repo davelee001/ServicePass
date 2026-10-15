@@ -1144,7 +1144,8 @@ function LandingPage({
             <button
               key={i}
               className={`faq-filter-btn ${faqCategoryFilter === cat ? 'active' : ''}`}
-              aria-pressonClick={() => setFaqCategoryFilter(cat)}
+              aria-pressed={faqCategoryFilter === cat}
+              onClick={() => { setFaqCategoryFilter(cat); setActiveFaq(null); }}
             >
               {cat}
             </button>
@@ -1152,11 +1153,11 @@ function LandingPage({
         </div>
 
         <div className="faq-list-container">
-          {filteredFaqs.map((faq, idx) => (
-            <div 
-              key={idx} 
-              className={`faq-card ${activeFaq === idx ? 'expanded' : ''}`}
-              onClick={() => setActiveFaq(activeFaq === idx ? -1 : idx)}
+          {filteredFaqs.map((faq) => (
+            <div
+              key={faq.category}
+              className={`faq-card ${activeFaq === faq.category ? 'expanded' : ''}`}
+            >  onClick={() => setActiveFaq(activeFaq === idx ? -1 : idx)}
             >
               <div className="faq-q-row">
                 <span className="faq-q-text">{faq.q}</span>
