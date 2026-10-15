@@ -1162,7 +1162,9 @@ function LandingPage({
                 <button
                   type="button"
                   className="faq-q-row"
-                  id={`faq-question-${faq.category.repl  onClick={() => setActiveFaq(activeFaq === idx ? -1 : idx)}
+                  id={`faq-question-${faq.category.replaceAll(' ', '-').toLowerCase()}`}
+                  aria-expanded={activeFaq === faq.category}
+         onClick={() => setActiveFaq(activeFaq === idx ? -1 : idx)}
             >
               <div className="faq-q-row">
                 <span className="faq-q-text">{faq.q}</span>
