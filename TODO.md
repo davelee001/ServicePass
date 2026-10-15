@@ -79,4 +79,4 @@ Completed items: **1, 2, 4, 5, 6, 9, 10, 11, 12, 13 and 14**. Hosted CI and live
 - [x] **14. Make FAQ controls accessible - P1 - Small**
   Replace clickable div-only FAQ controls with semantic buttons that expose `aria-expanded` and reference their answer panels. Support keyboard activation, visible focus and accurate state when filtering FAQ categories. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L1104).
 
-  Completed (October 15, 2026): FAQ questions are native buttons inside headings with aria-expanded, aria-controls and labelled answer regions. Collapsed answers rem
+  Completed (October 15, 2026): FAQ questions are native buttons inside headings with aria-expanded, aria-controls and labelled answer regions. Collapsed answers remain hidden, and keyboard focus has a visible outline. Stable question identities and resetting expansio
