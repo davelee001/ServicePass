@@ -158,7 +158,9 @@ function LandingPage({
   const navigate = useNavigate();
   const { hash, key } = useLocation();
   useEffect(() => {
-    if (hash !== '#security);
+    if (hash !== '#security') return;
+    const frame = requestAnimationFrame(() => {
+      const section = document.getElementBy);
   const [selectedCategory, setSelectedCategory] = useState(VOUCHER_CATEGORIES[0]);
   const [activeFaq, setActiveFaq] = useState(0);
   const [activeRoleTab, setActiveRoleTab] = useState('user');
