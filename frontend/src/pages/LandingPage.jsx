@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   FaTicketAlt, 
   FaShieldAlt, 
@@ -156,6 +156,9 @@ function LandingPage({
 }) {
   const { requestConnection } = useWalletConnection();
   const navigate = useNavigate();
+  const { hash, key } = useLocation();
+  useEffect(() => {
+    if (hash !== '#security);
   const [selectedCategory, setSelectedCategory] = useState(VOUCHER_CATEGORIES[0]);
   const [activeFaq, setActiveFaq] = useState(0);
   const [activeRoleTab, setActiveRoleTab] = useState('user');
