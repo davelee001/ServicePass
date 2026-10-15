@@ -6,10 +6,9 @@ Updated October 15, 2026. **3 items remain unfinished.** Existing item numbers a
 
 1. **Item 3 - Finish production configuration verification.** Provision secret-manager values and verify the live configuration.
 2. **Item 7 - Prove the full system on testnet.** Validate actual wallet/frontend/backend/contract flows after the integration fixes.
-3ion fixes.
-5. **Item 8 - Complete security and operations readiness.** Finish audit, recovery, monitoring, staged deployment and rollback verification before production.
+3. **Item 8 - Complete security and operations readiness.** Finish audit, recovery, monitoring, staged deployment and rollback verification before production.
 
-Completed items: **1, 2, 4, 5, 6, 9, 10, 11 and 12**. Hosted CI and live deployment evidence must still be checked for the relevant revision; prior local test results do not validate new changes automatically.
+Completed items: **1, 2, 4, 5, 6, 9, 10, 11, 12, 13 and 14**. Hosted CI and live deployment evidence must still be checked for the relevant revision; prior local test results do not validate new changes automatically.
 
 ## Detailed checklist
 
@@ -72,8 +71,8 @@ Completed items: **1, 2, 4, 5, 6, 9, 10, 11 and 12**. Hosted CI and live deploym
 
   Completed (October 13, 2026): Shared sample data drives voucher values, selector labels, validation and receipt merchants. Rejects empty, non-finite, zero/negative, malformed, fractional-cent and over-value amounts before success. Changing inputs clears stale receipts/errors; controls are disabled during a demo and pending timers are cleaned up on unmount. Receipts retain DEMO references and no-chain-submission labels. Four automated boundary/voucher-switch tests, browser interaction checks and the production build passed. Run `npm --prefix frontend run test:simulator`.
 
-- [ ] **13. Repair Security & Audit navigation - P1 - Small**
+- [x] **13. Repair Security & Audit navigation - P1 - Small**
   The navigation control targets a nonexistent `security` section. Add a section with accurate security/audit status or link to a valid existing destination; verify scrolling from the landing page and cross-route navigation. See [Navigation.jsx](frontend/src/components/Navigation.jsx#L159).
 
-- [ ] **14. Make FAQ controls accessible - P1 - Small**
+  Completed (October 15, 2026): Desktop and mobile Security & Audit links - [ ] **14. Make FAQ controls accessible - P1 - Small**
   Replace clickable div-only FAQ controls with semantic buttons that expose `aria-expanded` and reference their answer panels. Support keyboard activation, visible focus and accurate state when filtering FAQ categories. See [LandingPage.jsx](frontend/src/pages/LandingPage.jsx#L1104).
