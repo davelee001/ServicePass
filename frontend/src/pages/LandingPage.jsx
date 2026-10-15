@@ -1077,7 +1077,8 @@ function LandingPage({
           <span className="section-kicker">Security &amp; Audit Status</span>
           <h2 className="section-h2" id="security-heading">Implemented Checks, Review Still Pending</h2>
           <p className="section-desc">
-            Redemption requires the owner's wallet approval and checks the designated merch{/* HOW IT WORKS STEPPER */}
+            Redemption requires the owner's wallet approval and checks the designated merchant,
+            accepted category and expiry. It consumes the entire voucher. Local tests cover these{/* HOW IT WORKS STEPPER */}
       <section className="how-it-works-section" id="how-it-works">
         <div className="section-head-box">
           <span className="section-kicker">Simple 4-Step Lifecycle</span>
