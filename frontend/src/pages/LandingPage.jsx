@@ -160,7 +160,9 @@ function LandingPage({
   useEffect(() => {
     if (hash !== '#security') return;
     const frame = requestAnimationFrame(() => {
-      const section = document.getElementBy);
+      const section = document.getElementById('security');
+      section?.scrollIntoView({ behavior: 'instant', block: 'start' });
+      section?);
   const [selectedCategory, setSelectedCategory] = useState(VOUCHER_CATEGORIES[0]);
   const [activeFaq, setActiveFaq] = useState(0);
   const [activeRoleTab, setActiveRoleTab] = useState('user');
