@@ -1082,7 +1082,8 @@ function LandingPage({
             they do not establish production security or confirm service delivery.
           </p>
           <p className="section-desc">
-            No independent security audit is claimed. Full {/* HOW IT WORKS STEPPER */}
+            No independent security audit is claimed. Full testnet verification, production secret
+            provisioning, key protection, backup recovery and {/* HOW IT WORKS STEPPER */}
       <section className="how-it-works-section" id="how-it-works">
         <div className="section-head-box">
           <span className="section-kicker">Simple 4-Step Lifecycle</span>
